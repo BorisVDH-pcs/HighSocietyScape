@@ -10,7 +10,9 @@ _Last updated: 2026-07-30._
 ## Where we are
 
 The project has gone from "pipeline never run" to **a working data pipeline +
-a playable Game Boy-style battle screen**, all committed and pushed to `main`.
+a playable, themed battle screen** with **per-team gear that persists to
+Supabase** and **redrawn OSRS-style sprites** — all committed and pushed to
+`main`. The one remaining big rung is live character *stats* (see next steps).
 
 ### Data pipeline — ✅ done and live
 - WOM competition **145906** ("High Society Snakes and Rats Bingo"), type
@@ -62,22 +64,41 @@ a playable Game Boy-style battle screen**, all committed and pushed to `main`.
   logic. Both the Node scripts and the web app import it (single source of
   truth). `lib/levels.mjs` / `lib/character.mjs` are thin Node wrappers.
 
-### Per-team gear persistence — ✅ done (needs migration applied)
+### Per-team gear persistence — ✅ done and LIVE
 - Gear is **per team** (`gearByTeam` in `App.jsx`) — each team plays its own
-  game. When Supabase is configured it's loaded from / saved to a new
-  **`team_gear`** table (owned weapons + equipped weapon, keyed by
-  `season_id` + `team_name`); otherwise it stays in the browser session.
+  game. It's loaded from / saved to the **`team_gear`** table (owned weapons +
+  equipped weapon, keyed by `season_id` + `team_name`).
 - New pieces: `web/src/game/supabase.js` (browser anon PostgREST client),
   `web/src/game/gear.js` (`loadGear`/`saveGear`, graceful fallback),
   `supabase/migrations/0002_team_gear.sql`, `web/.env.example`.
-- **To activate:** (1) run `0002_team_gear.sql` in the Supabase SQL Editor;
-  (2) fill `web/.env` with `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY`.
-  Verified: anon reads work against the live DB (`teams` returns 4 rows); the
-  app degrades cleanly to session-only gear until the table exists (confirmed
-  via a caught 404, no crash).
+- **Migration `0002_team_gear.sql` is APPLIED** to the live DB, and the full
+  anon round-trip is verified (upsert 201 → read-back 200 with correct data).
+  `web/.env` is set on Boris's machine (`VITE_SUPABASE_URL` +
+  `VITE_SUPABASE_ANON_KEY`, gitignored). On any OTHER machine: `cp
+  web/.env.example web/.env` and paste the same two values (from the root
+  `.env` / Supabase → Project Settings → API).
+- Still degrades cleanly: with no `web/.env` (or table absent), gear falls back
+  to session-only state and the app keeps working.
 - **Security note (see 0002 SQL):** gear is written by the frontend with the
   public anon key (no auth yet), so anon INSERT/UPDATE are open — anyone could
   overwrite a team's gear. Fine for the prototype; revisit with auth if needed.
+
+### Sprites / art — ✅ redrawn in an OSRS chibi style
+- All sprites are original hand-drawn SVG in `web/src/components/Sprite.jsx`
+  (no ripped Jagex art). Redrawn from the old grayscale stick-figures into a
+  cohesive chibi look (big head, chunky gear) with a shared gear palette:
+  - **Goblin** — green skin, big pointed ears, heavy brow, amber eyes, bulbous
+    nose, underbite fangs, potbellied crude tunic + belt, crude spear.
+  - **Warrior** — steel full helm (bronze brow + red plume, T-slot visor),
+    platebody + pauldrons, heater shield w/ cross, raised steel sword.
+  - **Archer** — green ranger hood, leather body + green tunic + strap, back
+    quiver, recurve bow with a nocked arrow.
+  - **Mage** — blue wizard robe + sash + sleeves, pointy hat w/ gold star,
+    white beard, staff with a glowing orb.
+- Bronze/amber accents tie the sprites into the gold "High Society" theme.
+- **Logo still TODO:** drop the real logo art in as `web/public/logo.png`
+  (transparent PNG, ~360px wide). Until then the header shows a styled gold
+  "High Society Scape" wordmark fallback.
 
 ## Suggested next steps (pick one)
 1. **Live character data** — point `web/src/game/character.js` at Supabase so
@@ -98,9 +119,12 @@ a playable Game Boy-style battle screen**, all committed and pushed to `main`.
 ## Open questions to raise with Boris
 - Drop-table design at scale: which bosses drop what, rates, armour/defence,
   gear tiers. Only the Goblin → Steel Sword (1/5) exists so far.
-- Should the app read live from Supabase now, or keep the bundled snapshot for
-  the prototype?
+- Character **stats** still read the bundled snapshot — wire them to live
+  Supabase now (next step 1), or keep the snapshot for the prototype? (Gear
+  already persists live; this is only about levels/combat stats.)
 - First boss beyond the Goblin.
+- Auth: gear writes use the public anon key (anyone can overwrite). Add auth
+  before this goes wide?
 
 ## Working conventions
 - Repo has active collaborators — `git fetch` and rebase before pushing.
