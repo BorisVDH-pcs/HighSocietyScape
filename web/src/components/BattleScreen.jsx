@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Hero, BossSprite } from './Sprite.jsx';
+import BossMap from './BossMap.jsx';
 import { weaponById } from '../game/weapons.js';
 import { BOSS_LADDER } from '../game/combat.js';
 
@@ -119,6 +120,22 @@ export default function BattleScreen({
     lines = [`What will ${player.name} do?`];
   }
 
+  if (menu === 'map') {
+    return (
+      <div className="gb">
+        <div className="gb-screen">
+          <BossMap
+            bosses={BOSS_LADDER}
+            currentId={boss.id}
+            maxUnlocked={maxUnlocked}
+            onSelect={(id) => travel(id)}
+            onClose={() => setMenu('main')}
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="gb">
       <div className="gb-screen">
@@ -164,28 +181,7 @@ export default function BattleScreen({
           </div>
 
           <div className="menu">
-            {menu === 'map' ? (
-              <div className="moves">
-                {BOSS_LADDER.map((b, i) => {
-                  const locked = i > maxUnlocked;
-                  return (
-                    <button
-                      key={b.id}
-                      className={`mbtn move ${b.id === boss.id ? 'on' : ''} ${locked ? 'locked' : ''}`}
-                      disabled={locked}
-                      onClick={() => travel(b.id)}
-                    >
-                      {locked ? '🔒 ' : ''}
-                      {b.name.toUpperCase()}
-                      <span className="mtag">{locked ? 'locked' : `:L${b.level}`}</span>
-                    </button>
-                  );
-                })}
-                <button className="mbtn back" onClick={() => setMenu('main')}>
-                  ← BACK
-                </button>
-              </div>
-            ) : menu === 'gear' ? (
+            {menu === 'gear' ? (
               <div className="moves">
                 {loadouts.map((w) => (
                   <button

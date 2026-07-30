@@ -13,6 +13,9 @@ import { DEFAULT_WEAPON, weaponById } from './weapons.js';
 //
 // Beating a boss advances the team to the next rung (see nextBoss); losing
 // retries the same one. A brand-new team starts at the first rung (the Goblin).
+// `map: {x, y}` is each boss's position on the draggable world map (see
+// components/BossMap.jsx). Coordinates live in a large virtual world the player
+// pans across; new bosses just get new coordinates further out.
 export const BOSS_LADDER = [
   {
     id: 'goblin',
@@ -23,6 +26,7 @@ export const BOSS_LADDER = [
     accuracy: 0.45,
     blurb: 'A snivelling green nuisance. Every hero starts somewhere.',
     drops: [{ weaponId: 'steel_sword', chance: 1 / 5 }],
+    map: { x: 90, y: 240 },
   },
   {
     id: 'giant_rat',
@@ -33,6 +37,7 @@ export const BOSS_LADDER = [
     accuracy: 0.52,
     blurb: 'A mangy, dog-sized rodent with a taste for adventurers.',
     drops: [{ weaponId: 'oak_shortbow', chance: 1 / 4 }],
+    map: { x: 270, y: 130 },
   },
   {
     id: 'skeleton',
@@ -43,6 +48,7 @@ export const BOSS_LADDER = [
     accuracy: 0.6,
     blurb: 'A rattling pile of bones that refuses to stay buried.',
     drops: [{ weaponId: 'apprentice_wand', chance: 1 / 5 }],
+    map: { x: 450, y: 250 },
   },
   {
     id: 'hobgoblin',
@@ -53,6 +59,7 @@ export const BOSS_LADDER = [
     accuracy: 0.66,
     blurb: 'A hulking cousin of the goblin — bigger, meaner, club in hand.',
     drops: [{ weaponId: 'mithril_sword', chance: 1 / 6 }],
+    map: { x: 640, y: 130 },
   },
   {
     id: 'lesser_demon',
@@ -63,8 +70,12 @@ export const BOSS_LADDER = [
     accuracy: 0.72,
     blurb: 'A towering horned fiend wreathed in flame. The final rung.',
     drops: [{ weaponId: 'infernal_staff', chance: 1 / 8 }],
+    map: { x: 820, y: 250 },
   },
 ];
+
+// The virtual world the map pans across. Grows as bosses are added further out.
+export const MAP_WORLD = { w: 940, h: 380 };
 
 // First rung, exported as GOBLIN for back-compat (initBattle's default etc.).
 export const GOBLIN = BOSS_LADDER[0];

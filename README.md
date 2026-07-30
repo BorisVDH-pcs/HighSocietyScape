@@ -79,9 +79,11 @@ A Vite + React, Game Boy / Pokémon-style turn-based battle screen driven by a
 team's derived character. Pick a loadout in **GEAR** (Melee / Ranged / Magic —
 sets your sprite and attack style), then **FIGHT** any of a **5-boss ladder**:
 Goblin → Giant Rat → Skeleton → Hobgoblin → Lesser Demon, each scaling in
-difficulty. Use **MAP** to travel between bosses and **AUTO-FIGHT** to auto-attack until
-someone hits 0 HP. Bosses **unlock in order** — beat a rung to open the next, so
-the MAP shows later bosses 🔒 locked until you've earned them. Beating a boss can
+difficulty. Open **MAP** for a draggable world map — boss icons sit along a trail you
+drag/swipe across to explore (built to hold many more bosses than the current
+five); tap an unlocked one to travel there. Use **AUTO-FIGHT** to auto-attack
+until someone hits 0 HP. Bosses **unlock in order** — beat a rung to open the
+next, so the map shows later bosses 🔒 locked until you've earned them. Beating a boss can
 drop a higher-tier weapon (e.g. Goblin → Steel Sword 1/5, Hobgoblin → Mithril
 Sword); you **stay on the boss** afterwards so you can farm it (FIGHT AGAIN), and
 move on only when you choose via MAP. The game always wields your
@@ -192,6 +194,7 @@ Notes:
 | `web/src/game/combat.js` | Combat engine + `BOSS_LADDER` (5 bosses) / `nextBoss` + battle rehydration |
 | `web/src/game/weapons.js` | Weapon catalog + tiers + best-owned/auto-equip helpers |
 | `web/src/components/Sprite.jsx` | Original chibi SVG sprites — heroes + all 5 bosses (`BossSprite`) |
+| `web/src/components/BossMap.jsx` | Draggable world map — pan/swipe across boss icons to travel |
 | `web/src/game/character.js` | Browser character loader — snapshot seed + live Supabase read |
 | `web/src/game/supabase.js` | Browser PostgREST client, anon key (reads + gear writes) |
 | `web/src/game/gear.js` | Load/save per-team gear to Supabase (graceful fallback) |

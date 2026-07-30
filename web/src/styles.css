@@ -118,6 +118,46 @@ body {
 .player-mon { bottom: 44px; left: 6px; }
 .sprite { width: 100%; height: 100%; }
 
+/* ---- world map (MAP button) ---- */
+.bossmap { display: flex; flex-direction: column; gap: 8px; height: 414px; }
+.maphead { display: flex; align-items: center; gap: 12px; }
+.maptitle { font-size: 9px; letter-spacing: 1.5px; }
+.maphint { margin-left: auto; font-size: 7px; color: var(--dark); }
+.mapview {
+  position: relative; flex: 1; overflow: hidden;
+  border: 3px solid var(--ink); border-radius: 3px;
+  box-shadow: inset 0 0 0 2px var(--paper), inset 0 0 0 4px var(--ink);
+  background:
+    radial-gradient(circle at 22% 26%, rgba(120, 80, 8, 0.10), transparent 55%),
+    radial-gradient(circle at 78% 74%, rgba(120, 80, 8, 0.10), transparent 55%),
+    repeating-linear-gradient(90deg, rgba(120, 80, 8, 0.05) 0 1px, transparent 1px 26px),
+    repeating-linear-gradient(0deg, rgba(120, 80, 8, 0.05) 0 1px, transparent 1px 26px),
+    var(--paper);
+  touch-action: none; cursor: grab; user-select: none;
+}
+.mapview:active { cursor: grabbing; }
+.mapworld { position: absolute; top: 0; left: 0; will-change: transform; }
+.mappath { position: absolute; top: 0; left: 0; pointer-events: none; }
+.mapnode {
+  position: absolute; transform: translate(-50%, -50%);
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  width: 92px; padding: 0;
+  background: none; border: none; cursor: pointer;
+  font-family: inherit; color: var(--ink);
+}
+.mapnode-icon {
+  width: 62px; height: 62px; border-radius: 50%;
+  background: var(--paper); border: 3px solid var(--ink);
+  display: flex; align-items: flex-end; justify-content: center; overflow: hidden;
+}
+.mapnode-icon svg { width: 58px; height: 68px; }
+.mapnode.current .mapnode-icon { border-color: var(--gold-deep); box-shadow: 0 0 0 3px var(--gold); }
+.mapnode-name { font-size: 7.5px; white-space: nowrap; text-shadow: 0 1px 0 var(--paper), 0 0 3px var(--paper); }
+.mapnode-lvl { font-size: 6.5px; color: var(--dark); }
+.mapnode.locked { cursor: not-allowed; }
+.mapnode.locked .mapnode-icon { filter: grayscale(1); opacity: .6; }
+.mapnode.locked .mapnode-name { opacity: .6; }
+
 @keyframes flash {
   0%, 100% { opacity: 1; }
   25% { opacity: .15; }

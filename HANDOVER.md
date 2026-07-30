@@ -83,9 +83,16 @@ deploy) — see next steps.
   `web/src/game/combat.js` (with `BOSSES`/`bossById` + a `nextBoss` helper).
 - **Progression is manual (you stay on a boss to farm drops)**: after a win OR
   loss the post-battle button re-fights the **same** boss (`App.reset`). You
-  move between bosses yourself via the **MAP** menu (`App.selectBoss`).
+  move between bosses yourself via the **MAP** (`App.selectBoss`).
+- **MAP is a draggable world map** (`web/src/components/BossMap.jsx`), not a
+  list: boss nodes (mini `BossSprite` + name + level) sit at coordinates in a
+  world larger than the viewport, connected by a trail; you drag / swipe (pointer
+  events, clamped pan) to explore, and it opens centred on the current boss.
+  Tap an unlocked node to travel there. Coordinates + world size live in
+  `BOSS_LADDER[].map` / `MAP_WORLD` in `combat.js` — **adding bosses is just
+  more coordinates further out**, which was the point (room to grow well past 5).
 - **Unlock gating**: bosses unlock in order — beating rung i unlocks i+1, and the
-  MAP shows later rungs 🔒 locked/disabled until earned. Progress is per team
+  MAP shows later rungs 🔒 locked/greyed until earned. Progress is per team
   (`progressByTeam` / `unlockUpTo` in `App.jsx`, `bossIndex` in `combat.js`) and
   persisted to the **`team_progress`** table via `web/src/game/progress.js`
   (`loadProgress`/`saveProgress`). A resumed fight's boss is always treated as
