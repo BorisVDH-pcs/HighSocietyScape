@@ -2,3 +2,8 @@ node_modules
 dist
 .vite
 *.local
+
+# local env (Vite) — keep secrets/anon keys out of git; commit .env.example only
+.env
+.env.*
+!.env.example

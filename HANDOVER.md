@@ -62,23 +62,38 @@ a playable Game Boy-style battle screen**, all committed and pushed to `main`.
   logic. Both the Node scripts and the web app import it (single source of
   truth). `lib/levels.mjs` / `lib/character.mjs` are thin Node wrappers.
 
+### Per-team gear persistence — ✅ done (needs migration applied)
+- Gear is **per team** (`gearByTeam` in `App.jsx`) — each team plays its own
+  game. When Supabase is configured it's loaded from / saved to a new
+  **`team_gear`** table (owned weapons + equipped weapon, keyed by
+  `season_id` + `team_name`); otherwise it stays in the browser session.
+- New pieces: `web/src/game/supabase.js` (browser anon PostgREST client),
+  `web/src/game/gear.js` (`loadGear`/`saveGear`, graceful fallback),
+  `supabase/migrations/0002_team_gear.sql`, `web/.env.example`.
+- **To activate:** (1) run `0002_team_gear.sql` in the Supabase SQL Editor;
+  (2) fill `web/.env` with `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY`.
+  Verified: anon reads work against the live DB (`teams` returns 4 rows); the
+  app degrades cleanly to session-only gear until the table exists (confirmed
+  via a caught 404, no crash).
+- **Security note (see 0002 SQL):** gear is written by the frontend with the
+  public anon key (no auth yet), so anon INSERT/UPDATE are open — anyone could
+  overwrite a team's gear. Fine for the prototype; revisit with auth if needed.
+
 ## Suggested next steps (pick one)
-1. **Live data in the app** — point `web/src/game/character.js` at Supabase
-   (anon key, via `VITE_` env vars) instead of the bundled snapshot, so the
-   battle reflects current gains. `lib/character.mjs` already has the read path.
-   For automatic freshness, schedule `fetch → sync` (cron / GitHub Action /
-   Supabase function).
+1. **Live character data** — point `web/src/game/character.js` at Supabase so
+   battle STATS reflect current gains (gear already persists; stats still read
+   the bundled snapshot). The browser client (`web/src/game/supabase.js`) and
+   `lib/character.mjs`'s read path are ready; the main work is making the load
+   async in `App.jsx` (seed-then-replace + battle re-init). For automatic
+   freshness, schedule `fetch → sync` (cron / GitHub Action / Supabase fn).
 2. **Boss ladder** — add bosses after the Goblin with scaling hp/accuracy/
    maxHit and their own drop tables (the `drops` array pattern already exists
    on `GOBLIN` in `combat.js`).
 3. **More gear + drop tables** — expand `weapons.js` (ranged/magic drops,
-   stat-varied gear); consider armour/defence, not just weapons.
+   stat-varied gear, higher tiers); consider armour/defence, not just weapons.
+   Auto-equip already picks the highest `tier` per style.
 4. **Deploy** — `npm run build` in `web/` produces static files; host on
    Netlify/Vercel/Cloudflare Pages/GitHub Pages (pair with step 1 for live data).
-5. **Persist inventory** — owned gear is now tracked **per team** in React
-   state (`gearByTeam` in `App.jsx`), so each team plays its own game within a
-   session. It still resets on reload and isn't shared across players/devices —
-   move it to Supabase (keyed by team) if it should stick.
 
 ## Open questions to raise with Boris
 - Drop-table design at scale: which bosses drop what, rates, armour/defence,

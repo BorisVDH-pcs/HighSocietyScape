@@ -34,8 +34,14 @@ open questions.
 
    ⚠️ Real keys go in `.env` only (gitignored) — never in `.env.example`.
 
-2. The schema (`supabase/migrations/0001_init.sql`) is already applied to the
-   live project. Only run it if you point at a brand-new Supabase project.
+2. The base schema (`supabase/migrations/0001_init.sql`) is already applied to
+   the live project. Only run it if you point at a brand-new Supabase project.
+
+3. **Per-team gear persistence** (optional) — to let looted gear survive
+   reloads and be shared across a team's players, apply
+   `supabase/migrations/0002_team_gear.sql` in the Supabase SQL Editor, then
+   give the web app the public anon pair (see "Run the battle app"). Without
+   this the app still works; gear just lives in the browser session.
 
 ## Run the pipeline
 
@@ -62,15 +68,29 @@ complete data** (71/71 players, 0 missing). Team 1 derives to combat level
 ```bash
 cd web
 npm install          # first time only
+cp .env.example .env # optional — see below
 npm run dev          # serves http://localhost:5173
 ```
 
 A Vite + React, Game Boy / Pokémon-style turn-based battle screen driven by a
 team's derived character. Pick a loadout in **GEAR** (Melee / Ranged / Magic —
 sets your sprite and attack style), then **FIGHT** the Goblin; beating it can
-drop a **Steel Sword** (1/5) into your gear. Today the app reads the **bundled
-snapshot** baked in at build time; pointing it at live Supabase is a one-function
-change in `web/src/game/character.js`.
+drop a **Steel Sword** (1/5) into your gear. The game always wields your
+**highest-tier** weapon, so a Steel Sword drop is equipped automatically.
+
+**Gear is per team** — each team has its own inventory. Fill in `web/.env` with
+the public anon pair to persist it to Supabase (survives reloads, shared across
+a team's players); leave it blank to keep gear in the browser session only.
+
+| `web/.env` var | Value |
+|---|---|
+| `VITE_SUPABASE_URL` | same Project URL as the root `.env` |
+| `VITE_SUPABASE_ANON_KEY` | the publishable/anon key (safe for frontend) |
+
+Persistence needs migration `0002_team_gear.sql` applied (see Setup step 3).
+Character **stats** still read the bundled snapshot; pointing those at live
+Supabase is the next step (the browser client in `web/src/game/supabase.js` is
+ready for it — `lib/character.mjs` has the read path).
 
 ## Repo map
 
@@ -88,11 +108,14 @@ change in `web/src/game/character.js`.
 | `scripts/syncToSupabase.mjs` | Cached snapshot → Supabase (upsert) |
 | `scripts/showCharacter.mjs` | Preview a team's derived character (DB or snapshot) |
 | `supabase/migrations/0001_init.sql` | Schema: seasons, teams, team_members, team_skills, team_bosses |
+| `supabase/migrations/0002_team_gear.sql` | Schema: team_gear (per-team inventory, anon read/write) |
 | `data/145906-latest.json` | Cached snapshot of all 4 teams (committed) |
 | `web/` | Vite + React battle app (see "Run the battle app") |
 | `web/src/game/combat.js` | Turn-based combat engine + boss drop tables |
-| `web/src/game/weapons.js` | Weapon catalog + starter inventory (gear system seed) |
+| `web/src/game/weapons.js` | Weapon catalog + tiers + best-owned/auto-equip helpers |
 | `web/src/game/character.js` | Browser character loader (imports `lib/core.mjs` + snapshot) |
+| `web/src/game/supabase.js` | Browser PostgREST client, anon key (reads + gear writes) |
+| `web/src/game/gear.js` | Load/save per-team gear to Supabase (graceful fallback) |
 | `web/src/components/BattleScreen.jsx` | Game Boy battle UI (info boxes, HP, command menu) |
 
 ## Conventions

@@ -35,6 +35,15 @@ Core loop:
   Sheets/Apps Script (used in Boris's earlier "Snakes & Rats" project)
   specifically because this needs real persistent inventories/accounts and
   will take too much read/write volume for a spreadsheet.
+    - **WOM-derived tables** (`seasons`, `teams`, `team_members`, `team_skills`,
+      `team_bosses`) are **read-only to the frontend** — written only by the
+      service-role sync script. Migration `0001_init.sql`.
+    - **`team_gear`** (migration `0002`) stores each team's app-side inventory
+      (owned weapons + equipped weapon, keyed by `season_id` + `team_name`).
+      Unlike the WOM tables it is **written by the frontend with the anon key**
+      (no auth yet → anon INSERT/UPDATE are open; documented tradeoff). The
+      browser reads/writes it via `web/src/game/{supabase,gear}.js`, degrading
+      to session-only gear when unconfigured or the table is absent.
 - **Data source:** Wise Old Man API, driven by a **WOM competition of type
   `team`** — NOT a group. One competition = one season/event; each team inside
   it (`participation.teamName`) maps to one shared character. This was chosen

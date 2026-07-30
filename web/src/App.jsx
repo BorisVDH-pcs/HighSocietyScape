@@ -1,5 +1,5 @@
-import { useMemo, useRef, useState } from 'react';
-import { loadTeamCharacter, TEAMS } from './game/character.js';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { loadTeamCharacter, TEAMS, SEASON } from './game/character.js';
 import { initBattle, attack, GOBLIN } from './game/combat.js';
 import {
   DEFAULT_WEAPON,
@@ -7,6 +7,7 @@ import {
   weaponById,
   bestOwnedWeapon,
 } from './game/weapons.js';
+import { loadGear, saveGear } from './game/gear.js';
 import BattleScreen from './components/BattleScreen.jsx';
 
 export default function App() {
@@ -15,13 +16,15 @@ export default function App() {
 
   // Gear is PER TEAM — each team plays its own game (own inventory + equipped
   // weapon). Keyed by team name; unseen teams start with the starter loadout.
-  // NB: this lives in session state only and resets on reload — persisting it
-  // per team to Supabase is the "Persist inventory" step in HANDOVER.md.
+  // When Supabase is configured it's loaded from / saved to the team_gear
+  // table (persists across reloads + players); otherwise it lives in session
+  // state only. See web/src/game/gear.js.
   const [gearByTeam, setGearByTeam] = useState({});
   const [battle, setBattle] = useState(() => initBattle(character, GOBLIN, DEFAULT_WEAPON));
   const [flash, setFlash] = useState(null);
   const [logoOk, setLogoOk] = useState(true);
   const flashTimer = useRef(null);
+  const loadedTeams = useRef(new Set()); // teams whose DB gear we've fetched
 
   const gearFor = (name) =>
     gearByTeam[name] ?? { ownedIds: STARTER_WEAPON_IDS, weaponId: DEFAULT_WEAPON.id };
@@ -31,10 +34,35 @@ export default function App() {
   const weapon = weaponById(gear.weaponId);
   const ownedWeapons = ownedIds.map(weaponById);
 
-  // Merge a patch into one team's gear without touching the others.
+  // Merge a patch into one team's gear (never touching the others) and persist
+  // it. saveGear is a graceful no-op when Supabase isn't configured.
   function updateGear(name, patch) {
-    setGearByTeam((m) => ({ ...m, [name]: { ...gearFor(name), ...patch } }));
+    const nextGear = { ...gearFor(name), ...patch };
+    setGearByTeam((m) => ({ ...m, [name]: nextGear }));
+    saveGear(SEASON.id, name, nextGear);
   }
+
+  // On first visit to a team, hydrate its gear from Supabase (once). Only seeds
+  // if we don't already hold local gear for it, so in-session changes win over
+  // a slow load. Then, if that team is still active on a fresh (unstarted)
+  // battle, reflect the loaded equipped weapon in the scene.
+  useEffect(() => {
+    if (loadedTeams.current.has(teamName)) return;
+    loadedTeams.current.add(teamName);
+    let cancelled = false;
+    loadGear(SEASON.id, teamName).then((g) => {
+      if (cancelled || !g) return;
+      setGearByTeam((m) => (m[teamName] ? m : { ...m, [teamName]: g }));
+      setBattle((b) =>
+        b.round === 0 && b.status === 'active' && b.player.weapon.id !== g.weaponId
+          ? { ...b, player: { ...b.player, weapon: weaponById(g.weaponId) } }
+          : b
+      );
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [teamName]);
 
   function flashOnce(who) {
     setFlash(who);
