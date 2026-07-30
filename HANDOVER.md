@@ -75,8 +75,10 @@ a playable Game Boy-style battle screen**, all committed and pushed to `main`.
    stat-varied gear); consider armour/defence, not just weapons.
 4. **Deploy** — `npm run build` in `web/` produces static files; host on
    Netlify/Vercel/Cloudflare Pages/GitHub Pages (pair with step 1 for live data).
-5. **Persist inventory** — owned gear currently lives in React state only
-   (resets on reload). Move it to Supabase if it should stick.
+5. **Persist inventory** — owned gear is now tracked **per team** in React
+   state (`gearByTeam` in `App.jsx`), so each team plays its own game within a
+   session. It still resets on reload and isn't shared across players/devices —
+   move it to Supabase (keyed by team) if it should stick.
 
 ## Open questions to raise with Boris
 - Drop-table design at scale: which bosses drop what, rates, armour/defence,

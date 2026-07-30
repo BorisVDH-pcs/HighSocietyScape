@@ -13,14 +13,28 @@ export default function App() {
   const [teamName, setTeamName] = useState('Team 1');
   const character = useMemo(() => loadTeamCharacter(teamName), [teamName]);
 
-  const [weapon, setWeapon] = useState(DEFAULT_WEAPON);
-  const [ownedIds, setOwnedIds] = useState(STARTER_WEAPON_IDS);
+  // Gear is PER TEAM — each team plays its own game (own inventory + equipped
+  // weapon). Keyed by team name; unseen teams start with the starter loadout.
+  // NB: this lives in session state only and resets on reload — persisting it
+  // per team to Supabase is the "Persist inventory" step in HANDOVER.md.
+  const [gearByTeam, setGearByTeam] = useState({});
   const [battle, setBattle] = useState(() => initBattle(character, GOBLIN, DEFAULT_WEAPON));
   const [flash, setFlash] = useState(null);
   const [logoOk, setLogoOk] = useState(true);
   const flashTimer = useRef(null);
 
+  const gearFor = (name) =>
+    gearByTeam[name] ?? { ownedIds: STARTER_WEAPON_IDS, weaponId: DEFAULT_WEAPON.id };
+
+  const gear = gearFor(teamName);
+  const ownedIds = gear.ownedIds;
+  const weapon = weaponById(gear.weaponId);
   const ownedWeapons = ownedIds.map(weaponById);
+
+  // Merge a patch into one team's gear without touching the others.
+  function updateGear(name, patch) {
+    setGearByTeam((m) => ({ ...m, [name]: { ...gearFor(name), ...patch } }));
+  }
 
   function flashOnce(who) {
     setFlash(who);
@@ -34,15 +48,15 @@ export default function App() {
     if (next.boss.hp < battle.boss.hp) flashOnce('boss');
     else if (next.player.hp < battle.player.hp) flashOnce('player');
 
-    // Absorb any drops into the owned-gear inventory (deduped), then
-    // auto-equip the highest-tier weapon you now own — so a Steel Sword drop
-    // is wielded immediately without opening GEAR.
+    // Absorb any drops into THIS team's owned-gear inventory (deduped), then
+    // auto-equip the highest-tier weapon it now owns — so a Steel Sword drop
+    // is wielded immediately without opening GEAR. Other teams are unaffected.
     if (next.status === 'won' && next.loot?.length) {
       const merged = [...new Set([...ownedIds, ...next.loot])];
-      setOwnedIds(merged);
       const best = bestOwnedWeapon(merged);
-      if ((best.tier ?? 0) > (weapon.tier ?? 0)) {
-        setWeapon(best);
+      const upgrade = (best.tier ?? 0) > (weapon.tier ?? 0);
+      updateGear(teamName, { ownedIds: merged, ...(upgrade ? { weaponId: best.id } : {}) });
+      if (upgrade) {
         next.player.weapon = best; // reflect the auto-equip in the state we set
         next.log = [
           ...next.log,
@@ -55,12 +69,13 @@ export default function App() {
 
   // GEAR: change loadout (sets the sprite + the style FIGHT uses). No attack.
   function handleEquip(w) {
-    setWeapon(w);
+    updateGear(teamName, { weaponId: w.id });
     setBattle((prev) => ({ ...prev, player: { ...prev.player, weapon: w } }));
   }
 
   function reset(name = teamName) {
-    setBattle(initBattle(loadTeamCharacter(name), GOBLIN, weapon));
+    const w = weaponById(gearFor(name).weaponId);
+    setBattle(initBattle(loadTeamCharacter(name), GOBLIN, w));
     setFlash(null);
   }
 
