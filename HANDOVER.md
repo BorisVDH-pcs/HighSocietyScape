@@ -33,10 +33,27 @@ a playable Game Boy-style battle screen**, all committed and pushed to `main`.
   **sprite** (Warrior / Archer / Mage) and the **attack style**. FIGHT then
   strikes with the equipped gear.
 - **Drop table**: beating the Goblin has a **1/5 chance to drop a Steel Sword**
-  (melee, +5 power), which is added to the player's owned gear and becomes
-  equippable in GEAR. Verified: ~19.7% over 40k fights.
+  (melee, +5 power), which is added to the player's owned gear. Verified:
+  ~19.7% over 40k fights.
+- **Auto-equip by tier (2026-07-30)**: every weapon has a numeric `tier`. The
+  game always wields the **highest-tier weapon you own** — a Steel Sword (tier
+  2) drop is auto-equipped immediately, replacing the Bronze Sword (tier 1), no
+  manual swap. GEAR is now a **style loadout picker** (Melee / Ranged / Magic):
+  choosing a style equips the strongest weapon you own of that style — you're
+  never offered a weaker tier. Logic lives in `bestOwnedWeapon` /
+  `bestOwnedByStyle` (`web/src/game/weapons.js`); the auto-equip-on-drop is in
+  `App.handleAttack`.
 - Combat stats derive from the team's virtual levels; weapon `power` adds to
   max hit. Combat engine is UI-agnostic in `web/src/game/combat.js`.
+
+### Branding / theme — ✅ High Society
+- Header no longer shows the WOM competition title ("…Snakes and Rats Bingo").
+  It loads **`web/public/logo.png`** (the gold "High Society Scape" logo); until
+  that file exists it falls back to a styled gold wordmark. **Drop the logo art
+  in as `web/public/logo.png`** (transparent PNG, ~360px wide).
+- Palette re-themed to **molten gold on black** to match the logo
+  (`web/src/styles.css`): gilded Game Boy shell, gold HP bars, gold stat cards.
+  The battle screen keeps its warm-parchment Gen-1 look.
 - The app currently reads the **bundled snapshot** (`data/145906-latest.json`)
   baked in at build time — NOT live Supabase yet (see next steps).
 

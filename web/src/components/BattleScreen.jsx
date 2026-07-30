@@ -26,7 +26,17 @@ export default function BattleScreen({ battle, flash, owned, onAttack, onEquip, 
   const over = status !== 'active';
   const [menu, setMenu] = useState('main'); // 'main' | 'gear'
   const [note, setNote] = useState(null);
-  const equippedId = player.weapon.id;
+  const equippedStyle = player.weapon.style;
+
+  // GEAR is a loadout picker: one entry per style, each resolving to the
+  // strongest weapon you own of that style (you never pick a weaker tier).
+  const loadouts = ['melee', 'ranged', 'magic']
+    .map((style) => {
+      const pool = owned.filter((w) => w.style === style);
+      if (pool.length === 0) return null;
+      return pool.reduce((best, w) => ((w.tier ?? 0) > (best.tier ?? 0) ? w : best));
+    })
+    .filter(Boolean);
 
   function cmd(which) {
     if (which === 'fight') {
@@ -133,10 +143,10 @@ export default function BattleScreen({ battle, flash, owned, onAttack, onEquip, 
               </div>
             ) : (
               <div className="moves">
-                {owned.map((w) => (
+                {loadouts.map((w) => (
                   <button
-                    key={w.id}
-                    className={`mbtn move ${w.id === equippedId ? 'on' : ''}`}
+                    key={w.style}
+                    className={`mbtn move ${w.style === equippedStyle ? 'on' : ''}`}
                     onClick={() => equip(w)}
                   >
                     {w.icon} {w.style.toUpperCase()}

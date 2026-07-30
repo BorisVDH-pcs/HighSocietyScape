@@ -1,7 +1,12 @@
 import { useMemo, useRef, useState } from 'react';
-import { loadTeamCharacter, TEAMS, SEASON } from './game/character.js';
+import { loadTeamCharacter, TEAMS } from './game/character.js';
 import { initBattle, attack, GOBLIN } from './game/combat.js';
-import { DEFAULT_WEAPON, STARTER_WEAPON_IDS, weaponById } from './game/weapons.js';
+import {
+  DEFAULT_WEAPON,
+  STARTER_WEAPON_IDS,
+  weaponById,
+  bestOwnedWeapon,
+} from './game/weapons.js';
 import BattleScreen from './components/BattleScreen.jsx';
 
 export default function App() {
@@ -12,6 +17,7 @@ export default function App() {
   const [ownedIds, setOwnedIds] = useState(STARTER_WEAPON_IDS);
   const [battle, setBattle] = useState(() => initBattle(character, GOBLIN, DEFAULT_WEAPON));
   const [flash, setFlash] = useState(null);
+  const [logoOk, setLogoOk] = useState(true);
   const flashTimer = useRef(null);
 
   const ownedWeapons = ownedIds.map(weaponById);
@@ -27,9 +33,22 @@ export default function App() {
     const next = attack(battle);
     if (next.boss.hp < battle.boss.hp) flashOnce('boss');
     else if (next.player.hp < battle.player.hp) flashOnce('player');
-    // Absorb any drops into the owned-gear inventory (deduped).
+
+    // Absorb any drops into the owned-gear inventory (deduped), then
+    // auto-equip the highest-tier weapon you now own — so a Steel Sword drop
+    // is wielded immediately without opening GEAR.
     if (next.status === 'won' && next.loot?.length) {
-      setOwnedIds((ids) => [...new Set([...ids, ...next.loot])]);
+      const merged = [...new Set([...ownedIds, ...next.loot])];
+      setOwnedIds(merged);
+      const best = bestOwnedWeapon(merged);
+      if ((best.tier ?? 0) > (weapon.tier ?? 0)) {
+        setWeapon(best);
+        next.player.weapon = best; // reflect the auto-equip in the state we set
+        next.log = [
+          ...next.log,
+          { t: 'loot', text: `${next.player.name} auto-equips the ${best.name} — stronger than the ${weapon.name}!` },
+        ];
+      }
     }
     setBattle(next);
   }
@@ -56,11 +75,18 @@ export default function App() {
     <div className="app">
       <header className="topbar">
         <div className="brand">
-          <span className="logo">⚔️</span>
-          <div>
-            <h1>HighSocietyScape</h1>
-            <p className="season">{SEASON.title}</p>
-          </div>
+          {logoOk ? (
+            <img
+              src="/logo.png"
+              alt="High Society Scape"
+              className="brandlogo"
+              onError={() => setLogoOk(false)}
+            />
+          ) : (
+            <h1 className="wordmark">
+              High <span>Society</span> Scape
+            </h1>
+          )}
         </div>
         <label className="teampick">
           Team
