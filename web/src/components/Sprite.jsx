@@ -1,9 +1,9 @@
-// Original 2D sprites — no ripped Jagex/Pokémon art (see CLAUDE.md). The heroes
-// stay in 4-shade Game Boy grayscale and change with the equipped gear: Warrior
-// (melee), Archer (ranged), Mage (magic). The Goblin boss gets its own earthy
-// palette (green skin, crude tunic, amber eyes) so it reads clearly as a goblin
-// — an original silhouette evoking the classic look, not a copied asset.
-// `hurt` flashes the sprite on damage.
+// Original 2D sprites — no ripped Jagex/Pokémon art (see CLAUDE.md). All are
+// hand-drawn SVG in an OSRS-flavoured chibi style (big head, chunky gear). The
+// hero changes with the equipped gear: Warrior in bronze/steel plate (melee),
+// Archer in a green ranger hood + leather (ranged), Mage in a blue wizard robe
+// (magic). The Goblin boss has its own earthy green palette. `hurt` flashes the
+// sprite on damage.
 
 const INK = '#0f0f0f';
 const DARK = '#565656';
@@ -17,7 +17,23 @@ const GOB_LT = '#a3c066';    // skin highlight
 const TUNIC = '#8a4a2c';     // crude rusty tunic
 const TUNIC_DK = '#5d3019';  // tunic shadow / belt
 const EYE = '#f2c14e';       // amber eye (ties into the gold theme)
-const WOOD = '#6b4a2b';      // spear shaft
+const WOOD = '#6b4a2b';      // wooden shaft (spear / bow / staff)
+
+// Hero palette — OSRS-style gear.
+const SKIN = '#e3b184';      // face
+const SKIN_DK = '#c68e60';   // face shadow
+const STEEL = '#8f96a3';     // plate metal
+const STEEL_DK = '#575d69';  // metal shadow / visor
+const STEEL_LT = '#c4cad4';  // metal highlight / blade
+const BRONZE = '#c98a3a';    // armour trim (ties into the gold theme)
+const LEATHER = '#8a5a2f';   // ranger leather
+const LEATHER_DK = '#5d3a1b';
+const RANGER = '#4d6b34';    // Lincoln-green hood/tunic
+const RANGER_DK = '#33481f';
+const ROBE = '#3c5b8c';      // wizard blue
+const ROBE_DK = '#274069';
+const ROBE_LT = '#5f7fb4';
+const GEM = '#67d3e6';       // staff orb
 
 const svgProps = (kind, hurt, label) => ({
   viewBox: '0 0 120 140',
@@ -31,19 +47,43 @@ const svgProps = (kind, hurt, label) => ({
 function Warrior({ hurt }) {
   return (
     <svg {...svgProps('hero', hurt, 'Warrior')}>
-      <path d="M35 70 Q60 60 85 70 L92 128 Q60 138 28 128 Z" fill={DARK} />
-      <path d="M35 70 Q60 60 85 70 L88 92 Q60 100 32 92 Z" fill={INK} stroke="none" />
-      <circle cx="60" cy="42" r="24" fill={PAPER} />
-      {/* helmet */}
-      <path d="M34 44 Q34 14 60 14 Q86 14 86 44 L78 44 Q78 26 60 26 Q42 26 42 44 Z" fill={LIGHT} />
-      <rect x="57" y="18" width="6" height="20" fill={PAPER} />
-      <circle cx="52" cy="44" r="3" fill={INK} stroke="none" />
-      <circle cx="68" cy="44" r="3" fill={INK} stroke="none" />
-      {/* sword + shield */}
-      <rect x="96" y="30" width="6" height="70" rx="1" fill={LIGHT} transform="rotate(12 99 65)" />
-      <rect x="88" y="92" width="22" height="6" rx="1" fill={DARK} />
-      <path d="M14 74 Q26 70 30 74 L30 104 Q22 116 14 104 Z" fill={LIGHT} />
-      <path d="M18 80 L26 80 M22 78 L22 100" stroke={INK} strokeWidth="2.5" />
+      {/* ground shadow */}
+      <ellipse cx="60" cy="133" rx="30" ry="5" fill={INK} opacity="0.25" stroke="none" />
+
+      {/* plate legs + boots */}
+      <rect x="47" y="108" width="9" height="18" rx="2" fill={STEEL} />
+      <rect x="64" y="108" width="9" height="18" rx="2" fill={STEEL} />
+      <path d="M43 128 Q52 122 59 127 L58 122 L45 122 Z" fill={STEEL_DK} />
+      <path d="M61 127 Q68 122 77 128 L75 122 L62 122 Z" fill={STEEL_DK} />
+
+      {/* platebody + shoulder pauldrons */}
+      <path d="M34 80 Q60 72 86 80 L90 114 Q60 122 30 114 Z" fill={STEEL} />
+      <path d="M30 108 Q60 116 90 108 L90 114 Q60 122 30 114 Z" fill={STEEL_DK} stroke="none" />
+      <ellipse cx="37" cy="82" rx="12" ry="9" fill={STEEL_LT} />
+      <ellipse cx="83" cy="82" rx="12" ry="9" fill={STEEL_LT} />
+      <path d="M60 76 L60 116" stroke={STEEL_DK} strokeWidth="2.5" />
+      <path d="M42 92 Q60 98 78 92" stroke={BRONZE} strokeWidth="3" fill="none" />
+
+      {/* heater shield (left arm), bronze rim + cross */}
+      <path d="M10 82 L34 82 L34 104 Q22 120 10 104 Z" fill={STEEL_DK} />
+      <path d="M10 82 L34 82 L34 104 Q22 120 10 104 Z" fill="none" stroke={BRONZE} strokeWidth="2.5" />
+      <path d="M22 86 L22 110 M14 96 L30 96" stroke={BRONZE} strokeWidth="2.5" />
+
+      {/* raised sword (right hand): steel blade, bronze guard */}
+      <rect x="95" y="18" width="7" height="64" rx="2" fill={STEEL_LT} transform="rotate(9 98 50)" />
+      <path d="M96 18 L102 18 L99 12 Z" fill={STEEL_LT} transform="rotate(9 98 50)" />
+      <rect x="88" y="82" width="22" height="6" rx="1.5" fill={BRONZE} transform="rotate(9 98 50)" />
+      <rect x="96" y="88" width="6" height="14" rx="1.5" fill={LEATHER} transform="rotate(9 98 50)" />
+      <ellipse cx="90" cy="96" rx="7" ry="6" fill={STEEL} />
+
+      {/* full helm: steel dome, bronze brow, dark T-slot visor */}
+      <path d="M32 46 Q32 16 60 16 Q88 16 88 46 L88 58 Q60 66 32 58 Z" fill={STEEL} />
+      <path d="M32 44 Q60 34 88 44 L88 50 Q60 42 32 50 Z" fill={BRONZE} stroke="none" />
+      <rect x="56" y="46" width="8" height="18" rx="1" fill={STEEL_DK} stroke="none" />
+      <rect x="42" y="48" width="14" height="6" rx="1" fill={STEEL_DK} stroke="none" />
+      <rect x="64" y="48" width="14" height="6" rx="1" fill={STEEL_DK} stroke="none" />
+      {/* red plume */}
+      <path d="M60 16 Q60 4 68 2 Q64 8 66 16 Z" fill={TUNIC} />
     </svg>
   );
 }
@@ -51,18 +91,41 @@ function Warrior({ hurt }) {
 function Archer({ hurt }) {
   return (
     <svg {...svgProps('hero', hurt, 'Archer')}>
-      <path d="M35 70 Q60 60 85 70 L92 128 Q60 138 28 128 Z" fill={DARK} />
-      <path d="M35 70 Q60 60 85 70 L88 96 Q60 104 32 96 Z" fill={INK} stroke="none" />
-      {/* hood behind head */}
-      <path d="M30 64 Q24 14 60 12 Q96 14 90 64 Q82 30 60 30 Q38 30 30 64 Z" fill={LIGHT} />
-      <circle cx="60" cy="44" r="21" fill={PAPER} />
-      <circle cx="53" cy="46" r="3" fill={INK} stroke="none" />
-      <circle cx="67" cy="46" r="3" fill={INK} stroke="none" />
-      {/* bow + nocked arrow */}
-      <path d="M98 14 Q118 60 98 114" fill="none" stroke={INK} strokeWidth="4" />
-      <line x1="98" y1="14" x2="98" y2="114" stroke={INK} strokeWidth="1.5" />
-      <line x1="58" y1="64" x2="106" y2="64" stroke={INK} strokeWidth="2.5" />
-      <path d="M106 64 L98 60 M106 64 L98 68" fill="none" stroke={INK} strokeWidth="2.5" />
+      {/* ground shadow */}
+      <ellipse cx="60" cy="133" rx="28" ry="5" fill={INK} opacity="0.25" stroke="none" />
+
+      {/* legs + boots */}
+      <rect x="49" y="110" width="8" height="16" rx="2" fill={LEATHER_DK} />
+      <rect x="63" y="110" width="8" height="16" rx="2" fill={LEATHER_DK} />
+      <path d="M44 127 Q52 122 60 126 L59 121 L46 121 Z" fill={INK} />
+      <path d="M60 126 Q68 122 76 127 L74 121 L61 121 Z" fill={INK} />
+
+      {/* arrows in a back quiver (fletchings over the shoulder) */}
+      <line x1="30" y1="74" x2="24" y2="52" stroke={WOOD} strokeWidth="2.5" />
+      <line x1="36" y1="74" x2="32" y2="52" stroke={WOOD} strokeWidth="2.5" />
+      <path d="M24 52 L20 56 M24 52 L28 55 M32 52 L28 56 M32 52 L36 55" stroke={RANGER_DK} strokeWidth="2" />
+
+      {/* leather body + green tunic + strap */}
+      <path d="M36 80 Q60 72 84 80 L88 116 Q60 124 32 116 Z" fill={LEATHER} />
+      <path d="M44 78 Q60 72 76 78 L78 96 Q60 102 42 96 Z" fill={RANGER} stroke="none" />
+      <path d="M40 84 L80 108" stroke={LEATHER_DK} strokeWidth="4" />
+      <path d="M32 112 Q60 118 88 112 L88 116 Q60 124 32 116 Z" fill={LEATHER_DK} stroke="none" />
+
+      {/* green hood framing the face */}
+      <path d="M30 62 Q22 14 60 12 Q98 14 90 62 Q80 30 60 30 Q40 30 30 62 Z" fill={RANGER} />
+      <path d="M34 60 Q28 24 60 22 Q92 24 86 60 Q78 34 60 34 Q42 34 34 60 Z" fill={RANGER_DK} stroke="none" />
+      <circle cx="60" cy="46" r="20" fill={SKIN} />
+      <path d="M40 46 Q40 26 60 26 Q80 26 80 46 Q72 32 60 32 Q48 32 40 46 Z" fill={RANGER} stroke="none" />
+      <circle cx="53" cy="47" r="3" fill={INK} stroke="none" />
+      <circle cx="67" cy="47" r="3" fill={INK} stroke="none" />
+      <path d="M54 58 Q60 61 66 58" stroke={SKIN_DK} strokeWidth="2.5" fill="none" strokeLinecap="round" />
+
+      {/* recurve bow + nocked arrow aimed at the enemy (upper-right) */}
+      <path d="M96 16 Q120 62 96 112" fill="none" stroke={WOOD} strokeWidth="5" />
+      <line x1="96" y1="16" x2="96" y2="112" stroke={LIGHT} strokeWidth="1.5" />
+      <line x1="60" y1="64" x2="104" y2="64" stroke={WOOD} strokeWidth="2.5" />
+      <path d="M104 64 L96 60 M104 64 L96 68" fill="none" stroke={STEEL_DK} strokeWidth="2.5" />
+      <ellipse cx="60" cy="64" rx="6" ry="5" fill={SKIN} />
     </svg>
   );
 }
@@ -70,19 +133,34 @@ function Archer({ hurt }) {
 function Mage({ hurt }) {
   return (
     <svg {...svgProps('hero', hurt, 'Mage')}>
-      {/* robe */}
-      <path d="M30 66 Q60 58 90 66 L100 134 Q60 142 20 134 Z" fill={DARK} />
-      <path d="M44 70 Q60 64 76 70 L80 122 Q60 128 40 122 Z" fill={INK} stroke="none" />
-      <circle cx="60" cy="46" r="20" fill={PAPER} />
-      {/* wizard hat */}
-      <ellipse cx="60" cy="34" rx="30" ry="7" fill={LIGHT} />
-      <path d="M60 -6 L82 34 L38 34 Z" fill={LIGHT} />
-      <circle cx="53" cy="48" r="3" fill={INK} stroke="none" />
-      <circle cx="67" cy="48" r="3" fill={INK} stroke="none" />
-      {/* staff + orb */}
-      <rect x="95" y="42" width="5" height="84" rx="1" fill={DARK} transform="rotate(6 97 84)" />
-      <circle cx="99" cy="34" r="10" fill={PAPER} />
-      <circle cx="99" cy="34" r="4" fill={LIGHT} stroke="none" />
+      {/* ground shadow */}
+      <ellipse cx="60" cy="134" rx="30" ry="5" fill={INK} opacity="0.25" stroke="none" />
+
+      {/* long robe to the floor + trim + sash */}
+      <path d="M34 88 Q60 80 86 88 L98 128 Q60 136 22 128 Z" fill={ROBE} />
+      <path d="M34 88 Q60 80 86 88 L88 100 Q60 108 32 100 Z" fill={ROBE_DK} stroke="none" />
+      <path d="M60 84 L60 130" stroke={ROBE_LT} strokeWidth="3" />
+      <path d="M40 116 Q60 124 80 116" stroke={BRONZE} strokeWidth="3" fill="none" />
+      {/* sleeves */}
+      <ellipse cx="34" cy="96" rx="9" ry="11" fill={ROBE} transform="rotate(18 34 96)" />
+      <ellipse cx="86" cy="96" rx="9" ry="11" fill={ROBE} transform="rotate(-18 86 96)" />
+
+      {/* face + white beard */}
+      <circle cx="60" cy="50" r="20" fill={SKIN} />
+      <circle cx="53" cy="50" r="3" fill={INK} stroke="none" />
+      <circle cx="67" cy="50" r="3" fill={INK} stroke="none" />
+      <path d="M44 56 Q60 92 76 56 Q60 66 44 56 Z" fill={PAPER} />
+
+      {/* pointy wizard hat with a gold star */}
+      <ellipse cx="60" cy="36" rx="30" ry="7" fill={ROBE} />
+      <path d="M60 -6 Q56 22 40 36 L80 36 Q64 22 60 -6 Z" fill={ROBE} />
+      <path d="M60 -6 Q58 22 50 36 L60 36 Z" fill={ROBE_DK} stroke="none" />
+      <path d="M58 6 L61 12 L67 12 L62 16 L64 22 L58 18 L52 22 L54 16 L49 12 L55 12 Z" fill={BRONZE} stroke="none" />
+
+      {/* staff with a glowing orb */}
+      <rect x="96" y="40" width="5" height="86" rx="2" fill={WOOD} transform="rotate(7 98 83)" />
+      <circle cx="102" cy="34" r="11" fill={GEM} />
+      <circle cx="99" cy="31" r="3.5" fill={PAPER} stroke="none" />
     </svg>
   );
 }
