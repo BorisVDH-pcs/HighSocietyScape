@@ -87,9 +87,11 @@ Core loop:
   committing to it.
 - **First skill** to surface in the battle screen (Team 1's maxed combat skills
   are Strength / Hitpoints / Ranged).
-- Drop table design (rates, item effects, which bosses unlock which gear)
-  is still to be designed — nothing is finalized beyond the cave-crawler /
-  "trials of the seas" example used as an illustration in early discussion.
+- Drop table design (rates, item effects, which bosses unlock which gear) is
+  only just started: the app-side Goblin drops a **Steel Sword at 1/5** (melee,
+  +5 power) into the player's owned gear. The `drops` array pattern lives on the
+  boss in `web/src/game/combat.js`. Rates/armour/gear tiers across a boss ladder
+  are still to be designed.
 
 ## Working style notes
 - Boris prefers concrete next steps over long theoretical discussion.

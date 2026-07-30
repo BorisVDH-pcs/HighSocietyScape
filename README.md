@@ -12,7 +12,10 @@ open questions.
 ## Requirements
 
 - **Node ≥ 20.6** (scripts use `node --env-file`). Tested on Node 22/24.
-- No npm dependencies — the scripts use only Node built-ins (native `fetch`).
+- The **data pipeline** (`lib/`, `scripts/`) has **no npm dependencies** — only
+  Node built-ins (native `fetch`).
+- The **web app** (`web/`) is a Vite + React project with its own dependencies
+  — run `npm install` inside `web/` once before `npm run dev`.
 - A Supabase project (Postgres). Free tier is fine.
 
 ## Setup
@@ -27,6 +30,7 @@ open questions.
    | `SUPABASE_ANON_KEY` | API Keys → publishable key (`sb_publishable_…`) | Safe for frontend |
    | `SUPABASE_SERVICE_ROLE_KEY` | API Keys → secret key (`sb_secret_…`) | 🔒 SECRET — never commit |
    | `WOM_COMPETITION_ID` | already set to `145906` | one competition = one season |
+   | `WOM_API_KEY` | request via the WOM Discord | **optional** — raises the WOM rate limit from 20→100 req/min. The fetcher works without it (it retries rate-limit errors), just slower. |
 
    ⚠️ Real keys go in `.env` only (gitignored) — never in `.env.example`.
 
@@ -49,18 +53,35 @@ node scripts/showCharacter.mjs --team "Team 1" --source snapshot
 ```
 
 The competition runs until **2026-08-31**, so gains keep growing — re-run the
-three steps anytime to refresh. As of 2026-07-30, Team 1 derives to combat
-level **111**, total level **1731**, 3 skills maxed (Strength / Hitpoints /
-Ranged). Only Team 1 has substantial data so far; it's the prototype team.
+three steps anytime to refresh. As of the latest sync, **all 4 teams have
+complete data** (71/71 players, 0 missing). Team 1 derives to combat level
+**111**, total level **1731**; Team 2 ≈ 108, and Teams 3 & 4 are similar.
+
+## Run the battle app (web)
+
+```bash
+cd web
+npm install          # first time only
+npm run dev          # serves http://localhost:5173
+```
+
+A Vite + React, Game Boy / Pokémon-style turn-based battle screen driven by a
+team's derived character. Pick a loadout in **GEAR** (Melee / Ranged / Magic —
+sets your sprite and attack style), then **FIGHT** the Goblin; beating it can
+drop a **Steel Sword** (1/5) into your gear. Today the app reads the **bundled
+snapshot** baked in at build time; pointing it at live Supabase is a one-function
+change in `web/src/game/character.js`.
 
 ## Repo map
 
 | Path | Purpose |
 |---|---|
 | `CLAUDE.md` | Concept, architecture decisions, open questions (read first) |
+| `HANDOVER.md` | Live status + next steps for resuming in a new session |
 | `xp_table.json` | OSRS xp↔level table. Single source of truth. 24 skills incl. sailing |
-| `lib/wom.mjs` | Read-only WOM API client (needs a descriptive User-Agent) |
-| `lib/levels.mjs` | Pure xp→level + `deriveSkillLevel` (cap-99 + overflow policy) |
+| `lib/core.mjs` | **Pure, browser-safe** xp/level/character logic — shared by scripts AND the web app |
+| `lib/levels.mjs` | Node wrapper: fs-loads the xp table, delegates to `core.mjs` |
+| `lib/wom.mjs` | Read-only WOM API client (User-Agent + 429 retry + optional API key) |
 | `lib/supabase.mjs` | PostgREST client, service_role (writes) |
 | `lib/character.mjs` | Build character view model; anon-key DB reads (frontend path) |
 | `scripts/fetchTeamData.mjs` | Competition → per-team pooled xp + boss KC → `data/` cache |
@@ -68,6 +89,11 @@ Ranged). Only Team 1 has substantial data so far; it's the prototype team.
 | `scripts/showCharacter.mjs` | Preview a team's derived character (DB or snapshot) |
 | `supabase/migrations/0001_init.sql` | Schema: seasons, teams, team_members, team_skills, team_bosses |
 | `data/145906-latest.json` | Cached snapshot of all 4 teams (committed) |
+| `web/` | Vite + React battle app (see "Run the battle app") |
+| `web/src/game/combat.js` | Turn-based combat engine + boss drop tables |
+| `web/src/game/weapons.js` | Weapon catalog + starter inventory (gear system seed) |
+| `web/src/game/character.js` | Browser character loader (imports `lib/core.mjs` + snapshot) |
+| `web/src/components/BattleScreen.jsx` | Game Boy battle UI (info boxes, HP, command menu) |
 
 ## Conventions
 
