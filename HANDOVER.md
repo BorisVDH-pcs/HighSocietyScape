@@ -36,6 +36,13 @@ deploy) — see next steps.
 - Layout: enemy info + HP top-left, enemy sprite top-right, hero bottom-left,
   player info + HP bottom-right, **FIGHT / GEAR / ITEM / MAP** command box plus
   an **AUTO-FIGHT** toggle.
+- **Command box is a FIXED size** (`.cmdbox height` in `styles.css`) so it never
+  resizes as the message/menu changes; the message font is small (8px) and the
+  box clips rather than reflowing. The **AUTO-FIGHT** control is a distinct
+  filled button (dark when off, alert-red "STOP AUTO" when running) so it stands
+  apart from the plain text commands.
+- The footer shows only the **cloud-save indicator** (`☁ Cloud save on` /
+  `⚠ Session only`) — the old "derived from WOM data" blurb was removed.
 - **GEAR** = loadout: Melee / Ranged / Magic. Choosing one sets both the hero
   **sprite** (Warrior / Archer / Mage) and the **attack style**. FIGHT then
   strikes with the equipped gear.

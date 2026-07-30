@@ -285,8 +285,6 @@ export default function App() {
       />
 
       <footer className="foot">
-        Character derived live from pooled WOM data · {teamName} has real gains;
-        empty teams read as level 1.
         <span className={`savetag ${isSupabaseConfigured ? 'on' : 'off'}`}>
           {isSupabaseConfigured ? '☁ Cloud save on' : '⚠ Session only — set web/.env'}
         </span>

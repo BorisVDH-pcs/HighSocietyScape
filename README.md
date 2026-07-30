@@ -88,12 +88,15 @@ move on only when you choose via MAP. The game always wields your
 **highest-tier** weapon, so drops are equipped automatically. Current boss +
 unlock progress persist per team.
 
-**Gear and battles are per team** — each team has its own inventory *and* its
-own fight. Fill in `web/.env` with the public anon pair to persist both to
-Supabase (survives reloads, shared across a team's players); leave it blank to
-keep them in the browser session only. Close the app mid-battle with a team's
-key in place and you'll resume the same fight — enemy HP, hero HP, round and
-combat log intact.
+**Gear, battles and boss progress are per team** — each team has its own
+inventory, fight *and* ladder unlocks. Fill in `web/.env` with the public anon
+pair to persist all three to Supabase (survives full closes, shared across a
+team's players); leave it blank to keep them in the browser session only. Close
+the app mid-battle with a team's key in place and you'll resume the same fight —
+enemy HP, hero HP, round and combat log intact. The footer shows a **cloud-save
+indicator** (`☁ Cloud save on` vs `⚠ Session only`) so you can tell at a glance
+whether persistence is active. Note: Vite reads `web/.env` only at dev-server
+startup / build time, so restart after editing it.
 
 | `web/.env` var | Value |
 |---|---|
