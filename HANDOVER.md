@@ -64,6 +64,26 @@ Supabase** and **redrawn OSRS-style sprites** — all committed and pushed to
   logic. Both the Node scripts and the web app import it (single source of
   truth). `lib/levels.mjs` / `lib/character.mjs` are thin Node wrappers.
 
+### Resume mid-battle (battle-state persistence) — ✅ done
+- Closing the app mid-fight and returning **resumes the same battle** — enemy
+  HP, hero HP, round number and combat log all restored. Battle state is now
+  **per team** (`battleByTeam` in `App.jsx`), so switching teams also preserves
+  each team's fight in-session, and Supabase persists it across reloads/players.
+- New pieces: `web/src/game/battle.js` (`loadBattle`/`saveBattle`, same graceful
+  fallback as gear), `rehydrateBattle` + a `BOSSES`/`bossById` registry in
+  `web/src/game/combat.js`, migration `supabase/migrations/0003_team_battle.sql`.
+- Only the **volatile** state is stored (round, status, boss id + hp, player hp,
+  equipped weapon id, log). Boss stats, sprites and styles are rebuilt from code
+  + the live character on read, and HP bars are clamped to current maxima — so a
+  balance/art change or a level-up is never frozen into a stale saved blob.
+- **⚠️ Migration `0003_team_battle.sql` is NOT applied yet** — run it in the
+  Supabase SQL Editor to turn on cross-reload persistence (uses the same
+  `VITE_SUPABASE_*` anon pair, no new env vars). Until then battle state falls
+  back to session-only, exactly like gear does without its table.
+- Same anon-key tradeoff as gear: writes are open, so two players fighting the
+  same team at once will clobber each other's saved battle. Intended for a
+  shared character; revisit with auth if needed.
+
 ### Per-team gear persistence — ✅ done and LIVE
 - Gear is **per team** (`gearByTeam` in `App.jsx`) — each team plays its own
   game. It's loaded from / saved to the **`team_gear`** table (owned weapons +

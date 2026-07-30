@@ -19,6 +19,11 @@ export const GOBLIN = {
   drops: [{ weaponId: 'steel_sword', chance: 1 / 5 }],
 };
 
+// Boss registry — lets a persisted battle (which stores only a boss id) resolve
+// back to the full boss definition on resume. Unknown ids fall back to GOBLIN.
+export const BOSSES = { [GOBLIN.id]: GOBLIN };
+export const bossById = (id) => BOSSES[id] ?? GOBLIN;
+
 /** Roll a boss's drop table on kill. Returns the weapon ids that dropped. */
 function rollDrops(boss) {
   const dropped = [];
@@ -71,6 +76,30 @@ export function initBattle(character, boss = GOBLIN, weapon = DEFAULT_WEAPON) {
       },
     ],
   };
+}
+
+const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, n));
+
+/**
+ * Rebuild a playable battle from a persisted snapshot (see game/battle.js).
+ * Starts from a fresh initBattle for the CURRENT boss + character + weapon — so
+ * stats, sprites and styles reflect today's code and the live levels — then
+ * overlays the saved volatile state: round, status, both HP bars (clamped to
+ * the current maxima, so a level-up that raised max HP can't leave a stale
+ * over-max value) and the combat log. `saved` is the shape loadBattle returns.
+ * `weapon` (from the team's persisted gear) wins over the snapshot's stored
+ * weapon id, keeping the resumed fight consistent with the equipped loadout.
+ */
+export function rehydrateBattle(character, saved, weapon = null) {
+  const boss = bossById(saved.bossId);
+  const w = weapon ?? weaponById(saved.weaponId);
+  const base = initBattle(character, boss, w);
+  base.round = saved.round ?? 0;
+  base.status = saved.status ?? 'active';
+  base.boss.hp = clamp(saved.bossHp ?? base.boss.maxHp, 0, base.boss.maxHp);
+  base.player.hp = clamp(saved.playerHp ?? base.player.maxHp, 0, base.player.maxHp);
+  if (Array.isArray(saved.log) && saved.log.length) base.log = saved.log;
+  return base;
 }
 
 /** Swap the equipped weapon mid-fight (changes which style Attack uses). */

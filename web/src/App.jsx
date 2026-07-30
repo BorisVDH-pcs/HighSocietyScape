@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { loadTeamCharacter, TEAMS, SEASON } from './game/character.js';
-import { initBattle, attack, GOBLIN } from './game/combat.js';
+import { initBattle, attack, rehydrateBattle, GOBLIN } from './game/combat.js';
 import {
   DEFAULT_WEAPON,
   STARTER_WEAPON_IDS,
@@ -8,6 +8,7 @@ import {
   bestOwnedWeapon,
 } from './game/weapons.js';
 import { loadGear, saveGear } from './game/gear.js';
+import { loadBattle, saveBattle } from './game/battle.js';
 import BattleScreen from './components/BattleScreen.jsx';
 
 export default function App() {
@@ -20,11 +21,14 @@ export default function App() {
   // table (persists across reloads + players); otherwise it lives in session
   // state only. See web/src/game/gear.js.
   const [gearByTeam, setGearByTeam] = useState({});
-  const [battle, setBattle] = useState(() => initBattle(character, GOBLIN, DEFAULT_WEAPON));
+  // Battle state is PER TEAM too, so switching teams preserves each team's
+  // in-progress fight (and, via Supabase, resumes it after a reload). Keyed by
+  // team name; a team with no entry yet falls back to a fresh Goblin fight.
+  const [battleByTeam, setBattleByTeam] = useState({});
   const [flash, setFlash] = useState(null);
   const [logoOk, setLogoOk] = useState(true);
   const flashTimer = useRef(null);
-  const loadedTeams = useRef(new Set()); // teams whose DB gear we've fetched
+  const loadedTeams = useRef(new Set()); // teams whose DB state we've fetched
 
   const gearFor = (name) =>
     gearByTeam[name] ?? { ownedIds: STARTER_WEAPON_IDS, weaponId: DEFAULT_WEAPON.id };
@@ -34,6 +38,10 @@ export default function App() {
   const weapon = weaponById(gear.weaponId);
   const ownedWeapons = ownedIds.map(weaponById);
 
+  // The current team's battle: its cached/persisted state, or a fresh fight
+  // (built from the live character + the equipped weapon) until one exists.
+  const battle = battleByTeam[teamName] ?? initBattle(character, GOBLIN, weapon);
+
   // Merge a patch into one team's gear (never touching the others) and persist
   // it. saveGear is a graceful no-op when Supabase isn't configured.
   function updateGear(name, patch) {
@@ -42,23 +50,34 @@ export default function App() {
     saveGear(SEASON.id, name, nextGear);
   }
 
-  // On first visit to a team, hydrate its gear from Supabase (once). Only seeds
-  // if we don't already hold local gear for it, so in-session changes win over
-  // a slow load. Then, if that team is still active on a fresh (unstarted)
-  // battle, reflect the loaded equipped weapon in the scene.
+  // Set one team's battle (never touching the others) and persist it, so
+  // closing the app mid-fight and returning resumes the same HP/round/log.
+  // saveBattle is a graceful no-op when Supabase isn't configured.
+  function updateBattle(name, next) {
+    setBattleByTeam((m) => ({ ...m, [name]: next }));
+    saveBattle(SEASON.id, name, next);
+  }
+
+  // On first visit to a team, hydrate its gear AND its in-progress battle from
+  // Supabase (once). Each seeds only if we don't already hold local state for
+  // that team, so in-session changes win over a slow load. Gear loads first so
+  // the resumed battle wields the team's persisted loadout.
   useEffect(() => {
     if (loadedTeams.current.has(teamName)) return;
     loadedTeams.current.add(teamName);
     let cancelled = false;
-    loadGear(SEASON.id, teamName).then((g) => {
-      if (cancelled || !g) return;
-      setGearByTeam((m) => (m[teamName] ? m : { ...m, [teamName]: g }));
-      setBattle((b) =>
-        b.round === 0 && b.status === 'active' && b.player.weapon.id !== g.weaponId
-          ? { ...b, player: { ...b.player, weapon: weaponById(g.weaponId) } }
-          : b
+    (async () => {
+      const g = await loadGear(SEASON.id, teamName);
+      if (cancelled) return;
+      if (g) setGearByTeam((m) => (m[teamName] ? m : { ...m, [teamName]: g }));
+
+      const saved = await loadBattle(SEASON.id, teamName);
+      if (cancelled || !saved) return;
+      const savedWeapon = weaponById(g?.weaponId ?? saved.weaponId);
+      setBattleByTeam((m) =>
+        m[teamName] ? m : { ...m, [teamName]: rehydrateBattle(character, saved, savedWeapon) }
       );
-    });
+    })();
     return () => {
       cancelled = true;
     };
@@ -92,24 +111,28 @@ export default function App() {
         ];
       }
     }
-    setBattle(next);
+    updateBattle(teamName, next);
   }
 
   // GEAR: change loadout (sets the sprite + the style FIGHT uses). No attack.
   function handleEquip(w) {
     updateGear(teamName, { weaponId: w.id });
-    setBattle((prev) => ({ ...prev, player: { ...prev.player, weapon: w } }));
+    updateBattle(teamName, { ...battle, player: { ...battle.player, weapon: w } });
   }
 
+  // Start a fresh fight for a team. Persisted (updateBattle), so reopening the
+  // app after a reset shows the fresh fight rather than resuming the old one.
   function reset(name = teamName) {
     const w = weaponById(gearFor(name).weaponId);
-    setBattle(initBattle(loadTeamCharacter(name), GOBLIN, w));
+    updateBattle(name, initBattle(loadTeamCharacter(name), GOBLIN, w));
     setFlash(null);
   }
 
+  // Switch teams. No reset — each team keeps its own battle (see battleByTeam),
+  // so switching away and back preserves an in-progress fight.
   function pickTeam(name) {
     setTeamName(name);
-    reset(name);
+    setFlash(null);
   }
 
   const maxed = character.maxedSkills.length;
