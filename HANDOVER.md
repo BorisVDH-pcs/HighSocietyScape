@@ -10,9 +10,11 @@ _Last updated: 2026-07-30._
 ## Where we are
 
 The project has gone from "pipeline never run" to **a working data pipeline +
-a playable, themed battle screen** with **per-team gear that persists to
-Supabase** and **redrawn OSRS-style sprites** — all committed and pushed to
-`main`. The one remaining big rung is live character *stats* (see next steps).
+a playable, themed battle screen** with **live character stats**, **per-team
+gear AND battle state that persist to Supabase** (resume a fight mid-battle),
+and **redrawn OSRS-style sprites** — all committed and pushed to `main`. The
+main rung left is **automatic data freshness** (scheduling `fetch → sync`) —
+see next steps.
 
 ### Data pipeline — ✅ done and live
 - WOM competition **145906** ("High Society Snakes and Rats Bingo"), type
@@ -56,13 +58,28 @@ Supabase** and **redrawn OSRS-style sprites** — all committed and pushed to
 - Palette re-themed to **molten gold on black** to match the logo
   (`web/src/styles.css`): gilded Game Boy shell, gold HP bars, gold stat cards.
   The battle screen keeps its warm-parchment Gen-1 look.
-- The app currently reads the **bundled snapshot** (`data/145906-latest.json`)
-  baked in at build time — NOT live Supabase yet (see next steps).
+- Character **stats are now live** (see below): the app seeds from the bundled
+  snapshot (`data/145906-latest.json`), then replaces it with a live Supabase
+  read. Without the `web/.env` anon pair it stays on the snapshot.
 
 ### Shared logic
 - `lib/core.mjs` holds the **pure, browser-safe** xp/level/combat/character
   logic. Both the Node scripts and the web app import it (single source of
   truth). `lib/levels.mjs` / `lib/character.mjs` are thin Node wrappers.
+
+### Live character stats — ✅ done
+- Battle STATS now reflect each team's **current** pooled WOM gains, read live
+  from Supabase (`team_skills` / `team_bosses`) instead of only the build-time
+  snapshot. `web/src/game/character.js` gained `loadTeamCharacterLive`
+  (browser anon read, mirrors `lib/character.mjs`'s `fetchCharacter`).
+- **Seed-then-replace**: `App.jsx` renders the snapshot character instantly,
+  then swaps in the live read per team when it resolves (`charByTeam`). Order in
+  the hydration effect is live-character → gear → battle, so a resumed fight is
+  rebuilt with current stats. `reset` uses the live character too.
+- Degrades cleanly: no `web/.env` (or a failed read) → stays on the snapshot.
+- **Freshness is manual for now**: the live read returns whatever the last
+  `fetch → sync` wrote. To keep it current, re-run those two steps, or schedule
+  them (cron / GitHub Action / Supabase function) — still TODO.
 
 ### Resume mid-battle (battle-state persistence) — ✅ done
 - Closing the app mid-fight and returning **resumes the same battle** — enemy
@@ -121,12 +138,11 @@ Supabase** and **redrawn OSRS-style sprites** — all committed and pushed to
   "High Society Scape" wordmark fallback.
 
 ## Suggested next steps (pick one)
-1. **Live character data** — point `web/src/game/character.js` at Supabase so
-   battle STATS reflect current gains (gear already persists; stats still read
-   the bundled snapshot). The browser client (`web/src/game/supabase.js`) and
-   `lib/character.mjs`'s read path are ready; the main work is making the load
-   async in `App.jsx` (seed-then-replace + battle re-init). For automatic
-   freshness, schedule `fetch → sync` (cron / GitHub Action / Supabase fn).
+1. **Automatic data freshness** — live character stats are done, but the live
+   read only reflects the last manual `fetch → sync`. Schedule those two steps
+   (GitHub Action on a cron, or a Supabase scheduled function) so gains refresh
+   without anyone running the scripts. This is the remaining half of the old
+   "live character data" rung.
 2. **Boss ladder** — add bosses after the Goblin with scaling hp/accuracy/
    maxHit and their own drop tables (the `drops` array pattern already exists
    on `GOBLIN` in `combat.js`).
@@ -141,9 +157,9 @@ Supabase** and **redrawn OSRS-style sprites** — all committed and pushed to
 ## Open questions to raise with Boris
 - Drop-table design at scale: which bosses drop what, rates, armour/defence,
   gear tiers. Only the Goblin → Steel Sword (1/5) exists so far.
-- Character **stats** still read the bundled snapshot — wire them to live
-  Supabase now (next step 1), or keep the snapshot for the prototype? (Gear
-  already persists live; this is only about levels/combat stats.)
+- Character stats are now live from Supabase (resolved). Remaining question:
+  how should the underlying data refresh — a scheduled `fetch → sync` (next
+  step 1), and how often?
 - First boss beyond the Goblin.
 - Auth: gear writes use the public anon key (anyone can overwrite). Add auth
   before this goes wide?

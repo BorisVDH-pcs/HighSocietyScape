@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { loadTeamCharacter, TEAMS, SEASON } from './game/character.js';
+import { loadTeamCharacter, loadTeamCharacterLive, TEAMS, SEASON } from './game/character.js';
 import { initBattle, attack, rehydrateBattle, GOBLIN } from './game/combat.js';
 import {
   DEFAULT_WEAPON,
@@ -13,7 +13,13 @@ import BattleScreen from './components/BattleScreen.jsx';
 
 export default function App() {
   const [teamName, setTeamName] = useState('Team 1');
-  const character = useMemo(() => loadTeamCharacter(teamName), [teamName]);
+  // Character stats are snapshot-derived instantly (seed + offline fallback),
+  // then replaced PER TEAM with the live Supabase read when it resolves (see
+  // the hydration effect). charByTeam holds any live-loaded characters.
+  const snapshotChar = useMemo(() => loadTeamCharacter(teamName), [teamName]);
+  const [charByTeam, setCharByTeam] = useState({});
+  const character = charByTeam[teamName] ?? snapshotChar;
+  const characterFor = (name) => charByTeam[name] ?? loadTeamCharacter(name);
 
   // Gear is PER TEAM — each team plays its own game (own inventory + equipped
   // weapon). Keyed by team name; unseen teams start with the starter loadout.
@@ -58,15 +64,22 @@ export default function App() {
     saveBattle(SEASON.id, name, next);
   }
 
-  // On first visit to a team, hydrate its gear AND its in-progress battle from
-  // Supabase (once). Each seeds only if we don't already hold local state for
-  // that team, so in-session changes win over a slow load. Gear loads first so
-  // the resumed battle wields the team's persisted loadout.
+  // On first visit to a team, hydrate its live character, gear AND in-progress
+  // battle from Supabase (once). Each seeds only if we don't already hold local
+  // state for that team, so in-session changes win over a slow load. Order
+  // matters: the live character loads first so the resumed battle is rebuilt
+  // with current stats, and gear before the battle so it wields the persisted
+  // loadout.
   useEffect(() => {
     if (loadedTeams.current.has(teamName)) return;
     loadedTeams.current.add(teamName);
     let cancelled = false;
     (async () => {
+      const liveChar = await loadTeamCharacterLive(teamName);
+      if (cancelled) return;
+      if (liveChar) setCharByTeam((m) => (m[teamName] ? m : { ...m, [teamName]: liveChar }));
+      const char = liveChar ?? snapshotChar;
+
       const g = await loadGear(SEASON.id, teamName);
       if (cancelled) return;
       if (g) setGearByTeam((m) => (m[teamName] ? m : { ...m, [teamName]: g }));
@@ -75,7 +88,7 @@ export default function App() {
       if (cancelled || !saved) return;
       const savedWeapon = weaponById(g?.weaponId ?? saved.weaponId);
       setBattleByTeam((m) =>
-        m[teamName] ? m : { ...m, [teamName]: rehydrateBattle(character, saved, savedWeapon) }
+        m[teamName] ? m : { ...m, [teamName]: rehydrateBattle(char, saved, savedWeapon) }
       );
     })();
     return () => {
@@ -124,7 +137,7 @@ export default function App() {
   // app after a reset shows the fresh fight rather than resuming the old one.
   function reset(name = teamName) {
     const w = weaponById(gearFor(name).weaponId);
-    updateBattle(name, initBattle(loadTeamCharacter(name), GOBLIN, w));
+    updateBattle(name, initBattle(characterFor(name), GOBLIN, w));
     setFlash(null);
   }
 

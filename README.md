@@ -94,9 +94,15 @@ combat log intact.
 
 Persistence needs migrations `0002_team_gear.sql` + `0003_team_battle.sql`
 applied (see Setup step 3).
-Character **stats** still read the bundled snapshot; pointing those at live
-Supabase is the next step (the browser client in `web/src/game/supabase.js` is
-ready for it — `lib/character.mjs` has the read path).
+
+**Character stats are live.** With the `web/.env` anon pair set, the app reads
+each team's *current* pooled WOM gains from Supabase (`team_skills` /
+`team_bosses`) so levels reflect real progress — it seeds instantly from the
+bundled snapshot, then replaces it with the live read (`loadTeamCharacterLive`
+in `web/src/game/character.js`). Without the anon pair it stays on the snapshot.
+Re-run the pipeline (`fetch → sync`) to refresh what the live read returns; for
+automatic freshness, schedule those two steps (cron / GitHub Action / Supabase
+function).
 
 ## Deploy it live
 
@@ -158,7 +164,7 @@ Notes:
 | `web/` | Vite + React battle app (see "Run the battle app") |
 | `web/src/game/combat.js` | Turn-based combat engine + boss drop tables + battle rehydration |
 | `web/src/game/weapons.js` | Weapon catalog + tiers + best-owned/auto-equip helpers |
-| `web/src/game/character.js` | Browser character loader (imports `lib/core.mjs` + snapshot) |
+| `web/src/game/character.js` | Browser character loader — snapshot seed + live Supabase read |
 | `web/src/game/supabase.js` | Browser PostgREST client, anon key (reads + gear writes) |
 | `web/src/game/gear.js` | Load/save per-team gear to Supabase (graceful fallback) |
 | `web/src/game/battle.js` | Load/save per-team in-progress battle to Supabase (graceful fallback) |
