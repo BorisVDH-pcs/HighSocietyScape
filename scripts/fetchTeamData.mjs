@@ -29,15 +29,20 @@ function parseArgs(argv) {
   return args;
 }
 
-// Be polite to the API: small delay between player requests.
+// Pace requests under WOM's rate limit: 20 req/min without a key (~3.2s each),
+// 100 req/min with one (~0.7s each). womGet also retries 429s as a safety net.
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const PACE_MS = process.env.WOM_API_KEY ? 700 : 3200;
 
 async function poolTeam(members, startDate, endDate) {
   const skills = {}; // name -> total gained xp
   const bosses = {}; // name -> total gained kc
   const missing = [];
+  let i = 0;
   for (const p of members) {
     const username = p.player?.username ?? p.player?.displayName;
+    i += 1;
+    process.stderr.write(`  [${i}/${members.length}] ${username}\r`);
     try {
       const g = await getPlayerGains(username, startDate, endDate);
       for (const [k, v] of Object.entries(g.skills)) skills[k] = (skills[k] ?? 0) + v;
@@ -45,8 +50,9 @@ async function poolTeam(members, startDate, endDate) {
     } catch (err) {
       missing.push({ username, error: String(err.message ?? err) });
     }
-    await sleep(250);
+    if (i < members.length) await sleep(PACE_MS);
   }
+  process.stderr.write('\n');
   return { skills, bosses, missing };
 }
 

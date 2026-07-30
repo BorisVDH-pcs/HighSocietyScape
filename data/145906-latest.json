@@ -4,9 +4,9 @@
   "metric": "ehp",
   "window": {
     "start": "2026-07-17T17:30:00.000Z",
-    "end": "2026-07-30T16:19:31.245Z"
+    "end": "2026-07-30T17:13:22.640Z"
   },
-  "generatedAt": "2026-07-30T16:19:31.245Z",
+  "generatedAt": "2026-07-30T17:13:22.640Z",
   "teams": {
     "Team 1": {
       "memberCount": 18,
@@ -273,285 +273,224 @@
       ],
       "skills": {
         "attack": {
-          "xp": 377705,
-          "level": 63,
+          "xp": 2639748,
+          "level": 82,
           "maxed": false,
           "overflowXp": 0
         },
         "defence": {
-          "xp": 263944,
-          "level": 59,
+          "xp": 3869686,
+          "level": 86,
           "maxed": false,
           "overflowXp": 0
         },
         "strength": {
-          "xp": 1484505,
-          "level": 77,
-          "maxed": false,
-          "overflowXp": 0
+          "xp": 14464689,
+          "level": 99,
+          "maxed": true,
+          "overflowXp": 1430258
         },
         "hitpoints": {
-          "xp": 1837548,
-          "level": 79,
-          "maxed": false,
-          "overflowXp": 0
+          "xp": 13559927,
+          "level": 99,
+          "maxed": true,
+          "overflowXp": 525496
         },
         "ranged": {
-          "xp": 3111394,
-          "level": 84,
-          "maxed": false,
-          "overflowXp": 0
+          "xp": 13646887,
+          "level": 99,
+          "maxed": true,
+          "overflowXp": 612456
         },
         "prayer": {
-          "xp": 22024,
-          "level": 34,
+          "xp": 509927,
+          "level": 66,
           "maxed": false,
           "overflowXp": 0
         },
         "magic": {
-          "xp": 454685,
-          "level": 65,
+          "xp": 10072910,
+          "level": 96,
           "maxed": false,
           "overflowXp": 0
         },
         "cooking": {
-          "xp": 2130,
-          "level": 14,
+          "xp": 1419491,
+          "level": 76,
           "maxed": false,
           "overflowXp": 0
         },
         "woodcutting": {
-          "xp": 2706,
-          "level": 15,
+          "xp": 1727069,
+          "level": 78,
           "maxed": false,
           "overflowXp": 0
         },
         "fletching": {
-          "xp": 16200,
-          "level": 31,
+          "xp": 1809213,
+          "level": 79,
           "maxed": false,
           "overflowXp": 0
         },
         "fishing": {
-          "xp": 64645,
-          "level": 45,
+          "xp": 85087,
+          "level": 48,
           "maxed": false,
           "overflowXp": 0
         },
         "firemaking": {
-          "xp": 691,
-          "level": 7,
-          "maxed": false,
-          "overflowXp": 0
-        },
-        "crafting": {
-          "xp": 16634,
+          "xp": 17238,
           "level": 32,
           "maxed": false,
           "overflowXp": 0
         },
-        "smithing": {
-          "xp": 649561,
-          "level": 68,
-          "maxed": false,
-          "overflowXp": 0
-        },
-        "mining": {
-          "xp": 25248,
-          "level": 36,
-          "maxed": false,
-          "overflowXp": 0
-        },
-        "herblore": {
-          "xp": 3113,
-          "level": 16,
-          "maxed": false,
-          "overflowXp": 0
-        },
-        "agility": {
-          "xp": 14561,
-          "level": 30,
-          "maxed": false,
-          "overflowXp": 0
-        },
-        "thieving": {
-          "xp": 818,
-          "level": 8,
-          "maxed": false,
-          "overflowXp": 0
-        },
-        "slayer": {
-          "xp": 65333,
-          "level": 45,
-          "maxed": false,
-          "overflowXp": 0
-        },
-        "farming": {
-          "xp": 196893,
+        "crafting": {
+          "xp": 193416,
           "level": 56,
           "maxed": false,
           "overflowXp": 0
         },
+        "smithing": {
+          "xp": 739964,
+          "level": 70,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "mining": {
+          "xp": 216003,
+          "level": 57,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "herblore": {
+          "xp": 1348977,
+          "level": 76,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "agility": {
+          "xp": 85932,
+          "level": 48,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "thieving": {
+          "xp": 70124,
+          "level": 46,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "slayer": {
+          "xp": 1477929,
+          "level": 77,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "farming": {
+          "xp": 850847,
+          "level": 71,
+          "maxed": false,
+          "overflowXp": 0
+        },
         "runecrafting": {
-          "xp": 117477,
-          "level": 51,
+          "xp": 519115,
+          "level": 66,
           "maxed": false,
           "overflowXp": 0
         },
         "hunter": {
-          "xp": 426057,
-          "level": 64,
+          "xp": 2123320,
+          "level": 80,
           "maxed": false,
           "overflowXp": 0
         },
         "construction": {
-          "xp": 13770,
-          "level": 30,
+          "xp": 150624,
+          "level": 53,
           "maxed": false,
           "overflowXp": 0
         },
         "sailing": {
-          "xp": 3424275,
-          "level": 85,
+          "xp": 6491943,
+          "level": 91,
           "maxed": false,
           "overflowXp": 0
         }
       },
       "bosses": {
-        "abyssal_sire": 0,
+        "abyssal_sire": 249,
         "alchemical_hydra": 0,
-        "amoxliatl": 0,
-        "araxxor": 0,
-        "artio": 0,
-        "barrows_chests": 0,
+        "amoxliatl": 34,
+        "araxxor": 268,
+        "artio": 37,
+        "barrows_chests": 80,
         "brutus": 0,
         "bryophyta": 0,
-        "callisto": 27,
-        "calvarion": 148,
+        "callisto": 1953,
+        "calvarion": 336,
         "cerberus": 0,
-        "chambers_of_xeric": 0,
-        "chambers_of_xeric_challenge_mode": 1,
-        "chaos_elemental": 7,
+        "chambers_of_xeric": 60,
+        "chambers_of_xeric_challenge_mode": 45,
+        "chaos_elemental": 408,
         "chaos_fanatic": 0,
-        "commander_zilyana": 144,
-        "corporeal_beast": 0,
+        "commander_zilyana": 799,
+        "corporeal_beast": 7,
         "crazy_archaeologist": 0,
         "dagannoth_prime": 0,
         "dagannoth_rex": 0,
         "dagannoth_supreme": 0,
         "deranged_archaeologist": 0,
-        "doom_of_mokhaiotl": 11,
-        "duke_sucellus": 0,
-        "general_graardor": 19,
-        "giant_mole": 0,
+        "doom_of_mokhaiotl": 66,
+        "duke_sucellus": 177,
+        "general_graardor": 1011,
+        "giant_mole": 286,
         "grotesque_guardians": 0,
         "hespori": 1,
         "kalphite_queen": 0,
         "king_black_dragon": 0,
         "kraken": 0,
-        "kreearra": 122,
-        "kril_tsutsaroth": 5,
-        "lunar_chests": 9,
-        "mad_angel": 0,
-        "maggot_king": 0,
-        "mimic": 0,
-        "nex": 0,
+        "kreearra": 418,
+        "kril_tsutsaroth": 44,
+        "lunar_chests": 120,
+        "mad_angel": 141,
+        "maggot_king": 10,
+        "mimic": 1,
+        "nex": 12,
         "nightmare": 0,
-        "phosanis_nightmare": 5,
-        "obor": 0,
-        "phantom_muspah": 0,
+        "phosanis_nightmare": 27,
+        "obor": 15,
+        "phantom_muspah": 8,
         "sarachnis": 0,
         "scorpia": 0,
-        "scurrius": 0,
-        "shellbane_gryphon": 0,
-        "skotizo": 0,
+        "scurrius": 82,
+        "shellbane_gryphon": 50,
+        "skotizo": 1,
         "sol_heredit": 0,
         "spindel": 0,
         "tempoross": 0,
         "the_gauntlet": 0,
-        "the_corrupted_gauntlet": 1,
-        "the_hueycoatl": 85,
-        "the_leviathan": 0,
+        "the_corrupted_gauntlet": 12,
+        "the_hueycoatl": 423,
+        "the_leviathan": 69,
         "the_royal_titans": 0,
-        "the_whisperer": 0,
-        "theatre_of_blood": 2,
-        "theatre_of_blood_hard_mode": 0,
+        "the_whisperer": 10,
+        "theatre_of_blood": 81,
+        "theatre_of_blood_hard_mode": 8,
         "thermonuclear_smoke_devil": 44,
-        "tombs_of_amascut": 0,
-        "tombs_of_amascut_expert": 4,
+        "tombs_of_amascut": 2,
+        "tombs_of_amascut_expert": 38,
         "tzkal_zuk": 0,
         "tztok_jad": 0,
-        "vardorvis": 44,
+        "vardorvis": 302,
         "venenatis": 0,
-        "vetion": 122,
+        "vetion": 409,
         "vorkath": 0,
         "wintertodt": 0,
-        "yama": 0,
+        "yama": 22,
         "zalcano": 0,
-        "zulrah": 57
+        "zulrah": 232
       },
-      "missing": [
-        {
-          "username": "n i s h",
-          "error": "WOM /players/n%20i%20s%20h/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "queen za1x",
-          "error": "WOM /players/queen%20za1x/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "northside",
-          "error": "WOM /players/northside/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "shv",
-          "error": "WOM /players/shv/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "sirhmm",
-          "error": "WOM /players/sirhmm/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "content days",
-          "error": "WOM /players/content%20days/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "beaverlordau",
-          "error": "WOM /players/beaverlordau/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "rarru",
-          "error": "WOM /players/rarru/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "sofoo",
-          "error": "WOM /players/sofoo/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "3 dreamz",
-          "error": "WOM /players/3%20dreamz/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "night mac",
-          "error": "WOM /players/night%20mac/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "content imp",
-          "error": "WOM /players/content%20imp/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "k0ll3far",
-          "error": "WOM /players/k0ll3far/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "dogbumfister",
-          "error": "WOM /players/dogbumfister/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "tllyman",
-          "error": "WOM /players/tllyman/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        }
-      ]
+      "missing": []
     },
     "Team 3": {
       "memberCount": 18,
@@ -577,225 +516,224 @@
       ],
       "skills": {
         "attack": {
-          "xp": 0,
-          "level": 1,
+          "xp": 10425582,
+          "level": 96,
           "maxed": false,
           "overflowXp": 0
         },
         "defence": {
-          "xp": 0,
-          "level": 1,
+          "xp": 7324969,
+          "level": 93,
           "maxed": false,
           "overflowXp": 0
         },
         "strength": {
-          "xp": 0,
-          "level": 1,
-          "maxed": false,
-          "overflowXp": 0
+          "xp": 26751029,
+          "level": 99,
+          "maxed": true,
+          "overflowXp": 13716598
         },
         "hitpoints": {
-          "xp": 0,
-          "level": 1,
-          "maxed": false,
-          "overflowXp": 0
+          "xp": 26625972,
+          "level": 99,
+          "maxed": true,
+          "overflowXp": 13591541
         },
         "ranged": {
-          "xp": 0,
-          "level": 1,
-          "maxed": false,
-          "overflowXp": 0
+          "xp": 28411634,
+          "level": 99,
+          "maxed": true,
+          "overflowXp": 15377203
         },
         "prayer": {
-          "xp": 0,
-          "level": 1,
+          "xp": 136786,
+          "level": 53,
           "maxed": false,
           "overflowXp": 0
         },
         "magic": {
-          "xp": 0,
-          "level": 1,
-          "maxed": false,
-          "overflowXp": 0
+          "xp": 19222326,
+          "level": 99,
+          "maxed": true,
+          "overflowXp": 6187895
         },
         "cooking": {
-          "xp": 0,
-          "level": 1,
+          "xp": 175162,
+          "level": 55,
           "maxed": false,
           "overflowXp": 0
         },
         "woodcutting": {
-          "xp": 0,
-          "level": 1,
+          "xp": 945238,
+          "level": 72,
           "maxed": false,
           "overflowXp": 0
         },
         "fletching": {
-          "xp": 0,
-          "level": 1,
+          "xp": 530853,
+          "level": 66,
           "maxed": false,
           "overflowXp": 0
         },
         "fishing": {
-          "xp": 0,
-          "level": 1,
+          "xp": 315754,
+          "level": 61,
           "maxed": false,
           "overflowXp": 0
         },
         "firemaking": {
-          "xp": 0,
-          "level": 1,
+          "xp": 410185,
+          "level": 64,
           "maxed": false,
           "overflowXp": 0
         },
         "crafting": {
-          "xp": 0,
-          "level": 1,
+          "xp": 2320009,
+          "level": 81,
           "maxed": false,
           "overflowXp": 0
         },
         "smithing": {
-          "xp": 0,
-          "level": 1,
+          "xp": 133497,
+          "level": 52,
           "maxed": false,
           "overflowXp": 0
         },
         "mining": {
-          "xp": 0,
-          "level": 1,
+          "xp": 216461,
+          "level": 57,
           "maxed": false,
           "overflowXp": 0
         },
         "herblore": {
-          "xp": 0,
-          "level": 1,
+          "xp": 284361,
+          "level": 60,
           "maxed": false,
           "overflowXp": 0
         },
         "agility": {
-          "xp": 0,
-          "level": 1,
+          "xp": 159729,
+          "level": 54,
           "maxed": false,
           "overflowXp": 0
         },
         "thieving": {
-          "xp": 0,
-          "level": 1,
+          "xp": 1340047,
+          "level": 76,
           "maxed": false,
           "overflowXp": 0
         },
         "slayer": {
-          "xp": 0,
-          "level": 1,
+          "xp": 3753861,
+          "level": 86,
           "maxed": false,
           "overflowXp": 0
         },
         "farming": {
-          "xp": 0,
-          "level": 1,
+          "xp": 1621461,
+          "level": 77,
           "maxed": false,
           "overflowXp": 0
         },
         "runecrafting": {
-          "xp": 0,
-          "level": 1,
+          "xp": 58330,
+          "level": 44,
           "maxed": false,
           "overflowXp": 0
         },
         "hunter": {
-          "xp": 0,
-          "level": 1,
+          "xp": 3455899,
+          "level": 85,
           "maxed": false,
           "overflowXp": 0
         },
         "construction": {
-          "xp": 0,
-          "level": 1,
+          "xp": 3624728,
+          "level": 86,
           "maxed": false,
           "overflowXp": 0
         },
         "sailing": {
-          "xp": 0,
-          "level": 1,
+          "xp": 948612,
+          "level": 72,
           "maxed": false,
           "overflowXp": 0
         }
       },
-      "bosses": {},
-      "missing": [
-        {
-          "username": "nao tomori",
-          "error": "WOM /players/nao%20tomori/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "faiiingangei",
-          "error": "WOM /players/faiiingangei/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "gunnamerican",
-          "error": "WOM /players/gunnamerican/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "krepty",
-          "error": "WOM /players/krepty/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "andythomas94",
-          "error": "WOM /players/andythomas94/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "lil sod",
-          "error": "WOM /players/lil%20sod/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "os step bro",
-          "error": "WOM /players/os%20step%20bro/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "where coffee",
-          "error": "WOM /players/where%20coffee/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "t oxi c",
-          "error": "WOM /players/t%20oxi%20c/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "g l e n n n",
-          "error": "WOM /players/g%20l%20e%20n%20n%20n/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "sickseela",
-          "error": "WOM /players/sickseela/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "gunataky",
-          "error": "WOM /players/gunataky/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "falienangei",
-          "error": "WOM /players/falienangei/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "twogirls1def",
-          "error": "WOM /players/twogirls1def/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "selvish",
-          "error": "WOM /players/selvish/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "imightreply",
-          "error": "WOM /players/imightreply/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "yuyu shirai",
-          "error": "WOM /players/yuyu%20shirai/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "failingangei",
-          "error": "WOM /players/failingangei/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        }
-      ]
+      "bosses": {
+        "abyssal_sire": 239,
+        "alchemical_hydra": 240,
+        "amoxliatl": 0,
+        "araxxor": 336,
+        "artio": 1019,
+        "barrows_chests": 2,
+        "brutus": 314,
+        "bryophyta": 0,
+        "callisto": 771,
+        "calvarion": 599,
+        "cerberus": 402,
+        "chambers_of_xeric": 15,
+        "chambers_of_xeric_challenge_mode": 153,
+        "chaos_elemental": 205,
+        "chaos_fanatic": 1,
+        "commander_zilyana": 1068,
+        "corporeal_beast": 159,
+        "crazy_archaeologist": 23,
+        "dagannoth_prime": 13,
+        "dagannoth_rex": 12,
+        "dagannoth_supreme": 14,
+        "deranged_archaeologist": 0,
+        "doom_of_mokhaiotl": 364,
+        "duke_sucellus": 146,
+        "general_graardor": 454,
+        "giant_mole": 174,
+        "grotesque_guardians": 98,
+        "hespori": 0,
+        "kalphite_queen": 91,
+        "king_black_dragon": 272,
+        "kraken": 655,
+        "kreearra": 196,
+        "kril_tsutsaroth": 130,
+        "lunar_chests": 12,
+        "mad_angel": 1231,
+        "maggot_king": 473,
+        "mimic": 4,
+        "nex": 272,
+        "nightmare": 6,
+        "phosanis_nightmare": 232,
+        "obor": 0,
+        "phantom_muspah": 852,
+        "sarachnis": 149,
+        "scorpia": 1,
+        "scurrius": 501,
+        "shellbane_gryphon": 69,
+        "skotizo": 10,
+        "sol_heredit": 20,
+        "spindel": 1334,
+        "tempoross": 19,
+        "the_gauntlet": 17,
+        "the_corrupted_gauntlet": 147,
+        "the_hueycoatl": 303,
+        "the_leviathan": 18,
+        "the_royal_titans": 25,
+        "the_whisperer": 163,
+        "theatre_of_blood": 26,
+        "theatre_of_blood_hard_mode": 0,
+        "thermonuclear_smoke_devil": 809,
+        "tombs_of_amascut": 4,
+        "tombs_of_amascut_expert": 30,
+        "tzkal_zuk": 0,
+        "tztok_jad": 2,
+        "vardorvis": 389,
+        "venenatis": 5494,
+        "vetion": 211,
+        "vorkath": 997,
+        "wintertodt": 0,
+        "yama": 127,
+        "zalcano": 32,
+        "zulrah": 867
+      },
+      "missing": []
     },
     "Team 2": {
       "memberCount": 19,
@@ -822,229 +760,224 @@
       ],
       "skills": {
         "attack": {
-          "xp": 0,
-          "level": 1,
+          "xp": 1374425,
+          "level": 76,
           "maxed": false,
           "overflowXp": 0
         },
         "defence": {
-          "xp": 0,
-          "level": 1,
+          "xp": 3211159,
+          "level": 84,
           "maxed": false,
           "overflowXp": 0
         },
         "strength": {
-          "xp": 0,
-          "level": 1,
-          "maxed": false,
-          "overflowXp": 0
+          "xp": 20750104,
+          "level": 99,
+          "maxed": true,
+          "overflowXp": 7715673
         },
         "hitpoints": {
-          "xp": 0,
-          "level": 1,
-          "maxed": false,
-          "overflowXp": 0
+          "xp": 17460605,
+          "level": 99,
+          "maxed": true,
+          "overflowXp": 4426174
         },
         "ranged": {
-          "xp": 0,
-          "level": 1,
-          "maxed": false,
-          "overflowXp": 0
+          "xp": 14981325,
+          "level": 99,
+          "maxed": true,
+          "overflowXp": 1946894
         },
         "prayer": {
-          "xp": 0,
-          "level": 1,
+          "xp": 76620,
+          "level": 47,
           "maxed": false,
           "overflowXp": 0
         },
         "magic": {
-          "xp": 0,
-          "level": 1,
+          "xp": 8534817,
+          "level": 94,
           "maxed": false,
           "overflowXp": 0
         },
         "cooking": {
-          "xp": 0,
-          "level": 1,
+          "xp": 281002,
+          "level": 60,
           "maxed": false,
           "overflowXp": 0
         },
         "woodcutting": {
-          "xp": 0,
-          "level": 1,
+          "xp": 761304,
+          "level": 70,
           "maxed": false,
           "overflowXp": 0
         },
         "fletching": {
-          "xp": 0,
-          "level": 1,
+          "xp": 222832,
+          "level": 57,
           "maxed": false,
           "overflowXp": 0
         },
         "fishing": {
-          "xp": 0,
-          "level": 1,
+          "xp": 10936,
+          "level": 28,
           "maxed": false,
           "overflowXp": 0
         },
         "firemaking": {
-          "xp": 0,
-          "level": 1,
+          "xp": 36680,
+          "level": 39,
           "maxed": false,
           "overflowXp": 0
         },
         "crafting": {
-          "xp": 0,
-          "level": 1,
+          "xp": 123036,
+          "level": 51,
           "maxed": false,
           "overflowXp": 0
         },
         "smithing": {
-          "xp": 0,
-          "level": 1,
+          "xp": 48048,
+          "level": 42,
           "maxed": false,
           "overflowXp": 0
         },
         "mining": {
-          "xp": 0,
-          "level": 1,
+          "xp": 91518,
+          "level": 48,
           "maxed": false,
           "overflowXp": 0
         },
         "herblore": {
-          "xp": 0,
-          "level": 1,
+          "xp": 360618,
+          "level": 62,
           "maxed": false,
           "overflowXp": 0
         },
         "agility": {
-          "xp": 0,
-          "level": 1,
+          "xp": 87648,
+          "level": 48,
           "maxed": false,
           "overflowXp": 0
         },
         "thieving": {
-          "xp": 0,
-          "level": 1,
+          "xp": 717156,
+          "level": 69,
           "maxed": false,
           "overflowXp": 0
         },
         "slayer": {
-          "xp": 0,
-          "level": 1,
+          "xp": 1598977,
+          "level": 77,
           "maxed": false,
           "overflowXp": 0
         },
         "farming": {
-          "xp": 0,
-          "level": 1,
+          "xp": 841664,
+          "level": 71,
           "maxed": false,
           "overflowXp": 0
         },
         "runecrafting": {
-          "xp": 0,
-          "level": 1,
+          "xp": 303552,
+          "level": 61,
           "maxed": false,
           "overflowXp": 0
         },
         "hunter": {
-          "xp": 0,
-          "level": 1,
+          "xp": 1448749,
+          "level": 76,
           "maxed": false,
           "overflowXp": 0
         },
         "construction": {
-          "xp": 0,
-          "level": 1,
+          "xp": 129117,
+          "level": 52,
           "maxed": false,
           "overflowXp": 0
         },
         "sailing": {
-          "xp": 0,
-          "level": 1,
+          "xp": 899763,
+          "level": 72,
           "maxed": false,
           "overflowXp": 0
         }
       },
-      "bosses": {},
-      "missing": [
-        {
-          "username": "iron bjorndt",
-          "error": "WOM /players/iron%20bjorndt/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "wasabeh",
-          "error": "WOM /players/wasabeh/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "bjorndt",
-          "error": "WOM /players/bjorndt/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "abruzi",
-          "error": "WOM /players/abruzi/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "24 brews",
-          "error": "WOM /players/24%20brews/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "l reece",
-          "error": "WOM /players/l%20reece/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "spelblastr",
-          "error": "WOM /players/spelblastr/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "str8uphigh71",
-          "error": "WOM /players/str8uphigh71/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "perma grind",
-          "error": "WOM /players/perma%20grind/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "aggresive178",
-          "error": "WOM /players/aggresive178/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "corprng",
-          "error": "WOM /players/corprng/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "mr sqeez",
-          "error": "WOM /players/mr%20sqeez/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "sir cumseyes",
-          "error": "WOM /players/sir%20cumseyes/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "ch1zz",
-          "error": "WOM /players/ch1zz/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "def is weird",
-          "error": "WOM /players/def%20is%20weird/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "sqeezsupreme",
-          "error": "WOM /players/sqeezsupreme/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "sexyxyst",
-          "error": "WOM /players/sexyxyst/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "24brewscuck",
-          "error": "WOM /players/24brewscuck/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        },
-        {
-          "username": "6iambo3",
-          "error": "WOM /players/6iambo3/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
-        }
-      ]
+      "bosses": {
+        "abyssal_sire": 404,
+        "alchemical_hydra": 85,
+        "amoxliatl": 0,
+        "araxxor": 104,
+        "artio": 716,
+        "barrows_chests": 232,
+        "brutus": 84,
+        "bryophyta": 0,
+        "callisto": 0,
+        "calvarion": 459,
+        "cerberus": 38,
+        "chambers_of_xeric": 153,
+        "chambers_of_xeric_challenge_mode": 66,
+        "chaos_elemental": 0,
+        "chaos_fanatic": 61,
+        "commander_zilyana": 340,
+        "corporeal_beast": 0,
+        "crazy_archaeologist": 0,
+        "dagannoth_prime": 309,
+        "dagannoth_rex": 358,
+        "dagannoth_supreme": 361,
+        "deranged_archaeologist": 0,
+        "doom_of_mokhaiotl": 43,
+        "duke_sucellus": 120,
+        "general_graardor": 16,
+        "giant_mole": 25,
+        "grotesque_guardians": 151,
+        "hespori": 6,
+        "kalphite_queen": 63,
+        "king_black_dragon": 1,
+        "kraken": 317,
+        "kreearra": 303,
+        "kril_tsutsaroth": 101,
+        "lunar_chests": 54,
+        "mad_angel": 187,
+        "maggot_king": 84,
+        "mimic": 2,
+        "nex": 128,
+        "nightmare": 10,
+        "phosanis_nightmare": 80,
+        "obor": 0,
+        "phantom_muspah": 143,
+        "sarachnis": 378,
+        "scorpia": 3,
+        "scurrius": 332,
+        "shellbane_gryphon": 194,
+        "skotizo": 5,
+        "sol_heredit": 0,
+        "spindel": 88,
+        "tempoross": 0,
+        "the_gauntlet": 0,
+        "the_corrupted_gauntlet": 32,
+        "the_hueycoatl": 127,
+        "the_leviathan": 25,
+        "the_royal_titans": 16,
+        "the_whisperer": 0,
+        "theatre_of_blood": 101,
+        "theatre_of_blood_hard_mode": 2,
+        "thermonuclear_smoke_devil": 97,
+        "tombs_of_amascut": 4,
+        "tombs_of_amascut_expert": 56,
+        "tzkal_zuk": 0,
+        "tztok_jad": 2,
+        "vardorvis": 136,
+        "venenatis": 16,
+        "vetion": 90,
+        "vorkath": 60,
+        "wintertodt": 0,
+        "yama": 147,
+        "zalcano": 5,
+        "zulrah": 1242
+      },
+      "missing": []
     }
   }
 }
