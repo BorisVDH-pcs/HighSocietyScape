@@ -1,13 +1,15 @@
 import { useMemo, useRef, useState } from 'react';
 import { loadTeamCharacter, TEAMS, SEASON } from './game/character.js';
 import { initBattle, attack, GOBLIN } from './game/combat.js';
+import { DEFAULT_WEAPON } from './game/weapons.js';
 import BattleScreen from './components/BattleScreen.jsx';
 
 export default function App() {
   const [teamName, setTeamName] = useState('Team 1');
   const character = useMemo(() => loadTeamCharacter(teamName), [teamName]);
 
-  const [battle, setBattle] = useState(() => initBattle(character, GOBLIN));
+  const [weapon, setWeapon] = useState(DEFAULT_WEAPON);
+  const [battle, setBattle] = useState(() => initBattle(character, GOBLIN, DEFAULT_WEAPON));
   const [flash, setFlash] = useState(null);
   const flashTimer = useRef(null);
 
@@ -17,17 +19,24 @@ export default function App() {
     flashTimer.current = setTimeout(() => setFlash(null), 260);
   }
 
-  function handleAttack(styleKey) {
+  // FIGHT: attack with whatever gear is currently equipped.
+  function handleAttack() {
     setBattle((prev) => {
-      const next = attack(prev, styleKey);
+      const next = attack(prev);
       if (next.boss.hp < prev.boss.hp) flashOnce('boss');
       else if (next.player.hp < prev.player.hp) flashOnce('player');
       return next;
     });
   }
 
+  // GEAR: change loadout (sets the sprite + the style FIGHT uses). No attack.
+  function handleEquip(w) {
+    setWeapon(w);
+    setBattle((prev) => ({ ...prev, player: { ...prev.player, weapon: w } }));
+  }
+
   function reset(name = teamName) {
-    setBattle(initBattle(loadTeamCharacter(name), GOBLIN));
+    setBattle(initBattle(loadTeamCharacter(name), GOBLIN, weapon));
     setFlash(null);
   }
 
@@ -71,7 +80,13 @@ export default function App() {
         <Stat label="Hitpoints" value={character.skills.hitpoints?.level ?? 1} />
       </section>
 
-      <BattleScreen battle={battle} flash={flash} onAttack={handleAttack} onReset={() => reset()} />
+      <BattleScreen
+        battle={battle}
+        flash={flash}
+        onAttack={handleAttack}
+        onEquip={handleEquip}
+        onReset={() => reset()}
+      />
 
       <footer className="foot">
         Character derived live from pooled WOM data · {teamName} has real gains;

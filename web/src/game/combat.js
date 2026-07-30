@@ -1,13 +1,16 @@
 // Turn-based combat engine. Pure-ish: each call returns a NEW battle state so
-// React can render from it. Stats derive from the team's virtual levels (no
-// gear yet — gear/drop tables come later). Overflow xp grants no bonus, per the
-// confirmed pooling policy.
+// React can render from it. Stats derive from the team's virtual levels; the
+// EQUIPPED WEAPON decides which style an attack uses (melee/ranged/magic).
+// Overflow xp grants no bonus, per the confirmed pooling policy.
+
+import { DEFAULT_WEAPON } from './weapons.js';
 
 // First boss on the ladder: the Goblin. Deliberately easy — this validates the
 // loop; harder bosses will scale hp/accuracy/maxHit up from here.
 export const GOBLIN = {
   id: 'goblin',
   name: 'Goblin',
+  level: 2,       // flavour only — shown as :L2 in the battle UI
   maxHp: 55,
   maxHit: 4,      // damage it can roll against the player
   accuracy: 0.45, // chance one of its swings lands
@@ -36,7 +39,7 @@ export function playerProfile(character) {
   };
 }
 
-export function initBattle(character, boss = GOBLIN) {
+export function initBattle(character, boss = GOBLIN, weapon = DEFAULT_WEAPON) {
   const p = playerProfile(character);
   return {
     round: 0,
@@ -48,14 +51,26 @@ export function initBattle(character, boss = GOBLIN) {
       maxHp: p.hp,
       hp: p.hp,
       styles: p.styles,
+      weapon,
     },
     log: [
       {
         t: 'info',
-        text: `A ${boss.name} blocks the path. ${character.team} (combat ${character.combatLevel}) readies for battle.`,
+        text: `A ${boss.name} blocks the path. ${character.team} (combat ${character.combatLevel}) draws the ${weapon.name}.`,
       },
     ],
   };
+}
+
+/** Swap the equipped weapon mid-fight (changes which style Attack uses). */
+export function equipWeapon(state, weapon) {
+  if (state.player.weapon.id === weapon.id) return state;
+  const s = structuredClone(state);
+  s.player.weapon = weapon;
+  if (s.status === 'active') {
+    s.log = [...s.log, { t: 'info', text: `${s.player.name} equips the ${weapon.name}.` }];
+  }
+  return s;
 }
 
 const rollDamage = (maxHit) => Math.floor(Math.random() * (maxHit + 1));
@@ -65,11 +80,11 @@ const lands = (accuracy) => Math.random() < accuracy;
  * Advance one full round: the player attacks with the chosen style, then — if
  * still standing — the boss retaliates. Returns a new state.
  */
-export function attack(state, styleKey) {
+export function attack(state) {
   if (state.status !== 'active') return state;
 
   const s = structuredClone(state);
-  const style = s.player.styles[styleKey];
+  const style = s.player.styles[s.player.weapon.style];
   const noun = style.label.toLowerCase();
   s.round += 1;
   const entries = [];

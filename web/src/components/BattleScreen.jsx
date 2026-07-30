@@ -1,62 +1,152 @@
-import HealthBar from './HealthBar.jsx';
-import CombatLog from './CombatLog.jsx';
-import { HeroSprite, GoblinSprite } from './Sprite.jsx';
+import { useState } from 'react';
+import { Hero, GoblinSprite } from './Sprite.jsx';
+import { WEAPONS } from '../game/weapons.js';
 
-export default function BattleScreen({ battle, flash, onAttack, onReset }) {
+// Gen-1 style HP bar: "HP" label + bar, with current/max numbers.
+function PokeHP({ hp, max }) {
+  const pct = Math.max(0, Math.min(100, (hp / max) * 100));
+  const tone = pct > 50 ? 'ok' : pct > 20 ? 'warn' : 'low';
+  return (
+    <div className="phb">
+      <div className="phb-row">
+        <span className="phb-label">HP</span>
+        <span className="phb-track">
+          <span className={`phb-fill ${tone}`} style={{ width: `${pct}%` }} />
+        </span>
+      </div>
+      <div className="phb-num">
+        {hp}/{max}
+      </div>
+    </div>
+  );
+}
+
+export default function BattleScreen({ battle, flash, onAttack, onEquip, onReset }) {
   const { player, boss, status } = battle;
   const over = status !== 'active';
+  const [menu, setMenu] = useState('main'); // 'main' | 'gear'
+  const [note, setNote] = useState(null);
+  const equippedId = player.weapon.id;
+
+  function cmd(which) {
+    if (which === 'fight') {
+      setNote(null);
+      onAttack();
+    } else if (which === 'gear') {
+      setNote(null);
+      setMenu('gear');
+    } else if (which === 'item') {
+      setNote('You have no items yet — loot drops are coming soon.');
+    } else if (which === 'run') {
+      setNote(`No! There's no running from a boss!`);
+    }
+  }
+
+  function equip(w) {
+    onEquip(w);
+    setMenu('main');
+    setNote(`Loadout set: ${w.style.toUpperCase()} (${w.name}).`);
+  }
+
+  function next() {
+    setMenu('main');
+    setNote(null);
+    onReset();
+  }
+
+  // What the message window shows.
+  let lines;
+  if (over) {
+    lines =
+      status === 'won'
+        ? [`The wild ${boss.name} fainted!`, `${player.name} won the battle!`]
+        : [`${player.name} is out of HP!`, 'Defeated...'];
+  } else if (menu === 'gear') {
+    lines = ['Choose your loadout.'];
+  } else if (note) {
+    lines = [note];
+  } else if (battle.round > 0) {
+    lines = battle.log.slice(-2).map((e) => e.text);
+  } else {
+    lines = [`What will ${player.name} do?`];
+  }
 
   return (
-    <div className="battle">
-      <div className="arena">
-        {/* Enemy (top-right) */}
-        <div className="combatant enemy">
-          <div className="nameplate">
-            <span className="cname">{boss.name}</span>
-            <span className="ctag">boss</span>
-          </div>
-          <HealthBar hp={boss.hp} maxHp={boss.maxHp} align="right" />
-          <GoblinSprite hurt={flash === 'boss'} />
-        </div>
-
-        <div className="vs">VS</div>
-
-        {/* Player (bottom-left) */}
-        <div className="combatant player">
-          <HeroSprite hurt={flash === 'player'} />
-          <div className="nameplate">
-            <span className="cname">{player.name}</span>
-            <span className="ctag">combat {player.combatLevel}</span>
-          </div>
-          <HealthBar hp={player.hp} maxHp={player.maxHp} align="left" />
-        </div>
-      </div>
-
-      <div className="controls">
-        {over ? (
-          <div className="outcome">
-            <div className={`outcome-banner ${status}`}>
-              {status === 'won' ? 'Victory!' : 'Defeated'}
+    <div className="gb">
+      <div className="gb-screen">
+        <div className="scene">
+          {/* enemy info — top-left */}
+          <div className="infobox enemy-info">
+            <div className="info-name">
+              {boss.name.toUpperCase()}
+              <span className="lvl">:L{boss.level}</span>
             </div>
-            <button className="btn primary" onClick={onReset}>
-              New fight
-            </button>
+            <PokeHP hp={boss.hp} max={boss.maxHp} />
           </div>
-        ) : (
-          <div className="attacks">
-            {Object.values(player.styles).map((s) => (
-              <button key={s.key} className={`btn attack ${s.key}`} onClick={() => onAttack(s.key)}>
-                <span className="atk-label">{s.label}</span>
-                <span className="atk-meta">
-                  {s.key} · lvl {s.level} · max {s.maxHit}
-                </span>
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
 
-      <CombatLog log={battle.log} />
+          {/* enemy sprite — top-right */}
+          <div className="mon enemy-mon">
+            <GoblinSprite hurt={flash === 'boss'} />
+          </div>
+
+          {/* player sprite — bottom-left (changes with equipped gear) */}
+          <div className="mon player-mon">
+            <Hero style={player.weapon.style} hurt={flash === 'player'} />
+          </div>
+
+          {/* player info — bottom-right */}
+          <div className="infobox player-info">
+            <div className="info-name">
+              {player.name.toUpperCase()}
+              <span className="lvl">:L{player.combatLevel}</span>
+            </div>
+            <PokeHP hp={player.hp} max={player.maxHp} />
+          </div>
+        </div>
+
+        {/* command / message box */}
+        <div className="cmdbox">
+          <div className="msg">
+            {lines.map((t, i) => (
+              <div key={i} className="msg-line">
+                {t}
+              </div>
+            ))}
+            {over && <span className="blink">▼</span>}
+          </div>
+
+          <div className="menu">
+            {over ? (
+              <button className="mbtn wide" onClick={next}>
+                ▶ NEXT
+              </button>
+            ) : menu === 'main' ? (
+              <div className="grid2">
+                <button className="mbtn" onClick={() => cmd('fight')}>FIGHT</button>
+                <button className="mbtn" onClick={() => cmd('gear')}>GEAR</button>
+                <button className="mbtn" onClick={() => cmd('item')}>ITEM</button>
+                <button className="mbtn" onClick={() => cmd('run')}>RUN</button>
+              </div>
+            ) : (
+              <div className="moves">
+                {WEAPONS.map((w) => (
+                  <button
+                    key={w.id}
+                    className={`mbtn move ${w.id === equippedId ? 'on' : ''}`}
+                    onClick={() => equip(w)}
+                  >
+                    {w.icon} {w.style.toUpperCase()}
+                    <span className="mtag">{w.name}</span>
+                  </button>
+                ))}
+                <button className="mbtn back" onClick={() => setMenu('main')}>
+                  ← BACK
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
