@@ -125,7 +125,8 @@
     "farming",
     "runecrafting",
     "hunter",
-    "construction"
+    "construction",
+    "sailing"
   ],
   "notes": {
     "formula": "xp(level) = floor(sum_{n=1}^{level-1} floor(n + 300*2^(n/7))) / 4",

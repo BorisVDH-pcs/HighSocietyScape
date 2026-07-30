@@ -7,10 +7,12 @@ by earning real in-game experience. The app doesn't simulate training — it
 reads real Wise Old Man (WOM) data and converts it into progression.
 
 Core loop:
-1. A team's real OSRS experience gains (per skill, tracked via a WOM group)
-   are pooled and mapped to a virtual level for that team's shared character,
-   using the standard OSRS xp curve (see `data/xp_table.json`).
-2. Gear is earned via boss kill counts (also tracked through WOM). Each boss
+1. A team's real OSRS experience *gains during the event* (per skill, read
+   from a WOM **competition** of type `team`) are pooled and mapped to a
+   virtual level for that team's shared character, using the standard OSRS xp
+   curve (see `data/xp_table.json`). The character starts at 0 xp when the
+   competition opens and levels up live as the team plays.
+2. Gear is earned via boss kill counts (also read from WOM). Each boss
    has a drop table with real RNG odds (e.g. ~1/100 per kill for a notable
    item), rolled once per newly-detected kill.
 3. Teams equip earned gear on their virtual character and fight app-side
@@ -33,29 +35,56 @@ Core loop:
   Sheets/Apps Script (used in Boris's earlier "Snakes & Rats" project)
   specifically because this needs real persistent inventories/accounts and
   will take too much read/write volume for a spreadsheet.
-- **Data source:** Wise Old Man API/group tracking for both skill experience
-  gains and boss kill count deltas. WOM group ID/name: *pending — Boris will
-  provide the existing group used for the previous Snakes & Rats event.*
+- **Data source:** Wise Old Man API, driven by a **WOM competition of type
+  `team`** — NOT a group. One competition = one season/event; each team inside
+  it (`participation.teamName`) maps to one shared character. This was chosen
+  over a WOM group because the competition already carries the team rosters
+  (no manual member management) and gives us both skill xp and boss KC.
+    - **Season config = a single competition ID.** Validated against the live
+      "High Society Snakes and Rats Bingo" event: `WOM_COMPETITION_ID=145906`
+      (4 teams, 71 players; Team 1 has 18).
+    - **Roster:** `GET /v2/competitions/{id}` → `participations` grouped by
+      `teamName`.
+    - **Per-skill xp + boss KC:** for each member, `GET
+      /v2/players/{username}/gained?startDate={comp.startsAt}&endDate={now}`.
+      The `data.skills` and `data.bosses` fields give the *gained* deltas over
+      the event window; pool them across a team's members for that character.
+    - **API note:** WOM rejects requests without a descriptive `User-Agent`
+      header (403). Always send one identifying the app.
+    - The competition's own `metric` (e.g. `ehp`) is only its leaderboard
+      ranking — we ignore it and compute our own per-skill/per-boss pools.
 - **Frontend:** not yet decided (framework TBD) — battle UI should support a
   health-bar duel screen with a turn-based attack loop and a combat log.
-- **xp storage rule:** store *raw cumulative xp per skill per team* in the
-  DB, and derive the displayed level from `xp_table.json` on read. Do not
-  store the derived level itself — it will drift out of sync with WOM data.
+- **xp storage rule:** store *raw pooled xp gained per skill per team* (the
+  event-window gains, not all-time totals) in the DB, and derive the displayed
+  level from `xp_table.json` on read. Do not store the derived level itself —
+  it will drift out of sync with WOM data.
+- **Pooling math (still open — see Open questions):** current working
+  recommendation is *sum member gains, cap the derived level at 99, and
+  convert overflow xp into a combat/damage bonus*. Not yet confirmed by Boris.
 
 ## Data already produced
-- `data/xp_table.json` — full OSRS level 1–99 xp table generated from the
-  standard Jagex formula: `xp(level) = floor(sum_{n=1}^{level-1} floor(n +
-  300*2^(n/7))) / 4`. Level 99 = 13,034,431 xp. Includes list of the 23 OSRS
-  skills. This is the single source of truth for xp↔level conversion — don't
-  regenerate it by hand elsewhere in the codebase, import/reference this file.
+- `xp_table.json` (repo root) — full OSRS level 1–100 xp table generated from
+  the standard Jagex formula: `xp(level) = floor(sum_{n=1}^{level-1} floor(n +
+  300*2^(n/7))) / 4`. Level 99 = 13,034,431 xp (level 100 = 14,391,160 is
+  included as a headroom row). This is the single source of truth for xp↔level
+  conversion — don't regenerate it by hand elsewhere in the codebase,
+  import/reference this file.
+    - **Skills list is currently 23 and omits `sailing`.** WOM's API now
+      returns 24 skills including Sailing, which uses the same xp curve — the
+      `skills` array in this file needs `sailing` added so pooling covers all
+      24. (The `levels` table itself is skill-agnostic and needs no change.)
 
 ## Open questions (ask Boris / don't assume)
-- What happens when a team exceeds level 99 (30M+ xp) in a skill — hard cap,
-  or does excess xp still grant a bonus (extra damage, bonus drop rolls,
-  etc.)? Not yet decided.
+- **Pooling math + level-99 overflow.** Summing ~18 members' event gains pushes
+  combat skills past the 99 cap within ~2 weeks (validated: Team 1 Strength
+  gained 19.3M vs. the 13.03M cap after ~13 days). Working recommendation is
+  *sum gains → cap level at 99 → convert overflow xp into a combat/damage
+  bonus*; alternatives are averaging across members or a diminishing-returns
+  curve. Not yet confirmed.
 - Frontend framework choice.
-- First boss + first skill to prototype with (Boris to pick once WOM group
-  is confirmed).
+- First boss + first skill to prototype with (Boris to pick). Data source is
+  now confirmed (WOM competition 145906, Team 1 fully readable).
 - Drop table design (rates, item effects, which bosses unlock which gear)
   is still to be designed — nothing is finalized beyond the cave-crawler /
   "trials of the seas" example used as an illustration in early discussion.
