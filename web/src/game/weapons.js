@@ -1,8 +1,8 @@
-// Weapons decide which combat style an Attack uses. This is the seed of the
-// gear system — later, weapons drop from bosses (rolled off real KC) and carry
-// stat bonuses. For now each just selects a style; accuracy/max-hit still come
-// from the matching skill level in combat.js. Icons are plain emoji (original
-// 2D only — no ripped Jagex art).
+// Weapons decide which combat style an Attack uses, and carry a `power` bonus
+// added to max hit. This is the gear system: starter weapons are always owned;
+// others drop from bosses (see each boss's drop table in combat.js) and are
+// added to the player's inventory. Icons are plain emoji (original 2D only —
+// no ripped Jagex art).
 
 export const WEAPONS = [
   {
@@ -10,6 +10,7 @@ export const WEAPONS = [
     name: 'Bronze Sword',
     style: 'melee',
     icon: '🗡️',
+    power: 0,
     desc: 'A starter blade. Attacks scale with Attack & Strength.',
   },
   {
@@ -17,6 +18,7 @@ export const WEAPONS = [
     name: 'Shortbow',
     style: 'ranged',
     icon: '🏹',
+    power: 0,
     desc: 'Quick and reliable. Attacks scale with Ranged.',
   },
   {
@@ -24,9 +26,21 @@ export const WEAPONS = [
     name: 'Novice Staff',
     style: 'magic',
     icon: '🪄',
+    power: 0,
     desc: 'Crackling with power. Attacks scale with Magic.',
   },
+  {
+    id: 'steel_sword',
+    name: 'Steel Sword',
+    style: 'melee',
+    icon: '⚔️',
+    power: 5,
+    desc: 'A heavier blade looted from goblins. Hits harder than bronze.',
+  },
 ];
+
+// Weapons the player owns from the start; the rest must be earned as drops.
+export const STARTER_WEAPON_IDS = ['bronze_sword', 'shortbow', 'novice_staff'];
 
 export const DEFAULT_WEAPON = WEAPONS[0];
 

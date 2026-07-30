@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from 'react';
 import { loadTeamCharacter, TEAMS, SEASON } from './game/character.js';
 import { initBattle, attack, GOBLIN } from './game/combat.js';
-import { DEFAULT_WEAPON } from './game/weapons.js';
+import { DEFAULT_WEAPON, STARTER_WEAPON_IDS, weaponById } from './game/weapons.js';
 import BattleScreen from './components/BattleScreen.jsx';
 
 export default function App() {
@@ -9,9 +9,12 @@ export default function App() {
   const character = useMemo(() => loadTeamCharacter(teamName), [teamName]);
 
   const [weapon, setWeapon] = useState(DEFAULT_WEAPON);
+  const [ownedIds, setOwnedIds] = useState(STARTER_WEAPON_IDS);
   const [battle, setBattle] = useState(() => initBattle(character, GOBLIN, DEFAULT_WEAPON));
   const [flash, setFlash] = useState(null);
   const flashTimer = useRef(null);
+
+  const ownedWeapons = ownedIds.map(weaponById);
 
   function flashOnce(who) {
     setFlash(who);
@@ -21,12 +24,14 @@ export default function App() {
 
   // FIGHT: attack with whatever gear is currently equipped.
   function handleAttack() {
-    setBattle((prev) => {
-      const next = attack(prev);
-      if (next.boss.hp < prev.boss.hp) flashOnce('boss');
-      else if (next.player.hp < prev.player.hp) flashOnce('player');
-      return next;
-    });
+    const next = attack(battle);
+    if (next.boss.hp < battle.boss.hp) flashOnce('boss');
+    else if (next.player.hp < battle.player.hp) flashOnce('player');
+    // Absorb any drops into the owned-gear inventory (deduped).
+    if (next.status === 'won' && next.loot?.length) {
+      setOwnedIds((ids) => [...new Set([...ids, ...next.loot])]);
+    }
+    setBattle(next);
   }
 
   // GEAR: change loadout (sets the sprite + the style FIGHT uses). No attack.
@@ -83,6 +88,7 @@ export default function App() {
       <BattleScreen
         battle={battle}
         flash={flash}
+        owned={ownedWeapons}
         onAttack={handleAttack}
         onEquip={handleEquip}
         onReset={() => reset()}

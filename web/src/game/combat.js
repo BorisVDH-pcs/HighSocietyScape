@@ -3,7 +3,7 @@
 // EQUIPPED WEAPON decides which style an attack uses (melee/ranged/magic).
 // Overflow xp grants no bonus, per the confirmed pooling policy.
 
-import { DEFAULT_WEAPON } from './weapons.js';
+import { DEFAULT_WEAPON, weaponById } from './weapons.js';
 
 // First boss on the ladder: the Goblin. Deliberately easy — this validates the
 // loop; harder bosses will scale hp/accuracy/maxHit up from here.
@@ -15,7 +15,18 @@ export const GOBLIN = {
   maxHit: 4,      // damage it can roll against the player
   accuracy: 0.45, // chance one of its swings lands
   blurb: 'A snivelling green nuisance. Every hero starts somewhere.',
+  // Drop table: rolled once on victory. chance is per-kill probability.
+  drops: [{ weaponId: 'steel_sword', chance: 1 / 5 }],
 };
+
+/** Roll a boss's drop table on kill. Returns the weapon ids that dropped. */
+function rollDrops(boss) {
+  const dropped = [];
+  for (const d of boss.drops ?? []) {
+    if (Math.random() < d.chance) dropped.push(d.weaponId);
+  }
+  return dropped;
+}
 
 /** Derive the player's combat profile from a character view model. */
 export function playerProfile(character) {
@@ -91,7 +102,7 @@ export function attack(state) {
 
   // --- Player turn ---
   if (lands(style.accuracy)) {
-    const dmg = rollDamage(style.maxHit);
+    const dmg = rollDamage(style.maxHit + (s.player.weapon.power ?? 0));
     s.boss.hp = Math.max(0, s.boss.hp - dmg);
     entries.push({
       t: 'player',
@@ -106,6 +117,11 @@ export function attack(state) {
   if (s.boss.hp <= 0) {
     s.status = 'won';
     entries.push({ t: 'win', text: `The ${s.boss.name} collapses. Victory! ⚔️` });
+    // Roll the boss's drop table.
+    s.loot = rollDrops(s.boss);
+    for (const id of s.loot) {
+      entries.push({ t: 'loot', text: `The ${s.boss.name} dropped a ${weaponById(id).name}!` });
+    }
     s.log = [...s.log, ...entries];
     return s;
   }

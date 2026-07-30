@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Hero, GoblinSprite } from './Sprite.jsx';
-import { WEAPONS } from '../game/weapons.js';
+import { weaponById } from '../game/weapons.js';
 
 // Gen-1 style HP bar: "HP" label + bar, with current/max numbers.
 function PokeHP({ hp, max }) {
@@ -21,7 +21,7 @@ function PokeHP({ hp, max }) {
   );
 }
 
-export default function BattleScreen({ battle, flash, onAttack, onEquip, onReset }) {
+export default function BattleScreen({ battle, flash, owned, onAttack, onEquip, onReset }) {
   const { player, boss, status } = battle;
   const over = status !== 'active';
   const [menu, setMenu] = useState('main'); // 'main' | 'gear'
@@ -57,10 +57,14 @@ export default function BattleScreen({ battle, flash, onAttack, onEquip, onReset
   // What the message window shows.
   let lines;
   if (over) {
-    lines =
-      status === 'won'
-        ? [`The wild ${boss.name} fainted!`, `${player.name} won the battle!`]
-        : [`${player.name} is out of HP!`, 'Defeated...'];
+    if (status === 'won') {
+      lines = [`The wild ${boss.name} fainted!`, `${player.name} won the battle!`];
+      for (const id of battle.loot ?? []) {
+        lines.push(`${weaponById(id).name} was added to your gear!`);
+      }
+    } else {
+      lines = [`${player.name} is out of HP!`, 'Defeated...'];
+    }
   } else if (menu === 'gear') {
     lines = ['Choose your loadout.'];
   } else if (note) {
@@ -129,14 +133,17 @@ export default function BattleScreen({ battle, flash, onAttack, onEquip, onReset
               </div>
             ) : (
               <div className="moves">
-                {WEAPONS.map((w) => (
+                {owned.map((w) => (
                   <button
                     key={w.id}
                     className={`mbtn move ${w.id === equippedId ? 'on' : ''}`}
                     onClick={() => equip(w)}
                   >
                     {w.icon} {w.style.toUpperCase()}
-                    <span className="mtag">{w.name}</span>
+                    <span className="mtag">
+                      {w.name}
+                      {w.power ? ` +${w.power}` : ''}
+                    </span>
                   </button>
                 ))}
                 <button className="mbtn back" onClick={() => setMenu('main')}>
