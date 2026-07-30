@@ -12,9 +12,10 @@ _Last updated: 2026-07-30._
 The project has gone from "pipeline never run" to **a working data pipeline +
 a playable, themed battle screen** with **live character stats**, **per-team
 gear AND battle state that persist to Supabase** (resume a fight mid-battle),
-and **redrawn OSRS-style sprites** — all committed and pushed to `main`. The
-main rung left is **automatic data freshness** (scheduling `fetch → sync`) —
-see next steps.
+**redrawn OSRS-style sprites**, and an **automated data-refresh Action**
+(`fetch → sync` every 30 min + manual trigger) — committed and pushed. The core
+loop is now closed end-to-end; remaining work is content/polish (boss ladder,
+gear, deploy) — see next steps.
 
 ### Data pipeline — ✅ done and live
 - WOM competition **145906** ("High Society Snakes and Rats Bingo"), type
@@ -77,9 +78,13 @@ see next steps.
   the hydration effect is live-character → gear → battle, so a resumed fight is
   rebuilt with current stats. `reset` uses the live character too.
 - Degrades cleanly: no `web/.env` (or a failed read) → stays on the snapshot.
-- **Freshness is manual for now**: the live read returns whatever the last
-  `fetch → sync` wrote. To keep it current, re-run those two steps, or schedule
-  them (cron / GitHub Action / Supabase function) — still TODO.
+- **Freshness is automated**: the `Refresh WOM data` GitHub Action
+  (`.github/workflows/refresh-wom.yml`) re-runs `fetch → sync` every 30 min and
+  is manually runnable from the Actions tab (`Run workflow`) for live demos.
+  Needs repo secrets `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` (optional
+  `WOM_API_KEY`). ⚠️ Scheduled/manual runs only work once the workflow is on
+  the **default branch** — merge this branch to `main` and add the secrets to
+  activate it.
 
 ### Resume mid-battle (battle-state persistence) — ✅ done
 - Closing the app mid-fight and returning **resumes the same battle** — enemy
@@ -138,21 +143,19 @@ see next steps.
   "High Society Scape" wordmark fallback.
 
 ## Suggested next steps (pick one)
-1. **Automatic data freshness** — live character stats are done, but the live
-   read only reflects the last manual `fetch → sync`. Schedule those two steps
-   (GitHub Action on a cron, or a Supabase scheduled function) so gains refresh
-   without anyone running the scripts. This is the remaining half of the old
-   "live character data" rung.
-2. **Boss ladder** — add bosses after the Goblin with scaling hp/accuracy/
+1. **Boss ladder** — add bosses after the Goblin with scaling hp/accuracy/
    maxHit and their own drop tables (the `drops` array pattern already exists
-   on `GOBLIN` in `combat.js`).
-3. **More gear + drop tables** — expand `weapons.js` (ranged/magic drops,
+   on `GOBLIN` in `combat.js`; a `BOSSES`/`bossById` registry is also there
+   now). Would give the game actual progression beyond one fight.
+2. **More gear + drop tables** — expand `weapons.js` (ranged/magic drops,
    stat-varied gear, higher tiers); consider armour/defence, not just weapons.
    Auto-equip already picks the highest `tier` per style.
-4. **Deploy** — configs are committed (`netlify.toml` / `vercel.json`): import
+3. **Deploy** — configs are committed (`netlify.toml` / `vercel.json`): import
    the repo on Netlify or Vercel, add the two `VITE_SUPABASE_*` env vars, done.
    Build runs from the repo root (not `web/`) so the shared `../lib` imports
    resolve → publishes `web/dist`. See README "Deploy it live". Not deployed yet.
+   (Also add the Action secrets — see "Live character stats" — to keep the
+   deployed app's stats fresh.)
 
 ## Open questions to raise with Boris
 - Drop-table design at scale: which bosses drop what, rates, armour/defence,

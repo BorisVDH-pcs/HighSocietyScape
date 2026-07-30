@@ -100,9 +100,23 @@ each team's *current* pooled WOM gains from Supabase (`team_skills` /
 `team_bosses`) so levels reflect real progress — it seeds instantly from the
 bundled snapshot, then replaces it with the live read (`loadTeamCharacterLive`
 in `web/src/game/character.js`). Without the anon pair it stays on the snapshot.
-Re-run the pipeline (`fetch → sync`) to refresh what the live read returns; for
-automatic freshness, schedule those two steps (cron / GitHub Action / Supabase
-function).
+Re-run the pipeline (`fetch → sync`) to refresh what the live read returns.
+**Automatic freshness is wired up**: the `Refresh WOM data` GitHub Action
+(`.github/workflows/refresh-wom.yml`) runs `fetch → sync` every 30 minutes and
+can also be triggered by hand from the **Actions** tab (`Run workflow`) — handy
+for live demos. It needs two repository secrets set (Settings → Secrets and
+variables → Actions):
+
+| Secret | Value |
+|---|---|
+| `SUPABASE_URL` | same Project URL as the root `.env` |
+| `SUPABASE_SERVICE_ROLE_KEY` | the secret key (🔒 write path, bypasses RLS) |
+
+Optional: `WOM_API_KEY` (secret) to raise WOM's rate limit, and a
+`WOM_COMPETITION_ID` repository **variable** to sync a different competition.
+The Action only writes to Supabase (it doesn't commit the snapshot back), and —
+like all scheduled workflows — it only fires once this file is on the default
+branch (`main`).
 
 ## Deploy it live
 
@@ -148,6 +162,7 @@ Notes:
 | `CLAUDE.md` | Concept, architecture decisions, open questions (read first) |
 | `HANDOVER.md` | Live status + next steps for resuming in a new session |
 | `netlify.toml` / `vercel.json` | Static-deploy config (build from root → `web/dist`) — see "Deploy it live" |
+| `.github/workflows/refresh-wom.yml` | Scheduled + manual `fetch → sync` every 30 min (keeps live stats fresh) |
 | `xp_table.json` | OSRS xp↔level table. Single source of truth. 24 skills incl. sailing |
 | `lib/core.mjs` | **Pure, browser-safe** xp/level/character logic — shared by scripts AND the web app |
 | `lib/levels.mjs` | Node wrapper: fs-loads the xp table, delegates to `core.mjs` |

@@ -1,0 +1,72 @@
+# Refresh the live WOM data behind the battle app: run the pipeline
+# (fetch -> sync) so Supabase holds each team's current pooled gains, which the
+# web app reads live. Runs every 30 minutes AND can be triggered by hand from
+# the Actions tab ("Run workflow"), which is handy for live demos.
+#
+# The frontend reads these gains from Supabase (team_skills / team_bosses), so
+# this workflow only needs to WRITE to the DB — it does not touch the repo. The
+# committed data/<id>-latest.json snapshot stays as-is; it's only the instant
+# seed / offline fallback, and the live DB read replaces it at runtime.
+#
+# NOTE: GitHub only runs `schedule` (and shows the manual "Run workflow" button)
+# for workflows on the DEFAULT branch. This won't fire until it's merged to
+# main.
+#
+# Required repository secrets (Settings -> Secrets and variables -> Actions):
+#   SUPABASE_URL               - Supabase Project URL (origin only)
+#   SUPABASE_SERVICE_ROLE_KEY  - Supabase secret key (bypasses RLS; write path)
+# Optional:
+#   WOM_API_KEY  (secret)      - raises WOM's rate limit 20->100/min (~4min->45s)
+#   WOM_COMPETITION_ID (var)   - which competition to sync (defaults to 145906)
+
+name: Refresh WOM data
+
+on:
+  schedule:
+    - cron: '*/30 * * * *' # every 30 minutes (UTC; may be delayed under load)
+  workflow_dispatch:
+    inputs:
+      competition_id:
+        description: 'WOM competition id to sync (blank = repo default / 145906)'
+        required: false
+        type: string
+
+# Never let two refreshes overlap; the newer run wins.
+concurrency:
+  group: refresh-wom
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      WOM_API_KEY: ${{ secrets.WOM_API_KEY }}
+      WOM_USER_AGENT: 'HighSocietyScape (github.com/BorisVDH-pcs/HighSocietyScape)'
+      WOM_COMPETITION_ID: ${{ github.event.inputs.competition_id || vars.WOM_COMPETITION_ID || '145906' }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Verify required secrets are present
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_SERVICE_ROLE_KEY" ]; then
+            echo "::error::SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY must be set as repository secrets."
+            exit 1
+          fi
+
+      - name: Fetch WOM competition -> snapshot
+        run: node scripts/fetchTeamData.mjs
+
+      - name: Sync snapshot -> Supabase
+        run: node scripts/syncToSupabase.mjs
