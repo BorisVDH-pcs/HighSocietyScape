@@ -34,7 +34,8 @@ deploy) — see next steps.
 - Vite + React, **Game Boy / Gen-1 Pokémon-style** turn-based battle screen
   (`npm run dev` in `web/` → http://localhost:5173).
 - Layout: enemy info + HP top-left, enemy sprite top-right, hero bottom-left,
-  player info + HP bottom-right, **FIGHT / GEAR / ITEM / RUN** command box.
+  player info + HP bottom-right, **FIGHT / GEAR / ITEM / MAP** command box plus
+  an **AUTO-FIGHT** toggle.
 - **GEAR** = loadout: Melee / Ranged / Magic. Choosing one sets both the hero
   **sprite** (Warrior / Archer / Mage) and the **attack style**. FIGHT then
   strikes with the equipped gear.
@@ -73,19 +74,23 @@ deploy) — see next steps.
   **Goblin → Giant Rat → Skeleton → Hobgoblin → Lesser Demon** (capstone). Each
   rung scales hp / maxHit / accuracy; data lives in `BOSS_LADDER` in
   `web/src/game/combat.js` (with `BOSSES`/`bossById` + a `nextBoss` helper).
-- **Progression**: beating a boss advances the team to the next rung; losing
-  retries the same one; clearing the Demon loops back to the Goblin (victory
-  lap). Logic is in `App.reset` (win → `nextBoss`, loss → same boss). Because
-  the current boss is part of the persisted battle state, **ladder progress
-  survives reloads / is per team**.
+- **Progression is manual (you stay on a boss to farm drops)**: after a win OR
+  loss the post-battle button re-fights the **same** boss (`App.reset`). You
+  move between bosses yourself via the **MAP** menu (`App.selectBoss`, free
+  choice of any rung — no unlock gating). Because the current boss is part of
+  the persisted battle state, the chosen boss survives reloads / is per team.
+- **AUTO-FIGHT**: a toggle in the command menu throws one attack every ~300ms
+  until someone hits 0 HP, then stops (`auto` state + effect in `App.jsx`).
+  STOP halts it early; switching teams or starting a new fight cancels it.
+- **MAP replaced RUN** in the command box; the end screen offers FIGHT AGAIN +
+  MAP. `nextBoss` still exists in `combat.js` but is no longer used for
+  auto-advance.
 - **Drops span styles**: each new boss drops one higher-tier weapon —
   Rat → Oak Shortbow (ranged t2), Skeleton → Apprentice Wand (magic t2),
   Hobgoblin → Mithril Sword (melee t3), Demon → Infernal Staff (magic t3) — all
   in `web/src/game/weapons.js`, auto-equipped by the existing tier logic.
 - **Sprites**: 4 new original chibi SVGs (Giant Rat, Skeleton, Hobgoblin, Lesser
-  Demon) in `Sprite.jsx`, picked by `BossSprite({ id })`. Battle UI messaging is
-  ladder-aware ("A Skeleton bars the way ahead...", "conquered the boss ladder
-  🏆", NEXT/RETRY button).
+  Demon) in `Sprite.jsx`, picked by `BossSprite({ id })`.
 
 ### Live character stats — ✅ done
 - Battle STATS now reflect each team's **current** pooled WOM gains, read live

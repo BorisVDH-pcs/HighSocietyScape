@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { loadTeamCharacter, loadTeamCharacterLive, TEAMS, SEASON } from './game/character.js';
-import { initBattle, attack, rehydrateBattle, nextBoss, GOBLIN } from './game/combat.js';
+import { initBattle, attack, rehydrateBattle, bossById, GOBLIN } from './game/combat.js';
 import {
   DEFAULT_WEAPON,
   STARTER_WEAPON_IDS,
@@ -33,6 +33,7 @@ export default function App() {
   const [battleByTeam, setBattleByTeam] = useState({});
   const [flash, setFlash] = useState(null);
   const [logoOk, setLogoOk] = useState(true);
+  const [auto, setAuto] = useState(false); // AUTO-fight: keep attacking until 0 HP
   const flashTimer = useRef(null);
   const loadedTeams = useRef(new Set()); // teams whose DB state we've fetched
 
@@ -96,6 +97,20 @@ export default function App() {
     };
   }, [teamName]);
 
+  // AUTO-fight: while enabled and the current fight is still active, throw one
+  // attack every ~300ms so the HP bars visibly tick down; stop the moment the
+  // battle ends (someone hit 0 HP). Re-runs after each attack because `battle`
+  // is a dependency, chaining the next swing until the fight is over.
+  useEffect(() => {
+    if (!auto) return undefined;
+    if (battle.status !== 'active') {
+      setAuto(false);
+      return undefined;
+    }
+    const t = setTimeout(() => handleAttack(), 300);
+    return () => clearTimeout(t);
+  }, [auto, battle]);
+
   function flashOnce(who) {
     setFlash(who);
     clearTimeout(flashTimer.current);
@@ -133,25 +148,38 @@ export default function App() {
     updateBattle(teamName, { ...battle, player: { ...battle.player, weapon: w } });
   }
 
-  // Advance the ladder / start the appropriate next fight for a team, then
-  // persist it (so reopening the app shows this fight, not the finished one):
-  //   won  -> the next boss up the ladder (or loop to the Goblin once cleared)
-  //   lost -> retry the same boss
-  //   otherwise (no prior fight) -> the first rung, the Goblin.
+  // Re-fight the CURRENT boss from full HP (used by the post-battle button on
+  // both win and loss) — the team stays put so it can farm a boss for drops
+  // rather than being pushed up the ladder. Persisted so reopening shows this
+  // fresh fight, not the finished one. Advancing to another boss is a manual
+  // choice via MAP (selectBoss).
   function reset(name = teamName) {
     const cur = battleByTeam[name];
-    let boss = GOBLIN;
-    if (cur) boss = cur.status === 'won' ? nextBoss(cur.boss.id) ?? GOBLIN : cur.boss;
+    const boss = cur ? bossById(cur.boss.id) : GOBLIN;
+    startFight(name, boss);
+  }
+
+  // MAP: start a fresh fight against a chosen boss (any rung — free selection).
+  function selectBoss(name, bossId) {
+    startFight(name, bossById(bossId));
+  }
+
+  // Shared: begin a fresh full-HP fight vs `boss` for a team, persist it, and
+  // cancel any auto-fight / flash left over from the previous fight.
+  function startFight(name, boss) {
     const w = weaponById(gearFor(name).weaponId);
     updateBattle(name, initBattle(characterFor(name), boss, w));
     setFlash(null);
+    setAuto(false);
   }
 
   // Switch teams. No reset — each team keeps its own battle (see battleByTeam),
-  // so switching away and back preserves an in-progress fight.
+  // so switching away and back preserves an in-progress fight. Auto-fight is a
+  // global toggle, so stop it when changing teams.
   function pickTeam(name) {
     setTeamName(name);
     setFlash(null);
+    setAuto(false);
   }
 
   const maxed = character.maxedSkills.length;
@@ -200,9 +228,12 @@ export default function App() {
         battle={battle}
         flash={flash}
         owned={ownedWeapons}
+        auto={auto}
         onAttack={handleAttack}
         onEquip={handleEquip}
         onReset={() => reset()}
+        onSelectBoss={(id) => selectBoss(teamName, id)}
+        onToggleAuto={() => setAuto((a) => !a)}
       />
 
       <footer className="foot">

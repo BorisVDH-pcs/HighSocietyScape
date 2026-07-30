@@ -76,12 +76,15 @@ npm run dev          # serves http://localhost:5173
 
 A Vite + React, Game Boy / Pokémon-style turn-based battle screen driven by a
 team's derived character. Pick a loadout in **GEAR** (Melee / Ranged / Magic —
-sets your sprite and attack style), then **FIGHT** your way up a **5-boss
-ladder**: Goblin → Giant Rat → Skeleton → Hobgoblin → Lesser Demon, each scaling
-in difficulty. Beating a boss advances you to the next (losing retries the same
-one) and can drop a higher-tier weapon (e.g. Goblin → Steel Sword 1/5,
-Hobgoblin → Mithril Sword). The game always wields your **highest-tier** weapon,
-so drops are equipped automatically. Ladder progress persists per team.
+sets your sprite and attack style), then **FIGHT** any of a **5-boss ladder**:
+Goblin → Giant Rat → Skeleton → Hobgoblin → Lesser Demon, each scaling in
+difficulty. Use **MAP** to travel between bosses (free choice), and
+**AUTO-FIGHT** to auto-attack until someone hits 0 HP. Beating a boss can drop a
+higher-tier weapon (e.g. Goblin → Steel Sword 1/5, Hobgoblin → Mithril Sword);
+you **stay on the boss** afterwards so you can farm it (FIGHT AGAIN), and move on
+only when you choose via MAP. The game always wields your **highest-tier**
+weapon, so drops are equipped automatically. Current boss + progress persist per
+team.
 
 **Gear and battles are per team** — each team has its own inventory *and* its
 own fight. Fill in `web/.env` with the public anon pair to persist both to

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Hero, BossSprite } from './Sprite.jsx';
 import { weaponById } from '../game/weapons.js';
-import { nextBoss } from '../game/combat.js';
+import { BOSS_LADDER } from '../game/combat.js';
 
 // Gen-1 style HP bar: "HP" label + bar, with current/max numbers.
 function PokeHP({ hp, max }) {
@@ -22,10 +22,20 @@ function PokeHP({ hp, max }) {
   );
 }
 
-export default function BattleScreen({ battle, flash, owned, onAttack, onEquip, onReset }) {
+export default function BattleScreen({
+  battle,
+  flash,
+  owned,
+  auto,
+  onAttack,
+  onEquip,
+  onReset,
+  onSelectBoss,
+  onToggleAuto,
+}) {
   const { player, boss, status } = battle;
   const over = status !== 'active';
-  const [menu, setMenu] = useState('main'); // 'main' | 'gear'
+  const [menu, setMenu] = useState('main'); // 'main' | 'gear' | 'map'
   const [note, setNote] = useState(null);
   const equippedStyle = player.weapon.style;
 
@@ -43,13 +53,17 @@ export default function BattleScreen({ battle, flash, owned, onAttack, onEquip, 
     if (which === 'fight') {
       setNote(null);
       onAttack();
+    } else if (which === 'auto') {
+      setNote(null);
+      onToggleAuto();
     } else if (which === 'gear') {
       setNote(null);
       setMenu('gear');
     } else if (which === 'item') {
       setNote('You have no items yet — loot drops are coming soon.');
-    } else if (which === 'run') {
-      setNote(`No! There's no running from a boss!`);
+    } else if (which === 'map') {
+      setNote(null);
+      setMenu('map');
     }
   }
 
@@ -59,21 +73,22 @@ export default function BattleScreen({ battle, flash, owned, onAttack, onEquip, 
     setNote(`Loadout set: ${w.style.toUpperCase()} (${w.name}).`);
   }
 
-  function next() {
+  // Re-fight the same boss (post-battle button). Stay put to farm drops.
+  function again() {
     setMenu('main');
     setNote(null);
     onReset();
   }
 
-  // Ladder progression: after a win, is there another rung or is it cleared?
+  // Travel to a chosen boss via the MAP.
+  function travel(bossId) {
+    setMenu('main');
+    setNote(null);
+    onSelectBoss(bossId);
+  }
+
   const won = status === 'won';
-  const upcoming = won ? nextBoss(boss.id) : null;
-  const cleared = won && !upcoming;
-  const nextLabel = !won
-    ? '↺ RETRY'
-    : upcoming
-      ? `▶ NEXT: ${upcoming.name.toUpperCase()}`
-      : '↺ NEW RUN';
+  const againLabel = won ? '↺ FIGHT AGAIN' : '↺ RETRY';
 
   // What the message window shows.
   let lines;
@@ -83,16 +98,16 @@ export default function BattleScreen({ battle, flash, owned, onAttack, onEquip, 
       for (const id of battle.loot ?? []) {
         lines.push(`${weaponById(id).name} was added to your gear!`);
       }
-      lines.push(
-        cleared
-          ? `${player.name} conquered the boss ladder! 🏆`
-          : `A ${upcoming.name} bars the way ahead...`
-      );
+      lines.push('FIGHT AGAIN to farm it, or open the MAP.');
     } else {
       lines = [`${player.name} is out of HP!`, 'Defeated...'];
     }
   } else if (menu === 'gear') {
     lines = ['Choose your loadout.'];
+  } else if (menu === 'map') {
+    lines = ['Where to? Choose a boss.'];
+  } else if (auto) {
+    lines = battle.round > 0 ? battle.log.slice(-2).map((e) => e.text) : ['Auto-fighting...'];
   } else if (note) {
     lines = [note];
   } else if (battle.round > 0) {
@@ -146,18 +161,23 @@ export default function BattleScreen({ battle, flash, owned, onAttack, onEquip, 
           </div>
 
           <div className="menu">
-            {over ? (
-              <button className="mbtn wide" onClick={next}>
-                {nextLabel}
-              </button>
-            ) : menu === 'main' ? (
-              <div className="grid2">
-                <button className="mbtn" onClick={() => cmd('fight')}>FIGHT</button>
-                <button className="mbtn" onClick={() => cmd('gear')}>GEAR</button>
-                <button className="mbtn" onClick={() => cmd('item')}>ITEM</button>
-                <button className="mbtn" onClick={() => cmd('run')}>RUN</button>
+            {menu === 'map' ? (
+              <div className="moves">
+                {BOSS_LADDER.map((b) => (
+                  <button
+                    key={b.id}
+                    className={`mbtn move ${b.id === boss.id ? 'on' : ''}`}
+                    onClick={() => travel(b.id)}
+                  >
+                    {b.name.toUpperCase()}
+                    <span className="mtag">:L{b.level}</span>
+                  </button>
+                ))}
+                <button className="mbtn back" onClick={() => setMenu('main')}>
+                  ← BACK
+                </button>
               </div>
-            ) : (
+            ) : menu === 'gear' ? (
               <div className="moves">
                 {loadouts.map((w) => (
                   <button
@@ -176,6 +196,26 @@ export default function BattleScreen({ battle, flash, owned, onAttack, onEquip, 
                   ← BACK
                 </button>
               </div>
+            ) : over ? (
+              <div className="grid2">
+                <button className="mbtn" onClick={again}>{againLabel}</button>
+                <button className="mbtn" onClick={() => setMenu('map')}>🗺 MAP</button>
+              </div>
+            ) : (
+              <>
+                <div className="grid2">
+                  <button className="mbtn" onClick={() => cmd('fight')}>FIGHT</button>
+                  <button className="mbtn" onClick={() => cmd('gear')}>GEAR</button>
+                  <button className="mbtn" onClick={() => cmd('item')}>ITEM</button>
+                  <button className="mbtn" onClick={() => cmd('map')}>MAP</button>
+                </div>
+                <button
+                  className={`mbtn wide auto ${auto ? 'on' : ''}`}
+                  onClick={() => cmd('auto')}
+                >
+                  {auto ? '■ STOP AUTO' : '⚔ AUTO-FIGHT'}
+                </button>
+              </>
             )}
           </div>
         </div>
