@@ -92,12 +92,50 @@ Character **stats** still read the bundled snapshot; pointing those at live
 Supabase is the next step (the browser client in `web/src/game/supabase.js` is
 ready for it — `lib/character.mjs` has the read path).
 
+## Deploy it live
+
+The app is a **static site** (a Vite build) that talks to your already-hosted
+Supabase — there's no server to run, so any static host works and the free tiers
+are plenty. Config files are committed for the two easiest options; connecting
+the GitHub repo is basically one click.
+
+⚠️ The app lives in `web/` but imports shared code from the repo **root**
+(`../lib`, `../xp_table.json`, `../data`), so the build must run **from the
+root** — the committed configs already do this. Don't set the host's "root
+directory" to `web/`.
+
+**Netlify** (uses `netlify.toml`):
+1. [app.netlify.com](https://app.netlify.com) → **Add new site → Import from
+   Git** → pick `BorisVDH-pcs/HighSocietyScape`.
+2. Leave the build settings as-is (the `netlify.toml` supplies command
+   `npm --prefix web ci && npm --prefix web run build` and publish `web/dist`).
+3. **Site settings → Environment variables** → add `VITE_SUPABASE_URL` and
+   `VITE_SUPABASE_ANON_KEY` (the same public pair from your `.env`).
+4. Deploy. You get a `*.netlify.app` URL; add a custom domain later if you want.
+
+**Vercel** (uses `vercel.json`): [vercel.com/new](https://vercel.com/new) →
+import the repo → add the same two env vars under **Settings → Environment
+Variables** → Deploy. The `vercel.json` sets the build/output for you.
+
+Notes:
+- Both env vars are the **public anon pair** — safe to expose in a frontend
+  bundle (Supabase RLS gates access). Never put the `service_role` key here.
+- Every `git push` to `main` auto-redeploys.
+- Deployed **stats** come from the committed snapshot (`data/145906-latest.json`)
+  — refresh them by re-running `fetch → sync`, re-committing the snapshot, and
+  letting it redeploy (or do the "live character data" step). **Gear** already
+  persists live via Supabase, no rebuild needed.
+- GitHub Pages also works but needs extra setup (a `base` path + an Actions
+  workflow, and the `/logo.png` reference must respect that base) — prefer
+  Netlify/Vercel unless you specifically want Pages.
+
 ## Repo map
 
 | Path | Purpose |
 |---|---|
 | `CLAUDE.md` | Concept, architecture decisions, open questions (read first) |
 | `HANDOVER.md` | Live status + next steps for resuming in a new session |
+| `netlify.toml` / `vercel.json` | Static-deploy config (build from root → `web/dist`) — see "Deploy it live" |
 | `xp_table.json` | OSRS xp↔level table. Single source of truth. 24 skills incl. sailing |
 | `lib/core.mjs` | **Pure, browser-safe** xp/level/character logic — shared by scripts AND the web app |
 | `lib/levels.mjs` | Node wrapper: fs-loads the xp table, delegates to `core.mjs` |

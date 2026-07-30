@@ -1,0 +1,24 @@
+# Netlify deploy config for the HighSocietyScape web app.
+#
+# The app is a static Vite + React build in web/, but it imports shared code
+# from the repo ROOT (../lib, ../xp_table.json, ../data) — so the build runs
+# from the root (not from web/) and just points npm at the web/ subfolder.
+#
+# Before the first deploy, set these in Netlify → Site settings → Environment
+# variables (both are the PUBLIC anon pair, safe to expose in a frontend):
+#   VITE_SUPABASE_URL       = https://<ref>.supabase.co
+#   VITE_SUPABASE_ANON_KEY  = <publishable/anon key>
+# Leave them unset to ship an offline build (gear then lives in the session only).
+
+[build]
+  command = "npm --prefix web ci && npm --prefix web run build"
+  publish = "web/dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Single-page app: serve index.html for any path that isn't a real file.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

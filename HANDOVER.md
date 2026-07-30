@@ -113,8 +113,10 @@ Supabase** and **redrawn OSRS-style sprites** — all committed and pushed to
 3. **More gear + drop tables** — expand `weapons.js` (ranged/magic drops,
    stat-varied gear, higher tiers); consider armour/defence, not just weapons.
    Auto-equip already picks the highest `tier` per style.
-4. **Deploy** — `npm run build` in `web/` produces static files; host on
-   Netlify/Vercel/Cloudflare Pages/GitHub Pages (pair with step 1 for live data).
+4. **Deploy** — configs are committed (`netlify.toml` / `vercel.json`): import
+   the repo on Netlify or Vercel, add the two `VITE_SUPABASE_*` env vars, done.
+   Build runs from the repo root (not `web/`) so the shared `../lib` imports
+   resolve → publishes `web/dist`. See README "Deploy it live". Not deployed yet.
 
 ## Open questions to raise with Boris
 - Drop-table design at scale: which bosses drop what, rates, armour/defence,
