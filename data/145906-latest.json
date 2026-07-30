@@ -1,985 +1,1050 @@
 {
-    "competitionId":  145906,
-    "title":  "High Society Snakes and Rats Bingo",
-    "metric":  "ehp",
-    "window":  {
-                   "start":  "2026-07-17T17:30:00.000Z",
-                   "end":  "2026-07-30T15:30:56.910Z"
-               },
-    "generatedAt":  "2026-07-30T15:30:56.910Z",
-    "teams":  {
-                  "Team 1":  {
-                                 "memberCount":  18,
-                                 "members":  [
-                                                 "RisqueRaichu",
-                                                 "Ohnyx",
-                                                 "A new Donny",
-                                                 "p u e r c o",
-                                                 "marcosolo",
-                                                 "Kokoni Kodo",
-                                                 "jashin ii",
-                                                 "WillChopYew",
-                                                 "GoneClear",
-                                                 "TheMikkel",
-                                                 "wozzyboy",
-                                                 "BludgenMaker",
-                                                 "jayy x",
-                                                 "p r o x i",
-                                                 "haico",
-                                                 "randyraichu",
-                                                 "mainchop",
-                                                 "EduSpaghetee"
-                                             ],
-                                 "skills":  {
-                                                "attack":  {
-                                                               "xp":  2283981,
-                                                               "level":  81,
-                                                               "maxed":  false,
-                                                               "overflowXp":  0
-                                                           },
-                                                "defence":  {
-                                                                "xp":  2706326,
-                                                                "level":  83,
-                                                                "maxed":  false,
-                                                                "overflowXp":  0
-                                                            },
-                                                "strength":  {
-                                                                 "xp":  19326072,
-                                                                 "level":  99,
-                                                                 "maxed":  true,
-                                                                 "overflowXp":  6291641
-                                                             },
-                                                "hitpoints":  {
-                                                                  "xp":  15169159,
-                                                                  "level":  99,
-                                                                  "maxed":  true,
-                                                                  "overflowXp":  2134728
-                                                              },
-                                                "ranged":  {
-                                                               "xp":  14293865,
-                                                               "level":  99,
-                                                               "maxed":  true,
-                                                               "overflowXp":  1259434
-                                                           },
-                                                "prayer":  {
-                                                               "xp":  316626,
-                                                               "level":  61,
-                                                               "maxed":  false,
-                                                               "overflowXp":  0
-                                                           },
-                                                "magic":  {
-                                                              "xp":  5968917,
-                                                              "level":  91,
-                                                              "maxed":  false,
-                                                              "overflowXp":  0
-                                                          },
-                                                "cooking":  {
-                                                                "xp":  774401,
-                                                                "level":  70,
-                                                                "maxed":  false,
-                                                                "overflowXp":  0
-                                                            },
-                                                "woodcutting":  {
-                                                                    "xp":  1145446,
-                                                                    "level":  74,
-                                                                    "maxed":  false,
-                                                                    "overflowXp":  0
-                                                                },
-                                                "fletching":  {
-                                                                  "xp":  236910,
-                                                                  "level":  58,
-                                                                  "maxed":  false,
-                                                                  "overflowXp":  0
-                                                              },
-                                                "fishing":  {
-                                                                "xp":  375599,
-                                                                "level":  63,
-                                                                "maxed":  false,
-                                                                "overflowXp":  0
-                                                            },
-                                                "firemaking":  {
-                                                                   "xp":  2683,
-                                                                   "level":  15,
-                                                                   "maxed":  false,
-                                                                   "overflowXp":  0
-                                                               },
-                                                "crafting":  {
-                                                                 "xp":  2078817,
-                                                                 "level":  80,
-                                                                 "maxed":  false,
-                                                                 "overflowXp":  0
-                                                             },
-                                                "smithing":  {
-                                                                 "xp":  109781,
-                                                                 "level":  50,
-                                                                 "maxed":  false,
-                                                                 "overflowXp":  0
-                                                             },
-                                                "mining":  {
-                                                               "xp":  741439,
-                                                               "level":  70,
-                                                               "maxed":  false,
-                                                               "overflowXp":  0
-                                                           },
-                                                "herblore":  {
-                                                                 "xp":  619716,
-                                                                 "level":  68,
-                                                                 "maxed":  false,
-                                                                 "overflowXp":  0
-                                                             },
-                                                "agility":  {
-                                                                "xp":  275324,
-                                                                "level":  60,
-                                                                "maxed":  false,
-                                                                "overflowXp":  0
-                                                            },
-                                                "thieving":  {
-                                                                 "xp":  1224956,
-                                                                 "level":  75,
-                                                                 "maxed":  false,
-                                                                 "overflowXp":  0
-                                                             },
-                                                "slayer":  {
-                                                               "xp":  1288155,
-                                                               "level":  75,
-                                                               "maxed":  false,
-                                                               "overflowXp":  0
-                                                           },
-                                                "farming":  {
-                                                                "xp":  812690,
-                                                                "level":  70,
-                                                                "maxed":  false,
-                                                                "overflowXp":  0
-                                                            },
-                                                "runecrafting":  {
-                                                                     "xp":  995795,
-                                                                     "level":  73,
-                                                                     "maxed":  false,
-                                                                     "overflowXp":  0
-                                                                 },
-                                                "hunter":  {
-                                                               "xp":  1753406,
-                                                               "level":  78,
-                                                               "maxed":  false,
-                                                               "overflowXp":  0
-                                                           },
-                                                "construction":  {
-                                                                     "xp":  87785,
-                                                                     "level":  48,
-                                                                     "maxed":  false,
-                                                                     "overflowXp":  0
-                                                                 },
-                                                "sailing":  {
-                                                                "xp":  5872060,
-                                                                "level":  90,
-                                                                "maxed":  false,
-                                                                "overflowXp":  0
-                                                            }
-                                            },
-                                 "bosses":  {
-                                                "abyssal_sire":  110,
-                                                "alchemical_hydra":  21,
-                                                "araxxor":  304,
-                                                "artio":  428,
-                                                "barrows_chests":  1,
-                                                "brutus":  44,
-                                                "callisto":  117,
-                                                "calvarion":  1975,
-                                                "chambers_of_xeric":  6,
-                                                "chambers_of_xeric_challenge_mode":  10,
-                                                "chaos_elemental":  705,
-                                                "chaos_fanatic":  21,
-                                                "crazy_archaeologist":  250,
-                                                "doom_of_mokhaiotl":  120,
-                                                "duke_sucellus":  482,
-                                                "general_graardor":  337,
-                                                "hespori":  5,
-                                                "kalphite_queen":  61,
-                                                "king_black_dragon":  1,
-                                                "kreearra":  45,
-                                                "kril_tsutsaroth":  12,
-                                                "lunar_chests":  130,
-                                                "mad_angel":  55,
-                                                "maggot_king":  343,
-                                                "nex":  174,
-                                                "obor":  17,
-                                                "phantom_muspah":  58,
-                                                "phosanis_nightmare":  7,
-                                                "scorpia":  10,
-                                                "scurrius":  210,
-                                                "sol_heredit":  19,
-                                                "spindel":  346,
-                                                "the_corrupted_gauntlet":  63,
-                                                "the_gauntlet":  3,
-                                                "the_hueycoatl":  633,
-                                                "the_leviathan":  42,
-                                                "the_whisperer":  277,
-                                                "tombs_of_amascut_expert":  5,
-                                                "vardorvis":  190,
-                                                "venenatis":  1,
-                                                "vetion":  7,
-                                                "yama":  152,
-                                                "zalcano":  276,
-                                                "zulrah":  666
-                                            },
-                                 "missing":  [
-
-                                             ]
-                             },
-                  "Team 2":  {
-                                 "memberCount":  19,
-                                 "members":  [
-                                                 "Iron Bjorndt",
-                                                 "Wasabeh",
-                                                 "Bjorndt",
-                                                 "Abruzi",
-                                                 "24 Brews",
-                                                 "l Reece",
-                                                 "spelblastr",
-                                                 "str8uphigh71",
-                                                 "Perma Grind",
-                                                 "aggresive178",
-                                                 "CorpRng",
-                                                 "Mr Sqeez",
-                                                 "Sir_Cumseyes",
-                                                 "Ch1zz",
-                                                 "Def is Weird",
-                                                 "SqeezSupreme",
-                                                 "sexyxyst",
-                                                 "24BrewsCuck",
-                                                 "6iambo3"
-                                             ],
-                                 "skills":  {
-                                                "attack":  {
-                                                               "xp":  60091,
-                                                               "level":  44,
-                                                               "maxed":  false,
-                                                               "overflowXp":  0
-                                                           },
-                                                "defence":  {
-                                                                "xp":  614483,
-                                                                "level":  68,
-                                                                "maxed":  false,
-                                                                "overflowXp":  0
-                                                            },
-                                                "strength":  {
-                                                                 "xp":  3944296,
-                                                                 "level":  86,
-                                                                 "maxed":  false,
-                                                                 "overflowXp":  0
-                                                             },
-                                                "hitpoints":  {
-                                                                  "xp":  2669403,
-                                                                  "level":  82,
-                                                                  "maxed":  false,
-                                                                  "overflowXp":  0
-                                                              },
-                                                "ranged":  {
-                                                               "xp":  1386482,
-                                                               "level":  76,
-                                                               "maxed":  false,
-                                                               "overflowXp":  0
-                                                           },
-                                                "prayer":  {
-                                                               "xp":  59679,
-                                                               "level":  44,
-                                                               "maxed":  false,
-                                                               "overflowXp":  0
-                                                           },
-                                                "magic":  {
-                                                              "xp":  1247382,
-                                                              "level":  75,
-                                                              "maxed":  false,
-                                                              "overflowXp":  0
-                                                          },
-                                                "cooking":  {
-                                                                "xp":  540,
-                                                                "level":  6,
-                                                                "maxed":  false,
-                                                                "overflowXp":  0
-                                                            },
-                                                "woodcutting":  {
-                                                                    "xp":  496267,
-                                                                    "level":  66,
-                                                                    "maxed":  false,
-                                                                    "overflowXp":  0
-                                                                },
-                                                "fletching":  {
-                                                                  "xp":  792,
-                                                                  "level":  7,
-                                                                  "maxed":  false,
-                                                                  "overflowXp":  0
-                                                              },
-                                                "fishing":  {
-                                                                "xp":  0,
-                                                                "level":  1,
-                                                                "maxed":  false,
-                                                                "overflowXp":  0
-                                                            },
-                                                "firemaking":  {
-                                                                   "xp":  15237,
-                                                                   "level":  31,
-                                                                   "maxed":  false,
-                                                                   "overflowXp":  0
-                                                               },
-                                                "crafting":  {
-                                                                 "xp":  1363,
-                                                                 "level":  11,
-                                                                 "maxed":  false,
-                                                                 "overflowXp":  0
-                                                             },
-                                                "smithing":  {
-                                                                 "xp":  36605,
-                                                                 "level":  39,
-                                                                 "maxed":  false,
-                                                                 "overflowXp":  0
-                                                             },
-                                                "mining":  {
-                                                               "xp":  2171,
-                                                               "level":  14,
-                                                               "maxed":  false,
-                                                               "overflowXp":  0
-                                                           },
-                                                "herblore":  {
-                                                                 "xp":  20905,
-                                                                 "level":  34,
-                                                                 "maxed":  false,
-                                                                 "overflowXp":  0
-                                                             },
-                                                "agility":  {
-                                                                "xp":  5921,
-                                                                "level":  22,
-                                                                "maxed":  false,
-                                                                "overflowXp":  0
-                                                            },
-                                                "thieving":  {
-                                                                 "xp":  239645,
-                                                                 "level":  58,
-                                                                 "maxed":  false,
-                                                                 "overflowXp":  0
-                                                             },
-                                                "slayer":  {
-                                                               "xp":  174815,
-                                                               "level":  55,
-                                                               "maxed":  false,
-                                                               "overflowXp":  0
-                                                           },
-                                                "farming":  {
-                                                                "xp":  484803,
-                                                                "level":  65,
-                                                                "maxed":  false,
-                                                                "overflowXp":  0
-                                                            },
-                                                "runecrafting":  {
-                                                                     "xp":  20,
-                                                                     "level":  1,
-                                                                     "maxed":  false,
-                                                                     "overflowXp":  0
-                                                                 },
-                                                "hunter":  {
-                                                               "xp":  22246,
-                                                               "level":  34,
-                                                               "maxed":  false,
-                                                               "overflowXp":  0
-                                                           },
-                                                "construction":  {
-                                                                     "xp":  75598,
-                                                                     "level":  47,
-                                                                     "maxed":  false,
-                                                                     "overflowXp":  0
-                                                                 },
-                                                "sailing":  {
-                                                                "xp":  708943,
-                                                                "level":  69,
-                                                                "maxed":  false,
-                                                                "overflowXp":  0
-                                                            }
-                                            },
-                                 "bosses":  {
-                                                "alchemical_hydra":  54,
-                                                "barrows_chests":  82,
-                                                "brutus":  84,
-                                                "calvarion":  191,
-                                                "chambers_of_xeric":  4,
-                                                "chambers_of_xeric_challenge_mode":  33,
-                                                "commander_zilyana":  176,
-                                                "dagannoth_prime":  48,
-                                                "dagannoth_rex":  48,
-                                                "dagannoth_supreme":  49,
-                                                "general_graardor":  16,
-                                                "grotesque_guardians":  1,
-                                                "hespori":  4,
-                                                "kraken":  200,
-                                                "kreearra":  118,
-                                                "lunar_chests":  5,
-                                                "nex":  1,
-                                                "phosanis_nightmare":  10,
-                                                "sarachnis":  116,
-                                                "scurrius":  76,
-                                                "shellbane_gryphon":  108,
-                                                "the_hueycoatl":  30,
-                                                "theatre_of_blood":  16,
-                                                "tombs_of_amascut_expert":  8,
-                                                "vardorvis":  16,
-                                                "yama":  15,
-                                                "zulrah":  318
-                                            },
-                                 "missing":  [
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "wasabeh"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "bjorndt"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "abruzi"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "24 brews"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "l reece"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "spelblastr"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "str8uphigh71"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "perma grind"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "aggresive178"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "corprng"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "mr sqeez"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "sir cumseyes"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "ch1zz"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "def is weird"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "sqeezsupreme"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "sexyxyst"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "24brewscuck"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "6iambo3"
-                                                 }
-                                             ]
-                             },
-                  "Team 3":  {
-                                 "memberCount":  18,
-                                 "members":  [
-                                                 "Nao Tomori",
-                                                 "Gunnamerican",
-                                                 "FaIIingAngeI",
-                                                 "Krepty",
-                                                 "AndyThomas94",
-                                                 "Lil Sod",
-                                                 "os step bro",
-                                                 "Where Coffee",
-                                                 "T OXI C",
-                                                 "G l e n n n",
-                                                 "SickSeeLa",
-                                                 "Gunataky",
-                                                 "FalIenAngeI",
-                                                 "TwoGirls1Def",
-                                                 "Selvish",
-                                                 "IMightReply",
-                                                 "Yuyu Shirai",
-                                                 "failingangei"
-                                             ],
-                                 "skills":  {
-                                                "attack":  {
-                                                               "xp":  0,
-                                                               "level":  1,
-                                                               "maxed":  false,
-                                                               "overflowXp":  0
-                                                           },
-                                                "defence":  {
-                                                                "xp":  0,
-                                                                "level":  1,
-                                                                "maxed":  false,
-                                                                "overflowXp":  0
-                                                            },
-                                                "strength":  {
-                                                                 "xp":  0,
-                                                                 "level":  1,
-                                                                 "maxed":  false,
-                                                                 "overflowXp":  0
-                                                             },
-                                                "hitpoints":  {
-                                                                  "xp":  0,
-                                                                  "level":  1,
-                                                                  "maxed":  false,
-                                                                  "overflowXp":  0
-                                                              },
-                                                "ranged":  {
-                                                               "xp":  0,
-                                                               "level":  1,
-                                                               "maxed":  false,
-                                                               "overflowXp":  0
-                                                           },
-                                                "prayer":  {
-                                                               "xp":  0,
-                                                               "level":  1,
-                                                               "maxed":  false,
-                                                               "overflowXp":  0
-                                                           },
-                                                "magic":  {
-                                                              "xp":  0,
-                                                              "level":  1,
-                                                              "maxed":  false,
-                                                              "overflowXp":  0
-                                                          },
-                                                "cooking":  {
-                                                                "xp":  0,
-                                                                "level":  1,
-                                                                "maxed":  false,
-                                                                "overflowXp":  0
-                                                            },
-                                                "woodcutting":  {
-                                                                    "xp":  0,
-                                                                    "level":  1,
-                                                                    "maxed":  false,
-                                                                    "overflowXp":  0
-                                                                },
-                                                "fletching":  {
-                                                                  "xp":  0,
-                                                                  "level":  1,
-                                                                  "maxed":  false,
-                                                                  "overflowXp":  0
-                                                              },
-                                                "fishing":  {
-                                                                "xp":  0,
-                                                                "level":  1,
-                                                                "maxed":  false,
-                                                                "overflowXp":  0
-                                                            },
-                                                "firemaking":  {
-                                                                   "xp":  0,
-                                                                   "level":  1,
-                                                                   "maxed":  false,
-                                                                   "overflowXp":  0
-                                                               },
-                                                "crafting":  {
-                                                                 "xp":  0,
-                                                                 "level":  1,
-                                                                 "maxed":  false,
-                                                                 "overflowXp":  0
-                                                             },
-                                                "smithing":  {
-                                                                 "xp":  0,
-                                                                 "level":  1,
-                                                                 "maxed":  false,
-                                                                 "overflowXp":  0
-                                                             },
-                                                "mining":  {
-                                                               "xp":  0,
-                                                               "level":  1,
-                                                               "maxed":  false,
-                                                               "overflowXp":  0
-                                                           },
-                                                "herblore":  {
-                                                                 "xp":  0,
-                                                                 "level":  1,
-                                                                 "maxed":  false,
-                                                                 "overflowXp":  0
-                                                             },
-                                                "agility":  {
-                                                                "xp":  0,
-                                                                "level":  1,
-                                                                "maxed":  false,
-                                                                "overflowXp":  0
-                                                            },
-                                                "thieving":  {
-                                                                 "xp":  0,
-                                                                 "level":  1,
-                                                                 "maxed":  false,
-                                                                 "overflowXp":  0
-                                                             },
-                                                "slayer":  {
-                                                               "xp":  0,
-                                                               "level":  1,
-                                                               "maxed":  false,
-                                                               "overflowXp":  0
-                                                           },
-                                                "farming":  {
-                                                                "xp":  0,
-                                                                "level":  1,
-                                                                "maxed":  false,
-                                                                "overflowXp":  0
-                                                            },
-                                                "runecrafting":  {
-                                                                     "xp":  0,
-                                                                     "level":  1,
-                                                                     "maxed":  false,
-                                                                     "overflowXp":  0
-                                                                 },
-                                                "hunter":  {
-                                                               "xp":  0,
-                                                               "level":  1,
-                                                               "maxed":  false,
-                                                               "overflowXp":  0
-                                                           },
-                                                "construction":  {
-                                                                     "xp":  0,
-                                                                     "level":  1,
-                                                                     "maxed":  false,
-                                                                     "overflowXp":  0
-                                                                 },
-                                                "sailing":  {
-                                                                "xp":  0,
-                                                                "level":  1,
-                                                                "maxed":  false,
-                                                                "overflowXp":  0
-                                                            }
-                                            },
-                                 "bosses":  {
-
-                                            },
-                                 "missing":  [
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "nao tomori"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "gunnamerican"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "faiiingangei"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "krepty"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "andythomas94"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "lil sod"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "os step bro"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "where coffee"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "t oxi c"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "g l e n n n"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "sickseela"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "gunataky"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "falienangei"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "twogirls1def"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "selvish"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "imightreply"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "yuyu shirai"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "failingangei"
-                                                 }
-                                             ]
-                             },
-                  "Team 4":  {
-                                 "memberCount":  16,
-                                 "members":  [
-                                                 "IronEiny",
-                                                 "N I S H",
-                                                 "Queen Za1x",
-                                                 "Northside",
-                                                 "Shv",
-                                                 "SirHmm",
-                                                 "content days",
-                                                 "BeaverLordAU",
-                                                 "rarru",
-                                                 "Sofoo",
-                                                 "3 dreamz",
-                                                 "Night Mac",
-                                                 "Content imp",
-                                                 "k0ll3far",
-                                                 "dogbumfister",
-                                                 "Tllyman"
-                                             ],
-                                 "skills":  {
-                                                "attack":  {
-                                                               "xp":  0,
-                                                               "level":  1,
-                                                               "maxed":  false,
-                                                               "overflowXp":  0
-                                                           },
-                                                "defence":  {
-                                                                "xp":  0,
-                                                                "level":  1,
-                                                                "maxed":  false,
-                                                                "overflowXp":  0
-                                                            },
-                                                "strength":  {
-                                                                 "xp":  0,
-                                                                 "level":  1,
-                                                                 "maxed":  false,
-                                                                 "overflowXp":  0
-                                                             },
-                                                "hitpoints":  {
-                                                                  "xp":  0,
-                                                                  "level":  1,
-                                                                  "maxed":  false,
-                                                                  "overflowXp":  0
-                                                              },
-                                                "ranged":  {
-                                                               "xp":  0,
-                                                               "level":  1,
-                                                               "maxed":  false,
-                                                               "overflowXp":  0
-                                                           },
-                                                "prayer":  {
-                                                               "xp":  0,
-                                                               "level":  1,
-                                                               "maxed":  false,
-                                                               "overflowXp":  0
-                                                           },
-                                                "magic":  {
-                                                              "xp":  0,
-                                                              "level":  1,
-                                                              "maxed":  false,
-                                                              "overflowXp":  0
-                                                          },
-                                                "cooking":  {
-                                                                "xp":  0,
-                                                                "level":  1,
-                                                                "maxed":  false,
-                                                                "overflowXp":  0
-                                                            },
-                                                "woodcutting":  {
-                                                                    "xp":  0,
-                                                                    "level":  1,
-                                                                    "maxed":  false,
-                                                                    "overflowXp":  0
-                                                                },
-                                                "fletching":  {
-                                                                  "xp":  0,
-                                                                  "level":  1,
-                                                                  "maxed":  false,
-                                                                  "overflowXp":  0
-                                                              },
-                                                "fishing":  {
-                                                                "xp":  0,
-                                                                "level":  1,
-                                                                "maxed":  false,
-                                                                "overflowXp":  0
-                                                            },
-                                                "firemaking":  {
-                                                                   "xp":  0,
-                                                                   "level":  1,
-                                                                   "maxed":  false,
-                                                                   "overflowXp":  0
-                                                               },
-                                                "crafting":  {
-                                                                 "xp":  0,
-                                                                 "level":  1,
-                                                                 "maxed":  false,
-                                                                 "overflowXp":  0
-                                                             },
-                                                "smithing":  {
-                                                                 "xp":  0,
-                                                                 "level":  1,
-                                                                 "maxed":  false,
-                                                                 "overflowXp":  0
-                                                             },
-                                                "mining":  {
-                                                               "xp":  0,
-                                                               "level":  1,
-                                                               "maxed":  false,
-                                                               "overflowXp":  0
-                                                           },
-                                                "herblore":  {
-                                                                 "xp":  0,
-                                                                 "level":  1,
-                                                                 "maxed":  false,
-                                                                 "overflowXp":  0
-                                                             },
-                                                "agility":  {
-                                                                "xp":  0,
-                                                                "level":  1,
-                                                                "maxed":  false,
-                                                                "overflowXp":  0
-                                                            },
-                                                "thieving":  {
-                                                                 "xp":  0,
-                                                                 "level":  1,
-                                                                 "maxed":  false,
-                                                                 "overflowXp":  0
-                                                             },
-                                                "slayer":  {
-                                                               "xp":  0,
-                                                               "level":  1,
-                                                               "maxed":  false,
-                                                               "overflowXp":  0
-                                                           },
-                                                "farming":  {
-                                                                "xp":  0,
-                                                                "level":  1,
-                                                                "maxed":  false,
-                                                                "overflowXp":  0
-                                                            },
-                                                "runecrafting":  {
-                                                                     "xp":  0,
-                                                                     "level":  1,
-                                                                     "maxed":  false,
-                                                                     "overflowXp":  0
-                                                                 },
-                                                "hunter":  {
-                                                               "xp":  0,
-                                                               "level":  1,
-                                                               "maxed":  false,
-                                                               "overflowXp":  0
-                                                           },
-                                                "construction":  {
-                                                                     "xp":  0,
-                                                                     "level":  1,
-                                                                     "maxed":  false,
-                                                                     "overflowXp":  0
-                                                                 },
-                                                "sailing":  {
-                                                                "xp":  0,
-                                                                "level":  1,
-                                                                "maxed":  false,
-                                                                "overflowXp":  0
-                                                            }
-                                            },
-                                 "bosses":  {
-
-                                            },
-                                 "missing":  [
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "ironeiny"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "n i s h"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "queen za1x"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "northside"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "shv"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "sirhmm"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "content days"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "beaverlordau"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "rarru"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "sofoo"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "3 dreamz"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "night mac"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "content imp"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "k0ll3far"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "dogbumfister"
-                                                 },
-                                                 {
-                                                     "error":  "The remote server returned an error: (429) Too Many Requests.",
-                                                     "username":  "tllyman"
-                                                 }
-                                             ]
-                             }
-              }
+  "competitionId": 145906,
+  "title": "High Society Snakes and Rats Bingo",
+  "metric": "ehp",
+  "window": {
+    "start": "2026-07-17T17:30:00.000Z",
+    "end": "2026-07-30T16:19:31.245Z"
+  },
+  "generatedAt": "2026-07-30T16:19:31.245Z",
+  "teams": {
+    "Team 1": {
+      "memberCount": 18,
+      "members": [
+        "RisqueRaichu",
+        "Ohnyx",
+        "A new Donny",
+        "p u e r c o",
+        "marcosolo",
+        "Kokoni Kodo",
+        "WillChopYew",
+        "jashin ii",
+        "GoneClear",
+        "TheMikkel",
+        "wozzyboy",
+        "BludgenMaker",
+        "jayy x",
+        "p r o x i",
+        "haico",
+        "randyraichu",
+        "mainchop",
+        "EduSpaghetee"
+      ],
+      "skills": {
+        "attack": {
+          "xp": 2352744,
+          "level": 81,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "defence": {
+          "xp": 2775089,
+          "level": 83,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "strength": {
+          "xp": 19552209,
+          "level": 99,
+          "maxed": true,
+          "overflowXp": 6517778
+        },
+        "hitpoints": {
+          "xp": 15293038,
+          "level": 99,
+          "maxed": true,
+          "overflowXp": 2258607
+        },
+        "ranged": {
+          "xp": 14302015,
+          "level": 99,
+          "maxed": true,
+          "overflowXp": 1267584
+        },
+        "prayer": {
+          "xp": 319236,
+          "level": 61,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "magic": {
+          "xp": 5969554,
+          "level": 91,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "cooking": {
+          "xp": 774401,
+          "level": 70,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "woodcutting": {
+          "xp": 1152438,
+          "level": 74,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "fletching": {
+          "xp": 236910,
+          "level": 58,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "fishing": {
+          "xp": 375599,
+          "level": 63,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "firemaking": {
+          "xp": 2683,
+          "level": 15,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "crafting": {
+          "xp": 2079515,
+          "level": 80,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "smithing": {
+          "xp": 109781,
+          "level": 50,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "mining": {
+          "xp": 741439,
+          "level": 70,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "herblore": {
+          "xp": 619731,
+          "level": 68,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "agility": {
+          "xp": 276503,
+          "level": 60,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "thieving": {
+          "xp": 1224956,
+          "level": 75,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "slayer": {
+          "xp": 1380456,
+          "level": 76,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "farming": {
+          "xp": 812690,
+          "level": 70,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "runecrafting": {
+          "xp": 995795,
+          "level": 73,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "hunter": {
+          "xp": 1753406,
+          "level": 78,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "construction": {
+          "xp": 87785,
+          "level": 48,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "sailing": {
+          "xp": 5872060,
+          "level": 90,
+          "maxed": false,
+          "overflowXp": 0
+        }
+      },
+      "bosses": {
+        "abyssal_sire": 110,
+        "alchemical_hydra": 21,
+        "amoxliatl": 0,
+        "araxxor": 304,
+        "artio": 428,
+        "barrows_chests": 1,
+        "brutus": 44,
+        "bryophyta": 0,
+        "callisto": 117,
+        "calvarion": 1975,
+        "cerberus": 0,
+        "chambers_of_xeric": 6,
+        "chambers_of_xeric_challenge_mode": 10,
+        "chaos_elemental": 705,
+        "chaos_fanatic": 21,
+        "commander_zilyana": 0,
+        "corporeal_beast": 0,
+        "crazy_archaeologist": 250,
+        "dagannoth_prime": 0,
+        "dagannoth_rex": 0,
+        "dagannoth_supreme": 0,
+        "deranged_archaeologist": 0,
+        "doom_of_mokhaiotl": 120,
+        "duke_sucellus": 482,
+        "general_graardor": 337,
+        "giant_mole": 0,
+        "grotesque_guardians": 0,
+        "hespori": 5,
+        "kalphite_queen": 61,
+        "king_black_dragon": 1,
+        "kraken": 0,
+        "kreearra": 45,
+        "kril_tsutsaroth": 12,
+        "lunar_chests": 130,
+        "mad_angel": 55,
+        "maggot_king": 343,
+        "mimic": 0,
+        "nex": 174,
+        "nightmare": 0,
+        "phosanis_nightmare": 7,
+        "obor": 17,
+        "phantom_muspah": 58,
+        "sarachnis": 0,
+        "scorpia": 10,
+        "scurrius": 210,
+        "shellbane_gryphon": 0,
+        "skotizo": 0,
+        "sol_heredit": 19,
+        "spindel": 346,
+        "tempoross": 0,
+        "the_gauntlet": 3,
+        "the_corrupted_gauntlet": 63,
+        "the_hueycoatl": 633,
+        "the_leviathan": 42,
+        "the_royal_titans": 0,
+        "the_whisperer": 277,
+        "theatre_of_blood": 0,
+        "theatre_of_blood_hard_mode": 0,
+        "thermonuclear_smoke_devil": 0,
+        "tombs_of_amascut": 0,
+        "tombs_of_amascut_expert": 5,
+        "tzkal_zuk": 0,
+        "tztok_jad": 0,
+        "vardorvis": 190,
+        "venenatis": 1,
+        "vetion": 7,
+        "vorkath": 0,
+        "wintertodt": 0,
+        "yama": 152,
+        "zalcano": 276,
+        "zulrah": 666
+      },
+      "missing": []
+    },
+    "Team 4": {
+      "memberCount": 16,
+      "members": [
+        "IronEiny",
+        "N I S H",
+        "Queen Za1x",
+        "Northside",
+        "Shv",
+        "SirHmm",
+        "content days",
+        "BeaverLordAU",
+        "rarru",
+        "Sofoo",
+        "3 dreamz",
+        "Night Mac",
+        "Content imp",
+        "k0ll3far",
+        "dogbumfister",
+        "Tllyman"
+      ],
+      "skills": {
+        "attack": {
+          "xp": 377705,
+          "level": 63,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "defence": {
+          "xp": 263944,
+          "level": 59,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "strength": {
+          "xp": 1484505,
+          "level": 77,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "hitpoints": {
+          "xp": 1837548,
+          "level": 79,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "ranged": {
+          "xp": 3111394,
+          "level": 84,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "prayer": {
+          "xp": 22024,
+          "level": 34,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "magic": {
+          "xp": 454685,
+          "level": 65,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "cooking": {
+          "xp": 2130,
+          "level": 14,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "woodcutting": {
+          "xp": 2706,
+          "level": 15,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "fletching": {
+          "xp": 16200,
+          "level": 31,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "fishing": {
+          "xp": 64645,
+          "level": 45,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "firemaking": {
+          "xp": 691,
+          "level": 7,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "crafting": {
+          "xp": 16634,
+          "level": 32,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "smithing": {
+          "xp": 649561,
+          "level": 68,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "mining": {
+          "xp": 25248,
+          "level": 36,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "herblore": {
+          "xp": 3113,
+          "level": 16,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "agility": {
+          "xp": 14561,
+          "level": 30,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "thieving": {
+          "xp": 818,
+          "level": 8,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "slayer": {
+          "xp": 65333,
+          "level": 45,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "farming": {
+          "xp": 196893,
+          "level": 56,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "runecrafting": {
+          "xp": 117477,
+          "level": 51,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "hunter": {
+          "xp": 426057,
+          "level": 64,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "construction": {
+          "xp": 13770,
+          "level": 30,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "sailing": {
+          "xp": 3424275,
+          "level": 85,
+          "maxed": false,
+          "overflowXp": 0
+        }
+      },
+      "bosses": {
+        "abyssal_sire": 0,
+        "alchemical_hydra": 0,
+        "amoxliatl": 0,
+        "araxxor": 0,
+        "artio": 0,
+        "barrows_chests": 0,
+        "brutus": 0,
+        "bryophyta": 0,
+        "callisto": 27,
+        "calvarion": 148,
+        "cerberus": 0,
+        "chambers_of_xeric": 0,
+        "chambers_of_xeric_challenge_mode": 1,
+        "chaos_elemental": 7,
+        "chaos_fanatic": 0,
+        "commander_zilyana": 144,
+        "corporeal_beast": 0,
+        "crazy_archaeologist": 0,
+        "dagannoth_prime": 0,
+        "dagannoth_rex": 0,
+        "dagannoth_supreme": 0,
+        "deranged_archaeologist": 0,
+        "doom_of_mokhaiotl": 11,
+        "duke_sucellus": 0,
+        "general_graardor": 19,
+        "giant_mole": 0,
+        "grotesque_guardians": 0,
+        "hespori": 1,
+        "kalphite_queen": 0,
+        "king_black_dragon": 0,
+        "kraken": 0,
+        "kreearra": 122,
+        "kril_tsutsaroth": 5,
+        "lunar_chests": 9,
+        "mad_angel": 0,
+        "maggot_king": 0,
+        "mimic": 0,
+        "nex": 0,
+        "nightmare": 0,
+        "phosanis_nightmare": 5,
+        "obor": 0,
+        "phantom_muspah": 0,
+        "sarachnis": 0,
+        "scorpia": 0,
+        "scurrius": 0,
+        "shellbane_gryphon": 0,
+        "skotizo": 0,
+        "sol_heredit": 0,
+        "spindel": 0,
+        "tempoross": 0,
+        "the_gauntlet": 0,
+        "the_corrupted_gauntlet": 1,
+        "the_hueycoatl": 85,
+        "the_leviathan": 0,
+        "the_royal_titans": 0,
+        "the_whisperer": 0,
+        "theatre_of_blood": 2,
+        "theatre_of_blood_hard_mode": 0,
+        "thermonuclear_smoke_devil": 44,
+        "tombs_of_amascut": 0,
+        "tombs_of_amascut_expert": 4,
+        "tzkal_zuk": 0,
+        "tztok_jad": 0,
+        "vardorvis": 44,
+        "venenatis": 0,
+        "vetion": 122,
+        "vorkath": 0,
+        "wintertodt": 0,
+        "yama": 0,
+        "zalcano": 0,
+        "zulrah": 57
+      },
+      "missing": [
+        {
+          "username": "n i s h",
+          "error": "WOM /players/n%20i%20s%20h/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "queen za1x",
+          "error": "WOM /players/queen%20za1x/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "northside",
+          "error": "WOM /players/northside/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "shv",
+          "error": "WOM /players/shv/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "sirhmm",
+          "error": "WOM /players/sirhmm/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "content days",
+          "error": "WOM /players/content%20days/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "beaverlordau",
+          "error": "WOM /players/beaverlordau/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "rarru",
+          "error": "WOM /players/rarru/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "sofoo",
+          "error": "WOM /players/sofoo/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "3 dreamz",
+          "error": "WOM /players/3%20dreamz/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "night mac",
+          "error": "WOM /players/night%20mac/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "content imp",
+          "error": "WOM /players/content%20imp/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "k0ll3far",
+          "error": "WOM /players/k0ll3far/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "dogbumfister",
+          "error": "WOM /players/dogbumfister/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "tllyman",
+          "error": "WOM /players/tllyman/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        }
+      ]
+    },
+    "Team 3": {
+      "memberCount": 18,
+      "members": [
+        "Nao Tomori",
+        "FaIIingAngeI",
+        "Gunnamerican",
+        "Krepty",
+        "AndyThomas94",
+        "Lil Sod",
+        "os step bro",
+        "Where Coffee",
+        "T OXI C",
+        "G l e n n n",
+        "SickSeeLa",
+        "Gunataky",
+        "FalIenAngeI",
+        "TwoGirls1Def",
+        "Selvish",
+        "IMightReply",
+        "Yuyu Shirai",
+        "failingangei"
+      ],
+      "skills": {
+        "attack": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "defence": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "strength": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "hitpoints": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "ranged": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "prayer": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "magic": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "cooking": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "woodcutting": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "fletching": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "fishing": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "firemaking": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "crafting": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "smithing": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "mining": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "herblore": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "agility": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "thieving": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "slayer": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "farming": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "runecrafting": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "hunter": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "construction": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "sailing": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        }
+      },
+      "bosses": {},
+      "missing": [
+        {
+          "username": "nao tomori",
+          "error": "WOM /players/nao%20tomori/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "faiiingangei",
+          "error": "WOM /players/faiiingangei/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "gunnamerican",
+          "error": "WOM /players/gunnamerican/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "krepty",
+          "error": "WOM /players/krepty/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "andythomas94",
+          "error": "WOM /players/andythomas94/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "lil sod",
+          "error": "WOM /players/lil%20sod/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "os step bro",
+          "error": "WOM /players/os%20step%20bro/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "where coffee",
+          "error": "WOM /players/where%20coffee/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "t oxi c",
+          "error": "WOM /players/t%20oxi%20c/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "g l e n n n",
+          "error": "WOM /players/g%20l%20e%20n%20n%20n/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "sickseela",
+          "error": "WOM /players/sickseela/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "gunataky",
+          "error": "WOM /players/gunataky/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "falienangei",
+          "error": "WOM /players/falienangei/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "twogirls1def",
+          "error": "WOM /players/twogirls1def/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "selvish",
+          "error": "WOM /players/selvish/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "imightreply",
+          "error": "WOM /players/imightreply/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "yuyu shirai",
+          "error": "WOM /players/yuyu%20shirai/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "failingangei",
+          "error": "WOM /players/failingangei/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        }
+      ]
+    },
+    "Team 2": {
+      "memberCount": 19,
+      "members": [
+        "Iron Bjorndt",
+        "Wasabeh",
+        "Bjorndt",
+        "Abruzi",
+        "24 Brews",
+        "l Reece",
+        "spelblastr",
+        "str8uphigh71",
+        "Perma Grind",
+        "aggresive178",
+        "CorpRng",
+        "Mr Sqeez",
+        "Sir_Cumseyes",
+        "Ch1zz",
+        "Def is Weird",
+        "SqeezSupreme",
+        "sexyxyst",
+        "24BrewsCuck",
+        "6iambo3"
+      ],
+      "skills": {
+        "attack": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "defence": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "strength": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "hitpoints": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "ranged": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "prayer": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "magic": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "cooking": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "woodcutting": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "fletching": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "fishing": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "firemaking": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "crafting": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "smithing": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "mining": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "herblore": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "agility": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "thieving": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "slayer": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "farming": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "runecrafting": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "hunter": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "construction": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        },
+        "sailing": {
+          "xp": 0,
+          "level": 1,
+          "maxed": false,
+          "overflowXp": 0
+        }
+      },
+      "bosses": {},
+      "missing": [
+        {
+          "username": "iron bjorndt",
+          "error": "WOM /players/iron%20bjorndt/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "wasabeh",
+          "error": "WOM /players/wasabeh/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "bjorndt",
+          "error": "WOM /players/bjorndt/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "abruzi",
+          "error": "WOM /players/abruzi/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "24 brews",
+          "error": "WOM /players/24%20brews/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "l reece",
+          "error": "WOM /players/l%20reece/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "spelblastr",
+          "error": "WOM /players/spelblastr/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "str8uphigh71",
+          "error": "WOM /players/str8uphigh71/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "perma grind",
+          "error": "WOM /players/perma%20grind/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "aggresive178",
+          "error": "WOM /players/aggresive178/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "corprng",
+          "error": "WOM /players/corprng/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "mr sqeez",
+          "error": "WOM /players/mr%20sqeez/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "sir cumseyes",
+          "error": "WOM /players/sir%20cumseyes/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "ch1zz",
+          "error": "WOM /players/ch1zz/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "def is weird",
+          "error": "WOM /players/def%20is%20weird/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "sqeezsupreme",
+          "error": "WOM /players/sqeezsupreme/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "sexyxyst",
+          "error": "WOM /players/sexyxyst/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "24brewscuck",
+          "error": "WOM /players/24brewscuck/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        },
+        {
+          "username": "6iambo3",
+          "error": "WOM /players/6iambo3/gained?startDate=2026-07-17T17%3A30%3A00.000Z&endDate=2026-07-30T16%3A19%3A31.245Z -> HTTP 429 Too Many Requests"
+        }
+      ]
+    }
+  }
 }
