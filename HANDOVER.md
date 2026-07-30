@@ -110,6 +110,16 @@ deploy) — see next steps.
   the hydration effect is live-character → gear → battle, so a resumed fight is
   rebuilt with current stats. `reset` uses the live character too.
 - Degrades cleanly: no `web/.env` (or a failed read) → stays on the snapshot.
+- **Persistence requires `web/.env`** (`VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY`,
+  read by Vite at dev-server startup / build time). Without them gear, battle
+  and boss progress are **session-only** and reset when the app is fully closed.
+  The footer now shows a **cloud-save indicator** (`☁ Cloud save on` vs
+  `⚠ Session only`) so it's obvious which mode you're in.
+- **StrictMode load bug — fixed (2026-07-30)**: the hydration effect marked a
+  team "loaded" *before* the async ran, so React 18/19 StrictMode's dev
+  mount→unmount→remount cancelled the first run and skipped the second — nothing
+  loaded and progress looked reset on every reload. The flag is now set only
+  after a completed load. (Prod builds don't double-invoke, so this hit dev.)
 - **Freshness is automated**: the `Refresh WOM data` GitHub Action
   (`.github/workflows/refresh-wom.yml`) re-runs `fetch → sync` every 30 min and
   is manually runnable from the Actions tab (`Run workflow`) for live demos.

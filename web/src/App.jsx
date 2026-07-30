@@ -18,6 +18,7 @@ import {
 import { loadGear, saveGear } from './game/gear.js';
 import { loadBattle, saveBattle } from './game/battle.js';
 import { loadProgress, saveProgress } from './game/progress.js';
+import { isSupabaseConfigured } from './game/supabase.js';
 import BattleScreen from './components/BattleScreen.jsx';
 
 export default function App() {
@@ -97,7 +98,6 @@ export default function App() {
   // loadout.
   useEffect(() => {
     if (loadedTeams.current.has(teamName)) return;
-    loadedTeams.current.add(teamName);
     let cancelled = false;
     (async () => {
       const liveChar = await loadTeamCharacterLive(teamName);
@@ -127,6 +127,12 @@ export default function App() {
       const resumedIdx = saved ? bossIndex(saved.bossId) : 0;
       const seed = Math.max(savedProgress ?? 0, resumedIdx, 0);
       setProgressByTeam((m) => (m[teamName] !== undefined ? m : { ...m, [teamName]: seed }));
+
+      // Mark loaded only AFTER a completed (non-cancelled) load. Doing this at
+      // the top would break React StrictMode's mount→unmount→remount in dev: the
+      // first run adds the flag then gets cancelled, and the second run skips —
+      // so nothing ever loads and progress looks "reset" on every reload.
+      loadedTeams.current.add(teamName);
     })();
     return () => {
       cancelled = true;
@@ -281,6 +287,9 @@ export default function App() {
       <footer className="foot">
         Character derived live from pooled WOM data · {teamName} has real gains;
         empty teams read as level 1.
+        <span className={`savetag ${isSupabaseConfigured ? 'on' : 'off'}`}>
+          {isSupabaseConfigured ? '☁ Cloud save on' : '⚠ Session only — set web/.env'}
+        </span>
       </footer>
     </div>
   );

@@ -164,6 +164,9 @@ body {
 
 /* ---- footer ---- */
 .foot { margin-top: 16px; text-align: center; color: var(--muted); font-size: 7px; line-height: 1.7; }
+.savetag { display: block; margin-top: 6px; font-size: 7px; }
+.savetag.on { color: var(--gold, #f2c14e); }
+.savetag.off { color: #d08a3a; }
 
 @media (max-width: 620px) {
   .statstrip { grid-template-columns: repeat(4, 1fr); }
