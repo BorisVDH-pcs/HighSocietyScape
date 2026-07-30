@@ -99,7 +99,9 @@ export default function BattleScreen({
       for (const id of battle.loot ?? []) {
         lines.push(`${weaponById(id).name} was added to your gear!`);
       }
-      lines.push('FIGHT AGAIN to farm it, or open the MAP.');
+      lines.push(
+        auto ? 'AUTO is on — FIGHT AGAIN keeps farming.' : 'FIGHT AGAIN to farm it, or open the MAP.'
+      );
     } else {
       lines = [`${player.name} is out of HP!`, 'Defeated...'];
     }
@@ -203,10 +205,18 @@ export default function BattleScreen({
                 </button>
               </div>
             ) : over ? (
-              <div className="grid2">
-                <button className="mbtn" onClick={again}>{againLabel}</button>
-                <button className="mbtn" onClick={() => setMenu('map')}>🗺 MAP</button>
-              </div>
+              <>
+                <div className="grid2">
+                  <button className="mbtn" onClick={again}>{againLabel}</button>
+                  <button className="mbtn" onClick={() => setMenu('map')}>🗺 MAP</button>
+                </div>
+                <button
+                  className={`mbtn wide auto ${auto ? 'on' : ''}`}
+                  onClick={onToggleAuto}
+                >
+                  {auto ? '■ STOP AUTO' : '⚔ AUTO-FIGHT'}
+                </button>
+              </>
             ) : (
               <>
                 <div className="grid2">

@@ -85,9 +85,11 @@ deploy) — see next steps.
   unlocked (safety net), and it degrades to session-only when Supabase/the table
   is absent. **⚠️ Needs migration `0004_team_progress.sql` applied** for
   cross-reload persistence.
-- **AUTO-FIGHT**: a toggle in the command menu throws one attack every ~300ms
-  until someone hits 0 HP, then stops (`auto` state + effect in `App.jsx`).
-  STOP halts it early; switching teams or starting a new fight cancels it.
+- **AUTO-FIGHT** is a persistent MODE (`auto` state + effect in `App.jsx`):
+  throws one attack every ~300ms until someone hits 0 HP, then stays ARMED — so
+  FIGHT AGAIN keeps auto-fighting for hands-off farming. Only STOP or a team
+  switch turns it off. The toggle shows on both the active menu and the end
+  screen so it's always controllable.
 - **MAP replaced RUN** in the command box; the end screen offers FIGHT AGAIN +
   MAP. `nextBoss` still exists in `combat.js` but is no longer used for
   auto-advance.

@@ -133,16 +133,14 @@ export default function App() {
     };
   }, [teamName]);
 
-  // AUTO-fight: while enabled and the current fight is still active, throw one
-  // attack every ~300ms so the HP bars visibly tick down; stop the moment the
-  // battle ends (someone hit 0 HP). Re-runs after each attack because `battle`
-  // is a dependency, chaining the next swing until the fight is over.
+  // AUTO-fight is a persistent MODE: while enabled and the current fight is
+  // active, throw one attack every ~300ms so the HP bars visibly tick down.
+  // When the fight ends it simply stops attacking but STAYS ARMED — so hitting
+  // FIGHT AGAIN resumes auto-fighting for hands-off farming. It only turns off
+  // on STOP or a team switch. Re-runs after each attack (and each new fight)
+  // because `battle` is a dependency, chaining swings until the fight is over.
   useEffect(() => {
-    if (!auto) return undefined;
-    if (battle.status !== 'active') {
-      setAuto(false);
-      return undefined;
-    }
+    if (!auto || battle.status !== 'active') return undefined;
     const t = setTimeout(() => handleAttack(), 300);
     return () => clearTimeout(t);
   }, [auto, battle]);
@@ -207,13 +205,13 @@ export default function App() {
     startFight(name, bossById(bossId));
   }
 
-  // Shared: begin a fresh full-HP fight vs `boss` for a team, persist it, and
-  // cancel any auto-fight / flash left over from the previous fight.
+  // Shared: begin a fresh full-HP fight vs `boss` for a team and persist it.
+  // Deliberately does NOT touch `auto` — if AUTO mode is on it carries into the
+  // new fight (FIGHT AGAIN keeps farming); STOP or a team switch turns it off.
   function startFight(name, boss) {
     const w = weaponById(gearFor(name).weaponId);
     updateBattle(name, initBattle(characterFor(name), boss, w));
     setFlash(null);
-    setAuto(false);
   }
 
   // Switch teams. No reset — each team keeps its own battle (see battleByTeam),
