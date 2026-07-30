@@ -83,6 +83,7 @@ async function main() {
   const out = {
     competitionId: Number(competitionId),
     title: competition.title,
+    metric: competition.metric ?? null,
     window: { start: startDate, end: endDate },
     generatedAt: endDate,
     teams: {},

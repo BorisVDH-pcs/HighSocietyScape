@@ -1,6 +1,7 @@
 {
     "competitionId":  145906,
     "title":  "High Society Snakes and Rats Bingo",
+    "metric":  "ehp",
     "window":  {
                    "start":  "2026-07-17T17:30:00.000Z",
                    "end":  "2026-07-30T15:30:56.910Z"
