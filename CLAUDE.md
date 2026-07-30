@@ -88,6 +88,9 @@ Core loop:
 - **Pooling math:** CONFIRMED — sum gains → cap level at 99 → discard overflow
   (no combat bonus). See "Architecture decisions".
 - **First boss:** the **Goblin** (easiest rung of the boss ladder).
+- **Boss ladder:** a 5-rung ladder is built — **Goblin → Giant Rat → Skeleton →
+  Hobgoblin → Lesser Demon** with scaling stats + per-boss weapon drops
+  (`BOSS_LADDER` in `web/src/game/combat.js`). Balance/rates are first-guess.
 - **Pipeline:** run end-to-end against the live Supabase DB — tables populated
   (4 teams / 71 members / 96 skill rows / 142 boss rows), read-back verified.
 
@@ -96,11 +99,11 @@ Core loop:
   committing to it.
 - **First skill** to surface in the battle screen (Team 1's maxed combat skills
   are Strength / Hitpoints / Ranged).
-- Drop table design (rates, item effects, which bosses unlock which gear) is
-  only just started: the app-side Goblin drops a **Steel Sword at 1/5** (melee,
-  +5 power) into the player's owned gear. The `drops` array pattern lives on the
-  boss in `web/src/game/combat.js`. Rates/armour/gear tiers across a boss ladder
-  are still to be designed.
+- Drop table design at scale: the 5-boss ladder now drops weapons up to tier 3
+  (per-boss `drops` in `web/src/game/combat.js`, weapons in `weapons.js`), but
+  coverage is uneven (ranged stops at t2), there's **no armour/defence** yet
+  (combat only uses weapon `power`), and rates/tiers are first-guess. Full gear
+  and drop-table balancing is still to be designed.
 
 ## Working style notes
 - Boris prefers concrete next steps over long theoretical discussion.

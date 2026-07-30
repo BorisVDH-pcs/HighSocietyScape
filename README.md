@@ -76,9 +76,12 @@ npm run dev          # serves http://localhost:5173
 
 A Vite + React, Game Boy / Pokémon-style turn-based battle screen driven by a
 team's derived character. Pick a loadout in **GEAR** (Melee / Ranged / Magic —
-sets your sprite and attack style), then **FIGHT** the Goblin; beating it can
-drop a **Steel Sword** (1/5) into your gear. The game always wields your
-**highest-tier** weapon, so a Steel Sword drop is equipped automatically.
+sets your sprite and attack style), then **FIGHT** your way up a **5-boss
+ladder**: Goblin → Giant Rat → Skeleton → Hobgoblin → Lesser Demon, each scaling
+in difficulty. Beating a boss advances you to the next (losing retries the same
+one) and can drop a higher-tier weapon (e.g. Goblin → Steel Sword 1/5,
+Hobgoblin → Mithril Sword). The game always wields your **highest-tier** weapon,
+so drops are equipped automatically. Ladder progress persists per team.
 
 **Gear and battles are per team** — each team has its own inventory *and* its
 own fight. Fill in `web/.env` with the public anon pair to persist both to
@@ -177,8 +180,9 @@ Notes:
 | `supabase/migrations/0003_team_battle.sql` | Schema: team_battle (per-team in-progress fight, anon read/write) |
 | `data/145906-latest.json` | Cached snapshot of all 4 teams (committed) |
 | `web/` | Vite + React battle app (see "Run the battle app") |
-| `web/src/game/combat.js` | Turn-based combat engine + boss drop tables + battle rehydration |
+| `web/src/game/combat.js` | Combat engine + `BOSS_LADDER` (5 bosses) / `nextBoss` + battle rehydration |
 | `web/src/game/weapons.js` | Weapon catalog + tiers + best-owned/auto-equip helpers |
+| `web/src/components/Sprite.jsx` | Original chibi SVG sprites — heroes + all 5 bosses (`BossSprite`) |
 | `web/src/game/character.js` | Browser character loader — snapshot seed + live Supabase read |
 | `web/src/game/supabase.js` | Browser PostgREST client, anon key (reads + gear writes) |
 | `web/src/game/gear.js` | Load/save per-team gear to Supabase (graceful fallback) |

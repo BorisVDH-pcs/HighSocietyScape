@@ -5,24 +5,84 @@
 
 import { DEFAULT_WEAPON, weaponById } from './weapons.js';
 
-// First boss on the ladder: the Goblin. Deliberately easy — this validates the
-// loop; harder bosses will scale hp/accuracy/maxHit up from here.
-export const GOBLIN = {
-  id: 'goblin',
-  name: 'Goblin',
-  level: 2,       // flavour only — shown as :L2 in the battle UI
-  maxHp: 55,
-  maxHit: 4,      // damage it can roll against the player
-  accuracy: 0.45, // chance one of its swings lands
-  blurb: 'A snivelling green nuisance. Every hero starts somewhere.',
-  // Drop table: rolled once on victory. chance is per-kill probability.
-  drops: [{ weaponId: 'steel_sword', chance: 1 / 5 }],
-};
+// The BOSS LADDER — an ordered progression from a trivial Goblin up to a
+// capstone Lesser Demon. Each rung scales hp / maxHit / accuracy (its `level`
+// is flavour, shown as :L# in the UI) and drops one higher-tier weapon so the
+// climb rewards a real upgrade (auto-equipped by tier — see weapons.js).
+// `drops` is rolled once on victory; `chance` is the per-kill probability.
+//
+// Beating a boss advances the team to the next rung (see nextBoss); losing
+// retries the same one. A brand-new team starts at the first rung (the Goblin).
+export const BOSS_LADDER = [
+  {
+    id: 'goblin',
+    name: 'Goblin',
+    level: 2,
+    maxHp: 55,
+    maxHit: 4,
+    accuracy: 0.45,
+    blurb: 'A snivelling green nuisance. Every hero starts somewhere.',
+    drops: [{ weaponId: 'steel_sword', chance: 1 / 5 }],
+  },
+  {
+    id: 'giant_rat',
+    name: 'Giant Rat',
+    level: 7,
+    maxHp: 85,
+    maxHit: 6,
+    accuracy: 0.52,
+    blurb: 'A mangy, dog-sized rodent with a taste for adventurers.',
+    drops: [{ weaponId: 'oak_shortbow', chance: 1 / 4 }],
+  },
+  {
+    id: 'skeleton',
+    name: 'Skeleton',
+    level: 25,
+    maxHp: 140,
+    maxHit: 9,
+    accuracy: 0.6,
+    blurb: 'A rattling pile of bones that refuses to stay buried.',
+    drops: [{ weaponId: 'apprentice_wand', chance: 1 / 5 }],
+  },
+  {
+    id: 'hobgoblin',
+    name: 'Hobgoblin',
+    level: 42,
+    maxHp: 210,
+    maxHit: 13,
+    accuracy: 0.66,
+    blurb: 'A hulking cousin of the goblin — bigger, meaner, club in hand.',
+    drops: [{ weaponId: 'mithril_sword', chance: 1 / 6 }],
+  },
+  {
+    id: 'lesser_demon',
+    name: 'Lesser Demon',
+    level: 82,
+    maxHp: 320,
+    maxHit: 18,
+    accuracy: 0.72,
+    blurb: 'A towering horned fiend wreathed in flame. The final rung.',
+    drops: [{ weaponId: 'infernal_staff', chance: 1 / 8 }],
+  },
+];
+
+// First rung, exported as GOBLIN for back-compat (initBattle's default etc.).
+export const GOBLIN = BOSS_LADDER[0];
 
 // Boss registry — lets a persisted battle (which stores only a boss id) resolve
 // back to the full boss definition on resume. Unknown ids fall back to GOBLIN.
-export const BOSSES = { [GOBLIN.id]: GOBLIN };
+export const BOSSES = Object.fromEntries(BOSS_LADDER.map((b) => [b.id, b]));
 export const bossById = (id) => BOSSES[id] ?? GOBLIN;
+
+/**
+ * The next rung after a given boss id, or null if it's the last (ladder
+ * cleared). Used on victory to advance the team's fight.
+ */
+export function nextBoss(bossId) {
+  const i = BOSS_LADDER.findIndex((b) => b.id === bossId);
+  if (i === -1 || i === BOSS_LADDER.length - 1) return null;
+  return BOSS_LADDER[i + 1];
+}
 
 /** Roll a boss's drop table on kill. Returns the weapon ids that dropped. */
 function rollDrops(boss) {

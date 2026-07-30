@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Hero, GoblinSprite } from './Sprite.jsx';
+import { Hero, BossSprite } from './Sprite.jsx';
 import { weaponById } from '../game/weapons.js';
+import { nextBoss } from '../game/combat.js';
 
 // Gen-1 style HP bar: "HP" label + bar, with current/max numbers.
 function PokeHP({ hp, max }) {
@@ -64,14 +65,29 @@ export default function BattleScreen({ battle, flash, owned, onAttack, onEquip, 
     onReset();
   }
 
+  // Ladder progression: after a win, is there another rung or is it cleared?
+  const won = status === 'won';
+  const upcoming = won ? nextBoss(boss.id) : null;
+  const cleared = won && !upcoming;
+  const nextLabel = !won
+    ? '↺ RETRY'
+    : upcoming
+      ? `▶ NEXT: ${upcoming.name.toUpperCase()}`
+      : '↺ NEW RUN';
+
   // What the message window shows.
   let lines;
   if (over) {
-    if (status === 'won') {
-      lines = [`The wild ${boss.name} fainted!`, `${player.name} won the battle!`];
+    if (won) {
+      lines = [`The wild ${boss.name} fainted!`];
       for (const id of battle.loot ?? []) {
         lines.push(`${weaponById(id).name} was added to your gear!`);
       }
+      lines.push(
+        cleared
+          ? `${player.name} conquered the boss ladder! 🏆`
+          : `A ${upcoming.name} bars the way ahead...`
+      );
     } else {
       lines = [`${player.name} is out of HP!`, 'Defeated...'];
     }
@@ -100,7 +116,7 @@ export default function BattleScreen({ battle, flash, owned, onAttack, onEquip, 
 
           {/* enemy sprite — top-right */}
           <div className="mon enemy-mon">
-            <GoblinSprite hurt={flash === 'boss'} />
+            <BossSprite id={boss.id} hurt={flash === 'boss'} />
           </div>
 
           {/* player sprite — bottom-left (changes with equipped gear) */}
@@ -132,7 +148,7 @@ export default function BattleScreen({ battle, flash, owned, onAttack, onEquip, 
           <div className="menu">
             {over ? (
               <button className="mbtn wide" onClick={next}>
-                ▶ NEXT
+                {nextLabel}
               </button>
             ) : menu === 'main' ? (
               <div className="grid2">

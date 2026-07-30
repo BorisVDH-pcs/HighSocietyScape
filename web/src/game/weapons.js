@@ -44,6 +44,42 @@ export const WEAPONS = [
     tier: 2,
     desc: 'A heavier blade looted from goblins. Hits harder than bronze.',
   },
+  {
+    id: 'oak_shortbow',
+    name: 'Oak Shortbow',
+    style: 'ranged',
+    icon: '🏹',
+    power: 5,
+    tier: 2,
+    desc: 'A sturdier bow cut from oak. Dropped by the Giant Rat.',
+  },
+  {
+    id: 'apprentice_wand',
+    name: 'Apprentice Wand',
+    style: 'magic',
+    icon: '🪄',
+    power: 6,
+    tier: 2,
+    desc: 'A wand humming with borrowed power. Dropped by the Skeleton.',
+  },
+  {
+    id: 'mithril_sword',
+    name: 'Mithril Sword',
+    style: 'melee',
+    icon: '⚔️',
+    power: 11,
+    tier: 3,
+    desc: 'A keen blue-steel blade. Dropped by the Hobgoblin.',
+  },
+  {
+    id: 'infernal_staff',
+    name: 'Infernal Staff',
+    style: 'magic',
+    icon: '🔥',
+    power: 15,
+    tier: 3,
+    desc: 'A staff crowned with demonfire. Dropped by the Lesser Demon.',
+  },
 ];
 
 // Weapons the player owns from the start; the rest must be earned as drops.

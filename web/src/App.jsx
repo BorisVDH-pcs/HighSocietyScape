@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { loadTeamCharacter, loadTeamCharacterLive, TEAMS, SEASON } from './game/character.js';
-import { initBattle, attack, rehydrateBattle, GOBLIN } from './game/combat.js';
+import { initBattle, attack, rehydrateBattle, nextBoss, GOBLIN } from './game/combat.js';
 import {
   DEFAULT_WEAPON,
   STARTER_WEAPON_IDS,
@@ -133,11 +133,17 @@ export default function App() {
     updateBattle(teamName, { ...battle, player: { ...battle.player, weapon: w } });
   }
 
-  // Start a fresh fight for a team. Persisted (updateBattle), so reopening the
-  // app after a reset shows the fresh fight rather than resuming the old one.
+  // Advance the ladder / start the appropriate next fight for a team, then
+  // persist it (so reopening the app shows this fight, not the finished one):
+  //   won  -> the next boss up the ladder (or loop to the Goblin once cleared)
+  //   lost -> retry the same boss
+  //   otherwise (no prior fight) -> the first rung, the Goblin.
   function reset(name = teamName) {
+    const cur = battleByTeam[name];
+    let boss = GOBLIN;
+    if (cur) boss = cur.status === 'won' ? nextBoss(cur.boss.id) ?? GOBLIN : cur.boss;
     const w = weaponById(gearFor(name).weaponId);
-    updateBattle(name, initBattle(characterFor(name), GOBLIN, w));
+    updateBattle(name, initBattle(characterFor(name), boss, w));
     setFlash(null);
   }
 

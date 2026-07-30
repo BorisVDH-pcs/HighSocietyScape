@@ -10,12 +10,13 @@ _Last updated: 2026-07-30._
 ## Where we are
 
 The project has gone from "pipeline never run" to **a working data pipeline +
-a playable, themed battle screen** with **live character stats**, **per-team
-gear AND battle state that persist to Supabase** (resume a fight mid-battle),
-**redrawn OSRS-style sprites**, and an **automated data-refresh Action**
-(`fetch → sync` every 30 min + manual trigger) — committed and pushed. The core
-loop is now closed end-to-end; remaining work is content/polish (boss ladder,
-gear, deploy) — see next steps.
+a playable, themed battle screen** with **live character stats**, a **5-boss
+progression ladder** (Goblin → … → Lesser Demon), **per-team gear AND battle
+state that persist to Supabase** (resume a fight mid-battle), **redrawn
+OSRS-style sprites**, and an **automated data-refresh Action** (`fetch → sync`
+every 30 min + manual trigger) — committed and pushed. The core loop is now
+closed end-to-end; remaining work is content/polish (more gear, balance,
+deploy) — see next steps.
 
 ### Data pipeline — ✅ done and live
 - WOM competition **145906** ("High Society Snakes and Rats Bingo"), type
@@ -37,9 +38,8 @@ gear, deploy) — see next steps.
 - **GEAR** = loadout: Melee / Ranged / Magic. Choosing one sets both the hero
   **sprite** (Warrior / Archer / Mage) and the **attack style**. FIGHT then
   strikes with the equipped gear.
-- **Drop table**: beating the Goblin has a **1/5 chance to drop a Steel Sword**
-  (melee, +5 power), which is added to the player's owned gear. Verified:
-  ~19.7% over 40k fights.
+- **Drop tables**: each boss has its own (see "Boss ladder" below). The Goblin's
+  is a **1/5 Steel Sword** (melee, +5 power); verified ~19.7% over 40k fights.
 - **Auto-equip by tier (2026-07-30)**: every weapon has a numeric `tier`. The
   game always wields the **highest-tier weapon you own** — a Steel Sword (tier
   2) drop is auto-equipped immediately, replacing the Bronze Sword (tier 1), no
@@ -67,6 +67,25 @@ gear, deploy) — see next steps.
 - `lib/core.mjs` holds the **pure, browser-safe** xp/level/combat/character
   logic. Both the Node scripts and the web app import it (single source of
   truth). `lib/levels.mjs` / `lib/character.mjs` are thin Node wrappers.
+
+### Boss ladder — ✅ done
+- The single Goblin fight is now a **5-rung ladder** with scaling difficulty:
+  **Goblin → Giant Rat → Skeleton → Hobgoblin → Lesser Demon** (capstone). Each
+  rung scales hp / maxHit / accuracy; data lives in `BOSS_LADDER` in
+  `web/src/game/combat.js` (with `BOSSES`/`bossById` + a `nextBoss` helper).
+- **Progression**: beating a boss advances the team to the next rung; losing
+  retries the same one; clearing the Demon loops back to the Goblin (victory
+  lap). Logic is in `App.reset` (win → `nextBoss`, loss → same boss). Because
+  the current boss is part of the persisted battle state, **ladder progress
+  survives reloads / is per team**.
+- **Drops span styles**: each new boss drops one higher-tier weapon —
+  Rat → Oak Shortbow (ranged t2), Skeleton → Apprentice Wand (magic t2),
+  Hobgoblin → Mithril Sword (melee t3), Demon → Infernal Staff (magic t3) — all
+  in `web/src/game/weapons.js`, auto-equipped by the existing tier logic.
+- **Sprites**: 4 new original chibi SVGs (Giant Rat, Skeleton, Hobgoblin, Lesser
+  Demon) in `Sprite.jsx`, picked by `BossSprite({ id })`. Battle UI messaging is
+  ladder-aware ("A Skeleton bars the way ahead...", "conquered the boss ladder
+  🏆", NEXT/RETRY button).
 
 ### Live character stats — ✅ done
 - Battle STATS now reflect each team's **current** pooled WOM gains, read live
@@ -137,19 +156,26 @@ gear, deploy) — see next steps.
     quiver, recurve bow with a nocked arrow.
   - **Mage** — blue wizard robe + sash + sleeves, pointy hat w/ gold star,
     white beard, staff with a glowing orb.
+  - **Boss ladder** (new): **Giant Rat** (brown fur, round ears, snout, whiskers,
+    buck teeth, curling pink tail), **Skeleton** (bone-white skull + eye sockets,
+    ribcage, limb bones), **Hobgoblin** (bulkier muddy-green goblin with warpaint,
+    tusks, big club + hide loincloth), **Lesser Demon** (red skin, bone horns,
+    leathery wings, glowing flame eyes, clawed hands). Picked by
+    `BossSprite({ id })`.
 - Bronze/amber accents tie the sprites into the gold "High Society" theme.
 - **Logo still TODO:** drop the real logo art in as `web/public/logo.png`
   (transparent PNG, ~360px wide). Until then the header shows a styled gold
   "High Society Scape" wordmark fallback.
 
 ## Suggested next steps (pick one)
-1. **Boss ladder** — add bosses after the Goblin with scaling hp/accuracy/
-   maxHit and their own drop tables (the `drops` array pattern already exists
-   on `GOBLIN` in `combat.js`; a `BOSSES`/`bossById` registry is also there
-   now). Would give the game actual progression beyond one fight.
-2. **More gear + drop tables** — expand `weapons.js` (ranged/magic drops,
-   stat-varied gear, higher tiers); consider armour/defence, not just weapons.
+1. **More gear + drop tables** — the ladder added melee/ranged/magic drops up to
+   tier 3, but coverage is uneven (ranged stops at t2) and there's no
+   armour/defence yet — combat only uses weapon `power`. Expand `weapons.js`
+   (fill the tier gaps, add armour with a defence stat the combat engine reads).
    Auto-equip already picks the highest `tier` per style.
+2. **Balance pass** — boss hp/accuracy/maxHit and drop rates in `BOSS_LADDER`
+   are first-guess numbers. For maxed demo teams (Team 1 is combat 111) even the
+   Demon dies fast; tune the curve once real play shows how it feels.
 3. **Deploy** — configs are committed (`netlify.toml` / `vercel.json`): import
    the repo on Netlify or Vercel, add the two `VITE_SUPABASE_*` env vars, done.
    Build runs from the repo root (not `web/`) so the shared `../lib` imports
@@ -158,14 +184,15 @@ gear, deploy) — see next steps.
    deployed app's stats fresh.)
 
 ## Open questions to raise with Boris
-- Drop-table design at scale: which bosses drop what, rates, armour/defence,
-  gear tiers. Only the Goblin → Steel Sword (1/5) exists so far.
-- Character stats are now live from Supabase (resolved). Remaining question:
-  how should the underlying data refresh — a scheduled `fetch → sync` (next
-  step 1), and how often?
-- First boss beyond the Goblin.
-- Auth: gear writes use the public anon key (anyone can overwrite). Add auth
-  before this goes wide?
+- Drop-table / gear design at scale: a 5-boss ladder now drops weapons up to
+  tier 3, but ranged stops at t2 and there's no armour/defence yet. What tiers,
+  rates, and armour do we want across the ladder?
+- Boss-ladder balance: `BOSS_LADDER` hp/accuracy/maxHit and drop rates are
+  first-guess numbers; maxed demo teams clear even the Demon fast. Tune later.
+- Character stats are live from Supabase and auto-refresh every 30 min via the
+  Action (resolved). Interval can be tuned in `.github/workflows/refresh-wom.yml`.
+- Auth: gear + battle writes use the public anon key (anyone can overwrite). Add
+  auth before this goes wide?
 
 ## Working conventions
 - Repo has active collaborators — `git fetch` and rebase before pushing.
