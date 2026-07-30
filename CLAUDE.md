@@ -59,9 +59,10 @@ Core loop:
   event-window gains, not all-time totals) in the DB, and derive the displayed
   level from `xp_table.json` on read. Do not store the derived level itself —
   it will drift out of sync with WOM data.
-- **Pooling math (still open — see Open questions):** current working
-  recommendation is *sum member gains, cap the derived level at 99, and
-  convert overflow xp into a combat/damage bonus*. Not yet confirmed by Boris.
+- **Pooling math (CONFIRMED by Boris, 2026-07-30):** *sum member gains, cap the
+  derived level at 99, and DISCARD overflow xp.* Surplus xp past 99 grants **no**
+  combat/damage bonus. `deriveSkillLevel` still returns an `overflowXp` field but
+  it is display-only and must not feed any game mechanic.
 
 ## Data already produced
 - `xp_table.json` (repo root) — full OSRS level 1–100 xp table generated from
@@ -70,21 +71,22 @@ Core loop:
   included as a headroom row). This is the single source of truth for xp↔level
   conversion — don't regenerate it by hand elsewhere in the codebase,
   import/reference this file.
-    - **Skills list is currently 23 and omits `sailing`.** WOM's API now
-      returns 24 skills including Sailing, which uses the same xp curve — the
-      `skills` array in this file needs `sailing` added so pooling covers all
-      24. (The `levels` table itself is skill-agnostic and needs no change.)
+    - **Skills list is 24 and includes `sailing`** (resolved 2026-07-30). WOM's
+      API returns 24 skills including Sailing, which uses the same xp curve; the
+      `skills` array covers all 24 and pooling handles it end-to-end.
+
+## Resolved decisions (2026-07-30)
+- **Pooling math:** CONFIRMED — sum gains → cap level at 99 → discard overflow
+  (no combat bonus). See "Architecture decisions".
+- **First boss:** the **Goblin** (easiest rung of the boss ladder).
+- **Pipeline:** run end-to-end against the live Supabase DB — tables populated
+  (4 teams / 71 members / 96 skill rows / 142 boss rows), read-back verified.
 
 ## Open questions (ask Boris / don't assume)
-- **Pooling math + level-99 overflow.** Summing ~18 members' event gains pushes
-  combat skills past the 99 cap within ~2 weeks (validated: Team 1 Strength
-  gained 19.3M vs. the 13.03M cap after ~13 days). Working recommendation is
-  *sum gains → cap level at 99 → convert overflow xp into a combat/damage
-  bonus*; alternatives are averaging across members or a diminishing-returns
-  curve. Not yet confirmed.
-- Frontend framework choice.
-- First boss + first skill to prototype with (Boris to pick). Data source is
-  now confirmed (WOM competition 145906, Team 1 fully readable).
+- **Frontend framework** — recommending Vite + React (see below); confirm before
+  committing to it.
+- **First skill** to surface in the battle screen (Team 1's maxed combat skills
+  are Strength / Hitpoints / Ranged).
 - Drop table design (rates, item effects, which bosses unlock which gear)
   is still to be designed — nothing is finalized beyond the cave-crawler /
   "trials of the seas" example used as an illustration in early discussion.
