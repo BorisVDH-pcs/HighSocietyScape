@@ -159,6 +159,8 @@ body {
 .mbtn.move { display: flex; align-items: center; gap: 7px; white-space: nowrap; }
 .mbtn .mtag { font-size: 6.5px; color: var(--dark); margin-left: auto; padding-left: 8px; }
 .mbtn.back { color: var(--dark); margin-top: 2px; }
+.mbtn.locked { color: var(--dark); opacity: .5; cursor: not-allowed; }
+.mbtn.locked::before { content: ''; }
 
 /* ---- footer ---- */
 .foot { margin-top: 16px; text-align: center; color: var(--muted); font-size: 7px; line-height: 1.7; }

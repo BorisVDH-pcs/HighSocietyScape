@@ -76,9 +76,15 @@ deploy) — see next steps.
   `web/src/game/combat.js` (with `BOSSES`/`bossById` + a `nextBoss` helper).
 - **Progression is manual (you stay on a boss to farm drops)**: after a win OR
   loss the post-battle button re-fights the **same** boss (`App.reset`). You
-  move between bosses yourself via the **MAP** menu (`App.selectBoss`, free
-  choice of any rung — no unlock gating). Because the current boss is part of
-  the persisted battle state, the chosen boss survives reloads / is per team.
+  move between bosses yourself via the **MAP** menu (`App.selectBoss`).
+- **Unlock gating**: bosses unlock in order — beating rung i unlocks i+1, and the
+  MAP shows later rungs 🔒 locked/disabled until earned. Progress is per team
+  (`progressByTeam` / `unlockUpTo` in `App.jsx`, `bossIndex` in `combat.js`) and
+  persisted to the **`team_progress`** table via `web/src/game/progress.js`
+  (`loadProgress`/`saveProgress`). A resumed fight's boss is always treated as
+  unlocked (safety net), and it degrades to session-only when Supabase/the table
+  is absent. **⚠️ Needs migration `0004_team_progress.sql` applied** for
+  cross-reload persistence.
 - **AUTO-FIGHT**: a toggle in the command menu throws one attack every ~300ms
   until someone hits 0 HP, then stops (`auto` state + effect in `App.jsx`).
   STOP halts it early; switching teams or starting a new fight cancels it.

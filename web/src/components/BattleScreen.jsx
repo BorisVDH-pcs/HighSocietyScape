@@ -27,6 +27,7 @@ export default function BattleScreen({
   flash,
   owned,
   auto,
+  maxUnlocked = 0,
   onAttack,
   onEquip,
   onReset,
@@ -163,16 +164,21 @@ export default function BattleScreen({
           <div className="menu">
             {menu === 'map' ? (
               <div className="moves">
-                {BOSS_LADDER.map((b) => (
-                  <button
-                    key={b.id}
-                    className={`mbtn move ${b.id === boss.id ? 'on' : ''}`}
-                    onClick={() => travel(b.id)}
-                  >
-                    {b.name.toUpperCase()}
-                    <span className="mtag">:L{b.level}</span>
-                  </button>
-                ))}
+                {BOSS_LADDER.map((b, i) => {
+                  const locked = i > maxUnlocked;
+                  return (
+                    <button
+                      key={b.id}
+                      className={`mbtn move ${b.id === boss.id ? 'on' : ''} ${locked ? 'locked' : ''}`}
+                      disabled={locked}
+                      onClick={() => travel(b.id)}
+                    >
+                      {locked ? '🔒 ' : ''}
+                      {b.name.toUpperCase()}
+                      <span className="mtag">{locked ? 'locked' : `:L${b.level}`}</span>
+                    </button>
+                  );
+                })}
                 <button className="mbtn back" onClick={() => setMenu('main')}>
                   ← BACK
                 </button>

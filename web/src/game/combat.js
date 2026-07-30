@@ -74,12 +74,15 @@ export const GOBLIN = BOSS_LADDER[0];
 export const BOSSES = Object.fromEntries(BOSS_LADDER.map((b) => [b.id, b]));
 export const bossById = (id) => BOSSES[id] ?? GOBLIN;
 
+/** A boss's position on the ladder (0-based), or -1 if unknown. */
+export const bossIndex = (bossId) => BOSS_LADDER.findIndex((b) => b.id === bossId);
+
 /**
  * The next rung after a given boss id, or null if it's the last (ladder
- * cleared). Used on victory to advance the team's fight.
+ * cleared). Used to work out which boss beating this one unlocks.
  */
 export function nextBoss(bossId) {
-  const i = BOSS_LADDER.findIndex((b) => b.id === bossId);
+  const i = bossIndex(bossId);
   if (i === -1 || i === BOSS_LADDER.length - 1) return null;
   return BOSS_LADDER[i + 1];
 }

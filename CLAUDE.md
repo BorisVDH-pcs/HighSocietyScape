@@ -91,6 +91,9 @@ Core loop:
 - **Boss ladder:** a 5-rung ladder is built — **Goblin → Giant Rat → Skeleton →
   Hobgoblin → Lesser Demon** with scaling stats + per-boss weapon drops
   (`BOSS_LADDER` in `web/src/game/combat.js`). Balance/rates are first-guess.
+  **Unlock gating** (CONFIRMED by Boris): bosses unlock in order — beat one to
+  fight the next; you stay on a boss to farm drops and travel via the MAP.
+  Per-team unlock progress persists in `team_progress` (migration 0004).
 - **Pipeline:** run end-to-end against the live Supabase DB — tables populated
   (4 teams / 71 members / 96 skill rows / 142 boss rows), read-back verified.
 

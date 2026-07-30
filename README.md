@@ -37,13 +37,14 @@ open questions.
 2. The base schema (`supabase/migrations/0001_init.sql`) is already applied to
    the live project. Only run it if you point at a brand-new Supabase project.
 
-3. **Per-team persistence** (optional) — to let looted gear and in-progress
-   battles survive reloads and be shared across a team's players, apply
-   `supabase/migrations/0002_team_gear.sql` **and**
-   `supabase/migrations/0003_team_battle.sql` in the Supabase SQL Editor, then
+3. **Per-team persistence** (optional) — to let looted gear, in-progress battles
+   and boss-unlock progress survive reloads and be shared across a team's
+   players, apply `supabase/migrations/0002_team_gear.sql`,
+   `supabase/migrations/0003_team_battle.sql` **and**
+   `supabase/migrations/0004_team_progress.sql` in the Supabase SQL Editor, then
    give the web app the public anon pair (see "Run the battle app"). Without
-   these the app still works; gear and battle state just live in the browser
-   session.
+   these the app still works; gear, battle state and ladder progress just live
+   in the browser session.
 
 ## Run the pipeline
 
@@ -78,13 +79,14 @@ A Vite + React, Game Boy / Pokémon-style turn-based battle screen driven by a
 team's derived character. Pick a loadout in **GEAR** (Melee / Ranged / Magic —
 sets your sprite and attack style), then **FIGHT** any of a **5-boss ladder**:
 Goblin → Giant Rat → Skeleton → Hobgoblin → Lesser Demon, each scaling in
-difficulty. Use **MAP** to travel between bosses (free choice), and
-**AUTO-FIGHT** to auto-attack until someone hits 0 HP. Beating a boss can drop a
-higher-tier weapon (e.g. Goblin → Steel Sword 1/5, Hobgoblin → Mithril Sword);
-you **stay on the boss** afterwards so you can farm it (FIGHT AGAIN), and move on
-only when you choose via MAP. The game always wields your **highest-tier**
-weapon, so drops are equipped automatically. Current boss + progress persist per
-team.
+difficulty. Use **MAP** to travel between bosses and **AUTO-FIGHT** to auto-attack until
+someone hits 0 HP. Bosses **unlock in order** — beat a rung to open the next, so
+the MAP shows later bosses 🔒 locked until you've earned them. Beating a boss can
+drop a higher-tier weapon (e.g. Goblin → Steel Sword 1/5, Hobgoblin → Mithril
+Sword); you **stay on the boss** afterwards so you can farm it (FIGHT AGAIN), and
+move on only when you choose via MAP. The game always wields your
+**highest-tier** weapon, so drops are equipped automatically. Current boss +
+unlock progress persist per team.
 
 **Gear and battles are per team** — each team has its own inventory *and* its
 own fight. Fill in `web/.env` with the public anon pair to persist both to
@@ -98,8 +100,8 @@ combat log intact.
 | `VITE_SUPABASE_URL` | same Project URL as the root `.env` |
 | `VITE_SUPABASE_ANON_KEY` | the publishable/anon key (safe for frontend) |
 
-Persistence needs migrations `0002_team_gear.sql` + `0003_team_battle.sql`
-applied (see Setup step 3).
+Persistence needs migrations `0002_team_gear.sql` + `0003_team_battle.sql` +
+`0004_team_progress.sql` applied (see Setup step 3).
 
 **Character stats are live.** With the `web/.env` anon pair set, the app reads
 each team's *current* pooled WOM gains from Supabase (`team_skills` /
@@ -181,6 +183,7 @@ Notes:
 | `supabase/migrations/0001_init.sql` | Schema: seasons, teams, team_members, team_skills, team_bosses |
 | `supabase/migrations/0002_team_gear.sql` | Schema: team_gear (per-team inventory, anon read/write) |
 | `supabase/migrations/0003_team_battle.sql` | Schema: team_battle (per-team in-progress fight, anon read/write) |
+| `supabase/migrations/0004_team_progress.sql` | Schema: team_progress (per-team boss-unlock index, anon read/write) |
 | `data/145906-latest.json` | Cached snapshot of all 4 teams (committed) |
 | `web/` | Vite + React battle app (see "Run the battle app") |
 | `web/src/game/combat.js` | Combat engine + `BOSS_LADDER` (5 bosses) / `nextBoss` + battle rehydration |
@@ -190,6 +193,7 @@ Notes:
 | `web/src/game/supabase.js` | Browser PostgREST client, anon key (reads + gear writes) |
 | `web/src/game/gear.js` | Load/save per-team gear to Supabase (graceful fallback) |
 | `web/src/game/battle.js` | Load/save per-team in-progress battle to Supabase (graceful fallback) |
+| `web/src/game/progress.js` | Load/save per-team boss-unlock progress (graceful fallback) |
 | `web/src/components/BattleScreen.jsx` | Game Boy battle UI (info boxes, HP, command menu) |
 
 ## Conventions

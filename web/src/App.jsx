@@ -1,6 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { loadTeamCharacter, loadTeamCharacterLive, TEAMS, SEASON } from './game/character.js';
-import { initBattle, attack, rehydrateBattle, bossById, GOBLIN } from './game/combat.js';
+import {
+  initBattle,
+  attack,
+  rehydrateBattle,
+  bossById,
+  bossIndex,
+  BOSS_LADDER,
+  GOBLIN,
+} from './game/combat.js';
 import {
   DEFAULT_WEAPON,
   STARTER_WEAPON_IDS,
@@ -9,6 +17,7 @@ import {
 } from './game/weapons.js';
 import { loadGear, saveGear } from './game/gear.js';
 import { loadBattle, saveBattle } from './game/battle.js';
+import { loadProgress, saveProgress } from './game/progress.js';
 import BattleScreen from './components/BattleScreen.jsx';
 
 export default function App() {
@@ -31,6 +40,10 @@ export default function App() {
   // in-progress fight (and, via Supabase, resumes it after a reload). Keyed by
   // team name; a team with no entry yet falls back to a fresh Goblin fight.
   const [battleByTeam, setBattleByTeam] = useState({});
+  // Boss-ladder unlock progress PER TEAM: the highest ladder index the team can
+  // fight (0 = only the Goblin). Beating rung i unlocks i+1. Persisted to the
+  // team_progress table; defaults to 0 when unloaded / unconfigured.
+  const [progressByTeam, setProgressByTeam] = useState({});
   const [flash, setFlash] = useState(null);
   const [logoOk, setLogoOk] = useState(true);
   const [auto, setAuto] = useState(false); // AUTO-fight: keep attacking until 0 HP
@@ -65,6 +78,17 @@ export default function App() {
     saveBattle(SEASON.id, name, next);
   }
 
+  const LAST_BOSS = BOSS_LADDER.length - 1;
+  const unlockedFor = (name) => progressByTeam[name] ?? 0;
+
+  // Raise a team's unlocked-ladder index (never lowers it) and persist it.
+  function unlockUpTo(name, index) {
+    const target = Math.min(LAST_BOSS, index);
+    if (unlockedFor(name) >= target) return;
+    setProgressByTeam((m) => ({ ...m, [name]: Math.max(m[name] ?? 0, target) }));
+    saveProgress(SEASON.id, name, target);
+  }
+
   // On first visit to a team, hydrate its live character, gear AND in-progress
   // battle from Supabase (once). Each seeds only if we don't already hold local
   // state for that team, so in-session changes win over a slow load. Order
@@ -85,12 +109,24 @@ export default function App() {
       if (cancelled) return;
       if (g) setGearByTeam((m) => (m[teamName] ? m : { ...m, [teamName]: g }));
 
+      const savedProgress = await loadProgress(SEASON.id, teamName);
+      if (cancelled) return;
+
       const saved = await loadBattle(SEASON.id, teamName);
-      if (cancelled || !saved) return;
-      const savedWeapon = weaponById(g?.weaponId ?? saved.weaponId);
-      setBattleByTeam((m) =>
-        m[teamName] ? m : { ...m, [teamName]: rehydrateBattle(char, saved, savedWeapon) }
-      );
+      if (cancelled) return;
+      if (saved) {
+        const savedWeapon = weaponById(g?.weaponId ?? saved.weaponId);
+        setBattleByTeam((m) =>
+          m[teamName] ? m : { ...m, [teamName]: rehydrateBattle(char, saved, savedWeapon) }
+        );
+      }
+
+      // Seed unlock progress, but never below the rung of the resumed fight (so
+      // a persisted battle can't leave you "fighting a locked boss"). Only seeds
+      // if we don't already hold in-session progress for this team.
+      const resumedIdx = saved ? bossIndex(saved.bossId) : 0;
+      const seed = Math.max(savedProgress ?? 0, resumedIdx, 0);
+      setProgressByTeam((m) => (m[teamName] !== undefined ? m : { ...m, [teamName]: seed }));
     })();
     return () => {
       cancelled = true;
@@ -122,6 +158,10 @@ export default function App() {
     const next = attack(battle);
     if (next.boss.hp < battle.boss.hp) flashOnce('boss');
     else if (next.player.hp < battle.player.hp) flashOnce('player');
+
+    // On a win, unlock the next rung of the ladder for this team (MAP gates
+    // bosses beyond the highest unlocked). No-op once already unlocked.
+    if (next.status === 'won') unlockUpTo(teamName, bossIndex(next.boss.id) + 1);
 
     // Absorb any drops into THIS team's owned-gear inventory (deduped), then
     // auto-equip the highest-tier weapon it now owns — so a Steel Sword drop
@@ -159,8 +199,11 @@ export default function App() {
     startFight(name, boss);
   }
 
-  // MAP: start a fresh fight against a chosen boss (any rung — free selection).
+  // MAP: start a fresh fight against a chosen boss — but only if it's unlocked
+  // (index within the team's progress). Locked picks are ignored (the UI also
+  // disables them).
   function selectBoss(name, bossId) {
+    if (bossIndex(bossId) > unlockedFor(name)) return;
     startFight(name, bossById(bossId));
   }
 
@@ -229,6 +272,7 @@ export default function App() {
         flash={flash}
         owned={ownedWeapons}
         auto={auto}
+        maxUnlocked={unlockedFor(teamName)}
         onAttack={handleAttack}
         onEquip={handleEquip}
         onReset={() => reset()}
