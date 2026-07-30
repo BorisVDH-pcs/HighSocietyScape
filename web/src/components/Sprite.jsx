@@ -52,6 +52,25 @@ const DEMON_LT = '#d76a51';  // demon highlight
 const HORN = '#d9cdb0';      // demon horns / claws (bone)
 const FLAME = '#f2913a';     // demonfire / glowing eyes
 
+// Extended ladder (bosses 6–10).
+const FGIANT = '#c85a28';    // fire giant skin
+const FGIANT_DK = '#8f3a14';
+const FGIANT_LT = '#e8894a';
+const GDRAG = '#4e7a3a';     // green dragon scales
+const GDRAG_DK = '#33531f';
+const GDRAG_LT = '#7aa858';
+const BELLY = '#cbb56a';     // dragon belly (both dragons)
+const FROST = '#8fb8cc';     // frost troll skin (icy blue)
+const FROST_DK = '#5b8299';
+const FROST_LT = '#cfe6f0';
+const ABY = '#4a2740';       // abyssal demon body
+const ABY_DK = '#2a1526';
+const ABY_LT = '#743d63';
+const KBD = '#2f2f36';       // king black dragon scales
+const KBD_DK = '#161619';
+const KBD_LT = '#50505a';
+const REDEYE = '#e5443a';    // menacing red eyes
+
 const svgProps = (kind, hurt, label) => ({
   viewBox: '0 0 120 140',
   className: `sprite ${kind} ${hurt ? 'hurt' : ''}`,
@@ -455,11 +474,211 @@ function LesserDemonSprite({ hurt }) {
   );
 }
 
+function FireGiantSprite({ hurt }) {
+  return (
+    <svg {...svgProps('firegiant', hurt, 'Fire Giant')}>
+      <ellipse cx="60" cy="134" rx="36" ry="6" fill={INK} opacity="0.25" stroke="none" />
+      {/* flame aura behind the head */}
+      <path d="M40 34 Q34 10 46 4 Q44 18 54 24 Q52 6 62 2 Q60 20 70 24 Q74 10 82 12 Q78 26 84 36 Z" fill={FLAME} stroke="none" />
+      <path d="M46 30 Q44 16 52 12 Q52 22 60 24 Q58 12 66 10 Q66 22 74 28 Z" fill="#f6c040" stroke="none" />
+
+      {/* thick legs + feet */}
+      <rect x="44" y="112" width="13" height="18" rx="3" fill={FGIANT} />
+      <rect x="64" y="112" width="13" height="18" rx="3" fill={FGIANT} />
+      <path d="M38 130 Q49 124 59 130 Q49 134 38 132 Z" fill={FGIANT_DK} />
+      <path d="M62 130 Q73 124 83 130 Q73 134 62 132 Z" fill={FGIANT_DK} />
+
+      {/* broad torso + charred loincloth */}
+      <path d="M30 70 Q60 58 90 70 L94 112 Q60 124 26 112 Z" fill={FGIANT} />
+      <ellipse cx="42" cy="78" rx="13" ry="11" fill={FGIANT_LT} stroke="none" />
+      <ellipse cx="78" cy="78" rx="13" ry="11" fill={FGIANT_LT} stroke="none" />
+      <path d="M40 104 Q60 112 80 104 L76 122 Q60 128 44 122 Z" fill={FGIANT_DK} />
+      <path d="M50 74 L54 92 M70 74 L66 92" stroke={FGIANT_DK} strokeWidth="2.5" />
+
+      {/* big fists */}
+      <path d="M30 74 Q14 90 18 110 L28 108 Q24 90 40 80 Z" fill={FGIANT} />
+      <circle cx="23" cy="111" r="9" fill={FGIANT} />
+      <path d="M90 74 Q106 90 102 110 L92 108 Q96 90 80 80 Z" fill={FGIANT} />
+      <circle cx="97" cy="111" r="9" fill={FGIANT} />
+
+      {/* head — heavy brow, glowing eyes, snarl */}
+      <path d="M36 48 Q36 24 60 24 Q84 24 84 48 Q84 66 60 78 Q36 66 36 48 Z" fill={FGIANT} />
+      <path d="M38 46 Q52 38 60 45 L57 52 Q50 46 42 49 Z" fill={FGIANT_DK} stroke="none" />
+      <path d="M82 46 Q68 38 60 45 L63 52 Q70 46 78 49 Z" fill={FGIANT_DK} stroke="none" />
+      <ellipse cx="50" cy="53" rx="7" ry="5" fill={FLAME} transform="rotate(12 50 53)" />
+      <ellipse cx="70" cy="53" rx="7" ry="5" fill={FLAME} transform="rotate(-12 70 53)" />
+      <circle cx="51" cy="53" r="2.5" fill={INK} stroke="none" />
+      <circle cx="69" cy="53" r="2.5" fill={INK} stroke="none" />
+      <path d="M46 68 Q60 76 74 68" stroke={INK} strokeWidth="3" fill="none" strokeLinecap="round" />
+      <path d="M52 70 L49 63 L56 69 Z" fill={PAPER} />
+      <path d="M68 70 L71 63 L64 69 Z" fill={PAPER} />
+    </svg>
+  );
+}
+
+function GreenDragonSprite({ hurt }) {
+  return (
+    <svg {...svgProps('greendragon', hurt, 'Green Dragon')}>
+      <ellipse cx="60" cy="134" rx="38" ry="6" fill={INK} opacity="0.25" stroke="none" />
+
+      {/* spiked tail sweeping out */}
+      <path d="M84 112 Q112 116 116 92 Q108 100 96 96 Q104 90 92 88 Z" fill={GDRAG} />
+      {/* wings */}
+      <path d="M38 70 Q8 46 6 82 Q16 84 22 78 Q16 92 30 92 L42 78 Z" fill={GDRAG_DK} />
+      <path d="M14 62 L22 80 M24 66 L30 84" stroke={GDRAG} strokeWidth="2" fill="none" />
+
+      {/* haunched body + belly */}
+      <path d="M34 84 Q60 70 88 84 L90 112 Q60 124 30 112 Z" fill={GDRAG} />
+      <path d="M40 96 Q60 106 80 96 L78 114 Q60 122 42 114 Z" fill={BELLY} stroke="none" />
+      {/* hind legs + clawed feet */}
+      <path d="M40 116 l4 -5 l3 5 l3 -5 l3 5 Z" fill={HORN} stroke="none" />
+      <path d="M70 116 l4 -5 l3 5 l3 -5 l3 5 Z" fill={HORN} stroke="none" />
+
+      {/* long neck up to the head */}
+      <path d="M52 86 Q46 56 66 44 Q78 40 84 30 L92 40 Q84 52 72 56 Q60 64 66 86 Z" fill={GDRAG} />
+      <path d="M58 84 Q54 62 68 52" stroke={GDRAG_LT} strokeWidth="3" fill="none" />
+
+      {/* head — snout, horns, eye, teeth */}
+      <path d="M74 22 Q92 20 100 34 Q102 44 92 48 Q78 50 72 40 Q70 28 74 22 Z" fill={GDRAG} />
+      <path d="M96 34 Q112 30 116 36 Q108 40 98 40 Z" fill={BELLY} stroke="none" />
+      {/* horns back */}
+      <path d="M76 24 Q70 12 62 12 Q72 18 74 28 Z" fill={HORN} />
+      <path d="M84 22 Q80 10 72 8 Q82 16 82 26 Z" fill={HORN} />
+      <circle cx="84" cy="32" r="3" fill={FLAME} stroke="none" />
+      <circle cx="84.5" cy="32" r="1.3" fill={INK} stroke="none" />
+      {/* teeth on the snout */}
+      <path d="M98 40 l2 5 M104 39 l1 5 M110 38 l1 4" stroke={PAPER} strokeWidth="2" />
+    </svg>
+  );
+}
+
+function FrostTrollSprite({ hurt }) {
+  return (
+    <svg {...svgProps('frosttroll', hurt, 'Frost Troll')}>
+      <ellipse cx="60" cy="134" rx="36" ry="6" fill={INK} opacity="0.25" stroke="none" />
+
+      {/* stubby legs + feet */}
+      <rect x="45" y="114" width="13" height="16" rx="4" fill={FROST} />
+      <rect x="63" y="114" width="13" height="16" rx="4" fill={FROST} />
+      <path d="M40 130 Q50 125 59 130 Q50 134 40 132 Z" fill={FROST_DK} />
+      <path d="M62 130 Q72 125 81 130 Q72 134 62 132 Z" fill={FROST_DK} />
+
+      {/* big rounded body */}
+      <path d="M26 78 Q60 62 94 78 L92 116 Q60 128 28 116 Z" fill={FROST} />
+      <ellipse cx="60" cy="100" rx="24" ry="16" fill={FROST_LT} stroke="none" opacity="0.7" />
+
+      {/* ice spikes on the shoulders */}
+      <path d="M30 74 L24 54 L38 68 Z" fill={FROST_LT} />
+      <path d="M90 74 L96 54 L82 68 Z" fill={FROST_LT} />
+
+      {/* arms + fists */}
+      <path d="M28 80 Q16 96 20 114 L30 112 Q26 96 40 84 Z" fill={FROST} />
+      <circle cx="24" cy="114" r="8" fill={FROST} />
+      <path d="M92 80 Q104 96 100 114 L90 112 Q94 96 80 84 Z" fill={FROST} />
+      <circle cx="96" cy="114" r="8" fill={FROST} />
+
+      {/* head sunk into shoulders — white shaggy brow, tusks */}
+      <path d="M38 52 Q38 30 60 30 Q82 30 82 52 Q82 70 60 78 Q38 70 38 52 Z" fill={FROST} />
+      <path d="M34 46 Q60 34 86 46 Q78 40 60 40 Q42 40 34 46 Z" fill={FROST_LT} stroke="none" />
+      <circle cx="51" cy="55" r="3.4" fill={INK} stroke="none" />
+      <circle cx="69" cy="55" r="3.4" fill={INK} stroke="none" />
+      <ellipse cx="60" cy="64" rx="6" ry="4" fill={FROST_DK} stroke="none" />
+      {/* underbite tusks */}
+      <path d="M50 70 L47 78 L54 72 Z" fill={PAPER} />
+      <path d="M70 70 L73 78 L66 72 Z" fill={PAPER} />
+    </svg>
+  );
+}
+
+function AbyssalDemonSprite({ hurt }) {
+  return (
+    <svg {...svgProps('abyssal', hurt, 'Abyssal Demon')}>
+      <ellipse cx="58" cy="134" rx="24" ry="4" fill={INK} opacity="0.22" stroke="none" />
+
+      {/* small bat wings */}
+      <path d="M36 66 Q10 50 10 78 Q18 80 24 74 Q18 86 30 86 L40 74 Z" fill={ABY_DK} />
+      <path d="M84 66 Q110 50 110 78 Q102 80 96 74 Q102 86 90 86 L80 74 Z" fill={ABY_DK} />
+
+      {/* floating wispy lower body (no legs) */}
+      <path d="M40 92 Q60 84 80 92 Q76 118 60 128 Q44 118 40 92 Z" fill={ABY} />
+      <path d="M50 118 Q60 128 70 118 Q60 124 50 118 Z" fill={ABY_DK} stroke="none" />
+
+      {/* torso + spiked shoulders */}
+      <path d="M36 74 Q60 64 84 74 L82 98 Q60 106 38 98 Z" fill={ABY} />
+      <path d="M36 74 L28 60 L46 70 Z" fill={ABY_LT} />
+      <path d="M84 74 L92 60 L74 70 Z" fill={ABY_LT} />
+
+      {/* whip-arm (a curling tendril) */}
+      <path d="M82 82 Q104 78 108 96 Q110 110 98 116" fill="none" stroke={ABY_LT} strokeWidth="4" strokeLinecap="round" />
+      <path d="M36 80 Q22 88 24 104 L32 102 Q30 90 44 86 Z" fill={ABY} />
+
+      {/* horned head, glowing eyes, fanged maw */}
+      <path d="M40 50 Q40 28 60 28 Q80 28 80 50 Q80 66 60 74 Q40 66 40 50 Z" fill={ABY} />
+      <path d="M42 34 Q30 18 22 22 Q34 26 38 44 Z" fill={ABY_LT} />
+      <path d="M78 34 Q90 18 98 22 Q86 26 82 44 Z" fill={ABY_LT} />
+      <ellipse cx="51" cy="50" rx="7" ry="5" fill={REDEYE} transform="rotate(14 51 50)" />
+      <ellipse cx="69" cy="50" rx="7" ry="5" fill={REDEYE} transform="rotate(-14 69 50)" />
+      <circle cx="52" cy="50" r="2.2" fill={INK} stroke="none" />
+      <circle cx="68" cy="50" r="2.2" fill={INK} stroke="none" />
+      <path d="M48 64 Q60 72 72 64" stroke={INK} strokeWidth="3" fill="none" strokeLinecap="round" />
+      <path d="M53 66 L50 59 L57 65 Z" fill={PAPER} />
+      <path d="M67 66 L70 59 L63 65 Z" fill={PAPER} />
+    </svg>
+  );
+}
+
+function KingBlackDragonSprite({ hurt }) {
+  const head = (cx, rot) => (
+    <g transform={`rotate(${rot} ${cx} 30)`}>
+      <path d={`M${cx - 10} 22 Q${cx - 12} 8 ${cx} 8 Q${cx + 12} 8 ${cx + 10} 24 Q${cx + 8} 36 ${cx - 4} 34 Q${cx - 12} 32 ${cx - 10} 22 Z`} fill={KBD} />
+      {/* snout */}
+      <path d={`M${cx + 6} 22 Q${cx + 18} 20 ${cx + 20} 28 Q${cx + 14} 32 ${cx + 6} 30 Z`} fill={KBD} />
+      {/* horns */}
+      <path d={`M${cx - 4} 10 Q${cx - 8} 0 ${cx - 14} 2 Q${cx - 6} 4 ${cx - 4} 14 Z`} fill={HORN} />
+      <circle cx={cx + 2} cy={22} r="2.6" fill={REDEYE} stroke="none" />
+      <path d={`M${cx + 16} 30 l1 4 M${cx + 12} 31 l1 4`} stroke={PAPER} strokeWidth="1.6" />
+    </g>
+  );
+  return (
+    <svg {...svgProps('kbd', hurt, 'King Black Dragon')}>
+      <ellipse cx="60" cy="134" rx="42" ry="7" fill={INK} opacity="0.28" stroke="none" />
+
+      {/* spiked tail */}
+      <path d="M86 114 Q114 118 118 92 Q109 100 98 96 Q106 90 94 88 Z" fill={KBD} />
+      {/* broad wings */}
+      <path d="M34 74 Q2 46 2 86 Q14 88 22 80 Q14 96 30 96 L44 80 Z" fill={KBD_DK} />
+      <path d="M86 74 Q118 46 118 86 Q106 88 98 80 Q106 96 90 96 L76 80 Z" fill={KBD_DK} />
+      <path d="M10 62 L20 84 M24 66 L32 88 M96 66 L88 88 M110 62 L100 84" stroke={KBD_LT} strokeWidth="1.6" fill="none" />
+
+      {/* body + belly */}
+      <path d="M30 86 Q60 72 90 86 L92 116 Q60 128 28 116 Z" fill={KBD} />
+      <path d="M40 98 Q60 108 80 98 L78 116 Q60 124 42 116 Z" fill={BELLY} stroke="none" opacity="0.85" />
+      <path d="M36 116 l5 -6 l4 6 l4 -6 l4 6 Z" fill={HORN} stroke="none" />
+      <path d="M67 116 l5 -6 l4 6 l4 -6 l4 6 Z" fill={HORN} stroke="none" />
+
+      {/* three necks rising from the chest */}
+      <path d="M48 88 Q40 62 34 44 L44 42 Q50 62 58 84 Z" fill={KBD} />
+      <path d="M58 88 Q58 58 60 40 L68 40 Q66 60 66 86 Z" fill={KBD} />
+      <path d="M72 88 Q80 62 86 44 L76 42 Q70 62 62 84 Z" fill={KBD} />
+
+      {/* three heads */}
+      {head(34, -18)}
+      {head(64, 0)}
+      {head(90, 18)}
+    </svg>
+  );
+}
+
 /** Pick the boss sprite for a boss id (falls back to the Goblin). */
 export function BossSprite({ id, hurt }) {
   if (id === 'giant_rat') return <GiantRatSprite hurt={hurt} />;
   if (id === 'skeleton') return <SkeletonSprite hurt={hurt} />;
   if (id === 'hobgoblin') return <HobgoblinSprite hurt={hurt} />;
   if (id === 'lesser_demon') return <LesserDemonSprite hurt={hurt} />;
+  if (id === 'fire_giant') return <FireGiantSprite hurt={hurt} />;
+  if (id === 'green_dragon') return <GreenDragonSprite hurt={hurt} />;
+  if (id === 'frost_troll') return <FrostTrollSprite hurt={hurt} />;
+  if (id === 'abyssal_demon') return <AbyssalDemonSprite hurt={hurt} />;
+  if (id === 'king_black_dragon') return <KingBlackDragonSprite hurt={hurt} />;
   return <GoblinSprite hurt={hurt} />;
 }

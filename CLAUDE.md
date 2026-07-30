@@ -88,9 +88,11 @@ Core loop:
 - **Pooling math:** CONFIRMED — sum gains → cap level at 99 → discard overflow
   (no combat bonus). See "Architecture decisions".
 - **First boss:** the **Goblin** (easiest rung of the boss ladder).
-- **Boss ladder:** a 5-rung ladder is built — **Goblin → Giant Rat → Skeleton →
-  Hobgoblin → Lesser Demon** with scaling stats + per-boss weapon drops
-  (`BOSS_LADDER` in `web/src/game/combat.js`). Balance/rates are first-guess.
+- **Boss ladder:** a 10-rung ladder is built — **Goblin → Giant Rat → Skeleton →
+  Hobgoblin → Lesser Demon → Fire Giant → Green Dragon → Frost Troll → Abyssal
+  Demon → King Black Dragon** with scaling stats + per-boss weapon drops
+  (`BOSS_LADDER` in `web/src/game/combat.js`, weapons to tier 5). Balance/rates
+  are first-guess. Bosses are chosen on a **draggable world map** (BossMap.jsx).
   **Unlock gating** (CONFIRMED by Boris): bosses unlock in order — beat one to
   fight the next; you stay on a boss to farm drops and travel via the MAP.
   Per-team unlock progress persists in `team_progress` (migration 0004).

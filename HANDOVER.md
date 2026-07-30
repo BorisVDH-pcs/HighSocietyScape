@@ -10,8 +10,9 @@ _Last updated: 2026-07-30._
 ## Where we are
 
 The project has gone from "pipeline never run" to **a working data pipeline +
-a playable, themed battle screen** with **live character stats**, a **5-boss
-progression ladder** (Goblin → … → Lesser Demon), **per-team gear AND battle
+a playable, themed battle screen** with **live character stats**, a **10-boss
+progression ladder** (Goblin → … → King Black Dragon) on a **draggable world
+map**, **per-team gear AND battle
 state that persist to Supabase** (resume a fight mid-battle), **redrawn
 OSRS-style sprites**, and an **automated data-refresh Action** (`fetch → sync`
 every 30 min + manual trigger) — committed and pushed. The core loop is now
@@ -77,10 +78,11 @@ deploy) — see next steps.
   truth). `lib/levels.mjs` / `lib/character.mjs` are thin Node wrappers.
 
 ### Boss ladder — ✅ done
-- The single Goblin fight is now a **5-rung ladder** with scaling difficulty:
-  **Goblin → Giant Rat → Skeleton → Hobgoblin → Lesser Demon** (capstone). Each
-  rung scales hp / maxHit / accuracy; data lives in `BOSS_LADDER` in
-  `web/src/game/combat.js` (with `BOSSES`/`bossById` + a `nextBoss` helper).
+- The single Goblin fight is now a **10-rung ladder** with scaling difficulty:
+  **Goblin → Giant Rat → Skeleton → Hobgoblin → Lesser Demon → Fire Giant →
+  Green Dragon → Frost Troll → Abyssal Demon → King Black Dragon** (capstone,
+  3-headed). Each rung scales hp / maxHit / accuracy; data lives in `BOSS_LADDER`
+  in `web/src/game/combat.js` (with `BOSSES`/`bossById` + `nextBoss`/`bossIndex`).
 - **Progression is manual (you stay on a boss to farm drops)**: after a win OR
   loss the post-battle button re-fights the **same** boss (`App.reset`). You
   move between bosses yourself via the **MAP** (`App.selectBoss`).
@@ -107,12 +109,18 @@ deploy) — see next steps.
 - **MAP replaced RUN** in the command box; the end screen offers FIGHT AGAIN +
   MAP. `nextBoss` still exists in `combat.js` but is no longer used for
   auto-advance.
-- **Drops span styles**: each new boss drops one higher-tier weapon —
-  Rat → Oak Shortbow (ranged t2), Skeleton → Apprentice Wand (magic t2),
-  Hobgoblin → Mithril Sword (melee t3), Demon → Infernal Staff (magic t3) — all
-  in `web/src/game/weapons.js`, auto-equipped by the existing tier logic.
-- **Sprites**: 4 new original chibi SVGs (Giant Rat, Skeleton, Hobgoblin, Lesser
-  Demon) in `Sprite.jsx`, picked by `BossSprite({ id })`.
+- **Drops span styles + tiers 1→5**: each boss drops one higher-tier weapon
+  (13 weapons total in `web/src/game/weapons.js`, auto-equipped by tier):
+  Goblin → Steel Sword (melee t2), Rat → Oak Shortbow (ranged t2),
+  Skeleton → Apprentice Wand (magic t2), Hobgoblin → Mithril Sword (melee t3),
+  Demon → Infernal Staff (magic t3), Fire Giant → Rune Scimitar (melee t4),
+  Green Dragon → Magic Shortbow (ranged t3), Frost Troll → Mystic Staff (magic
+  t4), Abyssal Demon → Abyssal Whip (melee t5), KBD → Dragon Crossbow (ranged
+  t4). Rates taper from 1/5 down to 1/15 for the capstone.
+- **Sprites**: **9 original chibi SVGs** in `Sprite.jsx`, picked by
+  `BossSprite({ id })` — Giant Rat, Skeleton, Hobgoblin, Lesser Demon, Fire
+  Giant, Green Dragon, Frost Troll, Abyssal Demon, and the 3-headed King Black
+  Dragon (rendered + eyeballed).
 
 ### Live character stats — ✅ done
 - Battle STATS now reflect each team's **current** pooled WOM gains, read live
@@ -193,26 +201,29 @@ deploy) — see next steps.
     quiver, recurve bow with a nocked arrow.
   - **Mage** — blue wizard robe + sash + sleeves, pointy hat w/ gold star,
     white beard, staff with a glowing orb.
-  - **Boss ladder** (new): **Giant Rat** (brown fur, round ears, snout, whiskers,
-    buck teeth, curling pink tail), **Skeleton** (bone-white skull + eye sockets,
-    ribcage, limb bones), **Hobgoblin** (bulkier muddy-green goblin with warpaint,
-    tusks, big club + hide loincloth), **Lesser Demon** (red skin, bone horns,
-    leathery wings, glowing flame eyes, clawed hands). Picked by
-    `BossSprite({ id })`.
+  - **Boss ladder** (all original, picked by `BossSprite({ id })`): **Giant Rat**
+    (brown fur, round ears, whiskers, curling pink tail), **Skeleton** (skull +
+    ribcage + limb bones), **Hobgoblin** (bulkier warpainted goblin, tusks,
+    club), **Lesser Demon** (red, bone horns, leathery wings, flame eyes),
+    **Fire Giant** (molten-orange giant, flame crest, big fists), **Green Dragon**
+    (winged green serpent, cream belly, horned head), **Frost Troll** (icy-blue
+    brute, shoulder ice-spikes, tusks), **Abyssal Demon** (floating purple fiend,
+    bat wings, red eyes, whip tendril), **King Black Dragon** (3-headed black
+    dragon capstone, red eyes, spiked wings).
 - Bronze/amber accents tie the sprites into the gold "High Society" theme.
 - **Logo still TODO:** drop the real logo art in as `web/public/logo.png`
   (transparent PNG, ~360px wide). Until then the header shows a styled gold
   "High Society Scape" wordmark fallback.
 
 ## Suggested next steps (pick one)
-1. **More gear + drop tables** — the ladder added melee/ranged/magic drops up to
-   tier 3, but coverage is uneven (ranged stops at t2) and there's no
-   armour/defence yet — combat only uses weapon `power`. Expand `weapons.js`
-   (fill the tier gaps, add armour with a defence stat the combat engine reads).
+1. **More gear + drop tables** — the 10-boss ladder drops melee/ranged/magic
+   weapons up to tier 5, but there's still **no armour/defence** — combat only
+   uses weapon `power`. Expand `weapons.js` (add armour with a defence stat the
+   combat engine reads; the enemy `maxHit` currently lands unmitigated).
    Auto-equip already picks the highest `tier` per style.
 2. **Balance pass** — boss hp/accuracy/maxHit and drop rates in `BOSS_LADDER`
    are first-guess numbers. For maxed demo teams (Team 1 is combat 111) even the
-   Demon dies fast; tune the curve once real play shows how it feels.
+   later bosses may die fast; tune the curve once real play shows how it feels.
 3. **Deploy** — configs are committed (`netlify.toml` / `vercel.json`): import
    the repo on Netlify or Vercel, add the two `VITE_SUPABASE_*` env vars, done.
    Build runs from the repo root (not `web/`) so the shared `../lib` imports
@@ -221,9 +232,9 @@ deploy) — see next steps.
    deployed app's stats fresh.)
 
 ## Open questions to raise with Boris
-- Drop-table / gear design at scale: a 5-boss ladder now drops weapons up to
-  tier 3, but ranged stops at t2 and there's no armour/defence yet. What tiers,
-  rates, and armour do we want across the ladder?
+- Drop-table / gear design at scale: the 10-boss ladder drops weapons up to
+  tier 5, but there's still no armour/defence. What armour tiers / defence model
+  do we want, and are the weapon tiers/rates about right?
 - Boss-ladder balance: `BOSS_LADDER` hp/accuracy/maxHit and drop rates are
   first-guess numbers; maxed demo teams clear even the Demon fast. Tune later.
 - Character stats are live from Supabase and auto-refresh every 30 min via the

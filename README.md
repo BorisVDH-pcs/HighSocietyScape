@@ -77,11 +77,12 @@ npm run dev          # serves http://localhost:5173
 
 A Vite + React, Game Boy / Pokémon-style turn-based battle screen driven by a
 team's derived character. Pick a loadout in **GEAR** (Melee / Ranged / Magic —
-sets your sprite and attack style), then **FIGHT** any of a **5-boss ladder**:
-Goblin → Giant Rat → Skeleton → Hobgoblin → Lesser Demon, each scaling in
-difficulty. Open **MAP** for a draggable world map — boss icons sit along a trail you
-drag/swipe across to explore (built to hold many more bosses than the current
-five); tap an unlocked one to travel there. Use **AUTO-FIGHT** to auto-attack
+sets your sprite and attack style), then **FIGHT** your way up a **10-boss
+ladder**: Goblin → Giant Rat → Skeleton → Hobgoblin → Lesser Demon → Fire Giant
+→ Green Dragon → Frost Troll → Abyssal Demon → King Black Dragon (a 3-headed
+capstone), each scaling in difficulty. Open **MAP** for a draggable world map —
+boss icons sit along a trail you drag/swipe across to explore (built to hold
+still more bosses); tap an unlocked one to travel there. Use **AUTO-FIGHT** to auto-attack
 until someone hits 0 HP. Bosses **unlock in order** — beat a rung to open the
 next, so the map shows later bosses 🔒 locked until you've earned them. Beating a boss can
 drop a higher-tier weapon (e.g. Goblin → Steel Sword 1/5, Hobgoblin → Mithril

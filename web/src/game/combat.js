@@ -68,14 +68,69 @@ export const BOSS_LADDER = [
     maxHp: 320,
     maxHit: 18,
     accuracy: 0.72,
-    blurb: 'A towering horned fiend wreathed in flame. The final rung.',
+    blurb: 'A towering horned fiend wreathed in flame.',
     drops: [{ weaponId: 'infernal_staff', chance: 1 / 8 }],
     map: { x: 820, y: 250 },
+  },
+  {
+    id: 'fire_giant',
+    name: 'Fire Giant',
+    level: 86,
+    maxHp: 400,
+    maxHit: 22,
+    accuracy: 0.74,
+    blurb: 'A mountain of molten muscle. The ground scorches where it treads.',
+    drops: [{ weaponId: 'rune_scimitar', chance: 1 / 8 }],
+    map: { x: 1000, y: 130 },
+  },
+  {
+    id: 'green_dragon',
+    name: 'Green Dragon',
+    level: 120,
+    maxHp: 520,
+    maxHit: 28,
+    accuracy: 0.76,
+    blurb: 'A winged serpent that answers challengers with a gout of flame.',
+    drops: [{ weaponId: 'magic_shortbow', chance: 1 / 10 }],
+    map: { x: 1180, y: 250 },
+  },
+  {
+    id: 'frost_troll',
+    name: 'Frost Troll',
+    level: 140,
+    maxHp: 640,
+    maxHit: 33,
+    accuracy: 0.78,
+    blurb: 'A hulking brute of living ice from the frozen north.',
+    drops: [{ weaponId: 'mystic_staff', chance: 1 / 10 }],
+    map: { x: 1360, y: 130 },
+  },
+  {
+    id: 'abyssal_demon',
+    name: 'Abyssal Demon',
+    level: 165,
+    maxHp: 780,
+    maxHit: 38,
+    accuracy: 0.8,
+    blurb: 'A teleporting horror wielding a whip of living shadow.',
+    drops: [{ weaponId: 'abyssal_whip', chance: 1 / 12 }],
+    map: { x: 1540, y: 250 },
+  },
+  {
+    id: 'king_black_dragon',
+    name: 'King Black Dragon',
+    level: 276,
+    maxHp: 1000,
+    maxHit: 45,
+    accuracy: 0.82,
+    blurb: 'The three-headed tyrant of the ladder. Beat it and you rule the scape.',
+    drops: [{ weaponId: 'dragon_crossbow', chance: 1 / 15 }],
+    map: { x: 1720, y: 150 },
   },
 ];
 
 // The virtual world the map pans across. Grows as bosses are added further out.
-export const MAP_WORLD = { w: 940, h: 380 };
+export const MAP_WORLD = { w: 1820, h: 380 };
 
 // First rung, exported as GOBLIN for back-compat (initBattle's default etc.).
 export const GOBLIN = BOSS_LADDER[0];
