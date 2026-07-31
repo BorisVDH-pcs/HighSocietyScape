@@ -35,6 +35,23 @@ This supersedes any "not applied / not deployed / no armour" notes further down.
   `killsByTeam`/`recordKill` in `App.jsx`, the `.drops-sub`/`.drop-name.owned`
   block in `BattleScreen.jsx` + `styles.css`, migration `0005_team_kills.sql`
   (**APPLIED** to the live DB).
+- **BAG is now a real consumables subsystem** (was a "coming soon" stub). Per
+  fight the team gets **FOOD** (eat to heal ~25% max HP; number of uses scales
+  with the team's real **Cooking** level, 1–5) and one **COMBAT BREW** (+power
+  for the rest of the fight, scaled by **Herblore**). Each costs a turn — the
+  boss retaliates — so it's a real heal-or-push decision, and a BAG action CAN
+  lose you the fight. Allowance is **per-fight, recomputed in `initBattle`** from
+  the character's skills → no currency, no restock, no new table (on-theme with
+  "real training → power"). Engine refactored to share a `bossRetaliate()` turn
+  across `attack`/`useFood`/`usePotion`; brew `buff.power` feeds the player's max
+  hit. All knobs at the top of `combat.js` (`FOOD_HEAL_PCT`, `foodCountFor`,
+  `potionPowerFor`). Files: `combat.js` (`useFood`/`usePotion`/`bossRetaliate`),
+  `handleFood`/`handlePotion` in `App.jsx`, the `menu === 'bag'` branch in
+  `BattleScreen.jsx` + `.mbtn:disabled` in `styles.css`.
+  **⚠️ v1 caveat:** consumable counts live in the battle object (persist through
+  the session) but **reset to a fresh allowance on a full cold reload** — they're
+  not saved into `team_battle`. To persist them, add a `team_battle` migration +
+  serialize fields (see "Suggested next steps").
 
 ### Balance-tuning pass — ✅ DONE (2026-07-31, "grindy" target)
 - **The old ladder was unwinnable, not "too easy."** A simulation of the real
@@ -360,9 +377,12 @@ deploy) — see next steps.
    the animation) instead of instantly at round start. Needs the combat engine to
    expose intermediate states (player-hit then boss-hit) rather than applying both
    in one `attack()` return.
-3. **BAG menu** — the `BAG` command is a placeholder ("coming soon"). Add an
-   inventory for potions/food (healing items) — a genuinely new subsystem
-   (consumables + a heal action in combat), distinct from the auto-equipped gear.
+3. **Persist BAG consumables mid-fight** — the food/brew subsystem is BUILT (see
+   top), but counts reset on a full cold reload because they aren't saved into
+   `team_battle`. Add a migration (`0006`) with `food_left`/`potion_left`/
+   `buff_power` columns, extend `serializeBattle`/`loadBattle`/`rehydrateBattle`
+   to round-trip them, and stop `initBattle` from overwriting a rehydrated fight's
+   counts. Small, self-contained follow-up.
 4. **Armour on the sprite** — the hero sprite still changes by weapon style only;
    equipped armour isn't drawn. Optional visual polish (original 2D art only).
 
@@ -377,8 +397,13 @@ deploy) — see next steps.
   names/icons, or leave generated?
 - **Accessories per style:** amulet/ring/cape are currently style-specific (each
   style has its own). Keep that, or make some accessories universal?
-- Auth: gear + battle + progress writes use the public anon key (anyone can
-  overwrite). Add auth before this goes wide?
+- **BAG consumables (built this session):** food/brew allowance is derived from
+  Cooking/Herblore and recomputed per fight — confirm the numbers feel right in
+  play (`FOOD_HEAL_PCT`, `foodCountFor`, `potionPowerFor` in `combat.js`), and
+  decide whether counts should persist across a cold reload (see next-steps #3)
+  or whether a per-fight reset is fine.
+- Auth: gear + battle + progress + kills writes use the public anon key (anyone
+  can overwrite). Add auth before this goes wide?
 
 ## Working conventions
 - Repo has active collaborators — `git fetch` and rebase before pushing.
