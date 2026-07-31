@@ -166,6 +166,35 @@ body {
 }
 .sprite.hurt { animation: flash .26s steps(1, end); }
 
+/* ---- attack animations ---- */
+/* Player lunges/recoils toward the boss (upper-right); boss lunges back toward
+   the player (lower-left). Transforms layer on top of each .mon's positioning. */
+.player-mon.atk-melee  { animation: lunge-tr .5s ease; }
+.player-mon.atk-ranged { animation: recoil-bl .5s ease; }
+.player-mon.atk-magic  { animation: cast-pulse .55s ease; }
+.enemy-mon.atk-boss    { animation: lunge-bl .5s ease; }
+
+@keyframes lunge-tr  { 0%, 100% { transform: translate(0, 0); }  35% { transform: translate(30px, -26px); } }
+@keyframes lunge-bl  { 0%, 100% { transform: translate(0, 0); }  35% { transform: translate(-30px, 26px); } }
+@keyframes recoil-bl { 0%, 100% { transform: translate(0, 0); }  30% { transform: translate(-10px, 0); } }
+@keyframes cast-pulse{ 0%, 100% { transform: translate(0, 0) scale(1); } 45% { transform: translate(-5px, -5px) scale(1.07); } }
+
+/* Projectile flies from the player (lower-left) to the boss (upper-right). */
+.projectile { position: absolute; left: 16%; top: 62%; z-index: 5; font-size: 20px; pointer-events: none; opacity: 0; }
+.projectile.ranged { color: #6b4a1e; }
+.projectile.magic  { color: #7b4bd0; text-shadow: 0 0 6px #b98bff; }
+.projectile.fly    { animation: fly-tr .43s ease-in forwards; }
+@keyframes fly-tr {
+  0%   { left: 16%; top: 62%; opacity: 0; }
+  15%  { opacity: 1; }
+  100% { left: 74%; top: 14%; opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .player-mon.atk-melee, .player-mon.atk-ranged, .player-mon.atk-magic,
+  .enemy-mon.atk-boss, .projectile.fly { animation: none; }
+}
+
 /* ---- command / message box ---- */
 .cmdbox {
   margin-top: 10px;

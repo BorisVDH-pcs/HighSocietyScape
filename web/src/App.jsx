@@ -23,6 +23,11 @@ import { loadProgress, saveProgress } from './game/progress.js';
 import { isSupabaseConfigured } from './game/supabase.js';
 import BattleScreen from './components/BattleScreen.jsx';
 
+// One auto-fight attack per this many ms — long enough for a round's attack
+// animations (player swing → boss retaliation) to play out. Also the visual
+// pace knob for how fast fights feel.
+const ROUND_MS = 1200;
+
 export default function App() {
   const [teamName, setTeamName] = useState('Team 1');
   // Character stats are snapshot-derived instantly (seed + offline fallback),
@@ -47,10 +52,13 @@ export default function App() {
   // fight (0 = only the Goblin). Beating rung i unlocks i+1. Persisted to the
   // team_progress table; defaults to 0 when unloaded / unconfigured.
   const [progressByTeam, setProgressByTeam] = useState({});
-  const [flash, setFlash] = useState(null);
+  // The last round's events, fed to BattleScreen to drive attack animations.
+  // `seq` (a monotonic id) guarantees each attack re-triggers the animation even
+  // when the derived fields repeat.
+  const [action, setAction] = useState(null);
+  const actionSeq = useRef(0);
   const [logoOk, setLogoOk] = useState(true);
   const [auto, setAuto] = useState(false); // AUTO-fight: keep attacking until 0 HP
-  const flashTimer = useRef(null);
   const loadedTeams = useRef(new Set()); // teams whose DB state we've fetched
 
   const gearFor = (name) =>
@@ -146,28 +154,31 @@ export default function App() {
   }, [teamName]);
 
   // AUTO-fight is a persistent MODE: while enabled and the current fight is
-  // active, throw one attack every ~300ms so the HP bars visibly tick down.
-  // When the fight ends it simply stops attacking but STAYS ARMED — so hitting
-  // FIGHT AGAIN resumes auto-fighting for hands-off farming. It only turns off
-  // on STOP or a team switch. Re-runs after each attack (and each new fight)
-  // because `battle` is a dependency, chaining swings until the fight is over.
+  // active, throw one attack every ROUND_MS so each attack animation can play
+  // out before the next. When the fight ends it stops attacking but STAYS ARMED
+  // — so hitting FIGHT AGAIN resumes auto-fighting for hands-off farming. It only
+  // turns off on STOP or a team switch. Re-runs after each attack (and each new
+  // fight) because `battle` is a dependency, chaining swings until it's over.
   useEffect(() => {
     if (!auto || battle.status !== 'active') return undefined;
-    const t = setTimeout(() => handleAttack(), 300);
+    const t = setTimeout(() => handleAttack(), ROUND_MS);
     return () => clearTimeout(t);
   }, [auto, battle]);
-
-  function flashOnce(who) {
-    setFlash(who);
-    clearTimeout(flashTimer.current);
-    flashTimer.current = setTimeout(() => setFlash(null), 260);
-  }
 
   // FIGHT: attack with whatever gear is currently equipped.
   function handleAttack() {
     const next = attack(battle);
-    if (next.boss.hp < battle.boss.hp) flashOnce('boss');
-    else if (next.player.hp < battle.player.hp) flashOnce('player');
+
+    // Describe this round for BattleScreen's attack animations. The boss only
+    // retaliates if it survived the player's hit (status still 'active' or
+    // 'lost'); on 'won' it never swings back.
+    setAction({
+      seq: (actionSeq.current += 1),
+      playerStyle: next.player.weapon.style,
+      playerLanded: next.boss.hp < battle.boss.hp,
+      bossAttacked: next.status !== 'won',
+      bossLanded: next.player.hp < battle.player.hp,
+    });
 
     // On a win, unlock the next rung of the ladder for this team (MAP gates
     // bosses beyond the highest unlocked). No-op once already unlocked.
@@ -231,7 +242,7 @@ export default function App() {
     const style = weaponById(g.weaponId).style;
     const s = buildSetup(g.ownedIds, style);
     updateBattle(name, initBattle(characterFor(name), boss, s));
-    setFlash(null);
+    setAction(null);
   }
 
   // Switch teams. No reset — each team keeps its own battle (see battleByTeam),
@@ -239,7 +250,7 @@ export default function App() {
   // global toggle, so stop it when changing teams.
   function pickTeam(name) {
     setTeamName(name);
-    setFlash(null);
+    setAction(null);
     setAuto(false);
   }
 
@@ -287,7 +298,7 @@ export default function App() {
 
       <BattleScreen
         battle={battle}
-        flash={flash}
+        action={action}
         ownedIds={ownedIds}
         auto={auto}
         maxUnlocked={unlockedFor(teamName)}

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Hero, BossSprite } from './Sprite.jsx';
 import BossMap from './BossMap.jsx';
 import { buildSetup, setupStats, SLOTS, itemById } from '../game/weapons.js';
@@ -42,7 +42,7 @@ function PokeHP({ hp, max }) {
 
 export default function BattleScreen({
   battle,
-  flash,
+  action,
   ownedIds = [],
   auto,
   maxUnlocked = 0,
@@ -58,6 +58,49 @@ export default function BattleScreen({
   const [note, setNote] = useState(null);
   const [setupStyle, setSetupStyle] = useState(null);
   const equippedStyle = player.weapon.style;
+
+  // ---- Attack animation timeline -------------------------------------------
+  // Each round (a new `action.seq`) plays out in two phases so the exchange
+  // reads clearly and slowly: the player swings/shoots/casts and the boss
+  // recoils, THEN the boss lunges back and the player recoils. `anim` drives the
+  // sprite motion classes, hurt flashes, and any in-flight projectile.
+  const [anim, setAnim] = useState({});
+  const timers = useRef([]);
+  useEffect(() => {
+    timers.current.forEach(clearTimeout);
+    timers.current = [];
+    if (!action) {
+      setAnim({}); // new fight / team switch: clear any lingering motion
+      return undefined;
+    }
+    const at = (ms, fn) => timers.current.push(setTimeout(fn, ms));
+    const { playerStyle, playerLanded, bossAttacked, bossLanded } = action;
+    const connect = playerStyle === 'melee' ? 240 : 430; // when the hit/projectile lands
+
+    // Phase A — player attacks.
+    setAnim({
+      pAtk: playerStyle,
+      bAtk: false,
+      pHurt: false,
+      bHurt: false,
+      proj: playerStyle === 'melee' ? null : playerStyle,
+    });
+    at(connect, () => setAnim((a) => ({ ...a, proj: null, bHurt: !!playerLanded })));
+    at(500, () => setAnim((a) => ({ ...a, pAtk: null })));
+    at(connect + 260, () => setAnim((a) => ({ ...a, bHurt: false })));
+
+    // Phase B — boss retaliates (only if it survived the player's hit).
+    if (bossAttacked) {
+      at(640, () => setAnim((a) => ({ ...a, bAtk: true })));
+      at(880, () => setAnim((a) => ({ ...a, pHurt: !!bossLanded })));
+      at(1140, () => setAnim((a) => ({ ...a, bAtk: false, pHurt: false })));
+    }
+
+    return () => {
+      timers.current.forEach(clearTimeout);
+      timers.current = [];
+    };
+  }, [action?.seq]);
 
   // The set-up currently being viewed (defaults to the equipped style) and its
   // aggregate combat bonuses.
@@ -168,14 +211,21 @@ export default function BattleScreen({
             <PokeHP hp={boss.hp} max={boss.maxHp} />
           </div>
 
+          {/* in-flight projectile: arrow (ranged) / spell (magic) */}
+          {anim.proj && (
+            <div className={`projectile ${anim.proj} fly`} aria-hidden="true">
+              {anim.proj === 'ranged' ? '➶' : '✦'}
+            </div>
+          )}
+
           {/* enemy sprite — top-right */}
-          <div className="mon enemy-mon">
-            <BossSprite id={boss.id} hurt={flash === 'boss'} />
+          <div className={`mon enemy-mon ${anim.bAtk ? 'atk-boss' : ''}`}>
+            <BossSprite id={boss.id} hurt={!!anim.bHurt} />
           </div>
 
           {/* player sprite — bottom-left (changes with equipped gear) */}
-          <div className="mon player-mon">
-            <Hero style={player.weapon.style} hurt={flash === 'player'} />
+          <div className={`mon player-mon ${anim.pAtk ? `atk-${anim.pAtk}` : ''}`}>
+            <Hero style={player.weapon.style} hurt={!!anim.pHurt} />
           </div>
 
           {/* player info — bottom-right */}
