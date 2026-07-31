@@ -57,6 +57,19 @@ This supersedes any "not applied / not deployed / no armour" notes further down.
   spurious **401** when sending the `sb_secret_` key as a Bearer token. Use
   `curl.exe` (or Node fetch) for Supabase calls — those authenticate fine.
 
+### Drop-rate info panel — ✅ DONE (2026-07-31, pushed)
+- An **ⓘ button** sits in the enemy info box (top-left, right of the boss
+  name/level). Tapping it toggles a **drops overlay** over the battle scene
+  listing every possible drop for the *current* boss — icon + name + per-kill
+  chance formatted as `1/N · P%` — read straight from `boss.drops` (the table
+  generated from `BOSS_LOOT`). Close with ✕ or by tapping ⓘ again.
+- All in `web/src/components/BattleScreen.jsx` (`showDrops` state, `formatRate`
+  helper, the `.drops-overlay` block) + styles in `web/src/styles.css`
+  (`.dropinfo-btn`, `.drops-overlay`, `.drop-row`, …). Purely additive UI —
+  combat/drop logic untouched.
+- **⚠️ Pushed but not yet verified on the live Netlify deploy** — hard-reload
+  and confirm the button + panel render correctly (esp. on mobile width).
+
 ### Gear system — now SIX slots per style (2026-07-31)
 - GEAR is no longer weapon-only. Every piece is an item with a `slot`
   (**weapon, armour, boots, cape, amulet, ring**), a `style`, a `tier`, and stat
