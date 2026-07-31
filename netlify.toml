@@ -4,11 +4,12 @@
 # from the repo ROOT (../lib, ../xp_table.json, ../data) — so the build runs
 # from the root (not from web/) and just points npm at the web/ subfolder.
 #
-# Before the first deploy, set these in Netlify → Site settings → Environment
-# variables (both are the PUBLIC anon pair, safe to expose in a frontend):
-#   VITE_SUPABASE_URL       = https://<ref>.supabase.co
-#   VITE_SUPABASE_ANON_KEY  = <publishable/anon key>
-# Leave them unset to ship an offline build (gear then lives in the session only).
+# Supabase config for the frontend. Both are the PUBLIC anon/publishable pair —
+# safe to expose in a frontend (they already ship in the built JS; row-level
+# security is what protects the data). Set here in-repo rather than in the
+# Netlify dashboard so cloud save works on the free plan (no dashboard env-var
+# access needed). To point at a different project, edit the two values below.
+# Leave them blank to ship an offline build (gear/progress live in the session only).
 
 [build]
   command = "npm --prefix web ci && npm --prefix web run build"
@@ -16,6 +17,8 @@
 
 [build.environment]
   NODE_VERSION = "22"
+  VITE_SUPABASE_URL = "https://gfgcerrmaxkskzldiuuu.supabase.co"
+  VITE_SUPABASE_ANON_KEY = "sb_publishable_HGLRhQViEoWcdfupaZWkhw_MauXIki4"
 
 # Single-page app: serve index.html for any path that isn't a real file.
 [[redirects]]
