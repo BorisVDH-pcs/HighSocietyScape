@@ -153,16 +153,28 @@ export default function App() {
     };
   }, [teamName]);
 
-  // AUTO-fight is a persistent MODE: while enabled and the current fight is
-  // active, throw one attack every ROUND_MS so each attack animation can play
-  // out before the next. When the fight ends it stops attacking but STAYS ARMED
-  // — so hitting FIGHT AGAIN resumes auto-fighting for hands-off farming. It only
-  // turns off on STOP or a team switch. Re-runs after each attack (and each new
-  // fight) because `battle` is a dependency, chaining swings until it's over.
+  // AUTO-fight is a persistent MODE for hands-off boss farming. While enabled:
+  //  • an ACTIVE fight throws one attack every ROUND_MS (a beat long enough for
+  //    the round's attack animations to play out), chaining swings until someone
+  //    hits 0 HP;
+  //  • on a WIN it auto-restarts the SAME boss after a short pause (so the win +
+  //    any loot register visually), then keeps looping — you never click FIGHT
+  //    AGAIN, it just farms until you press STOP;
+  //  • on a LOSS it stops and stays on the defeat screen (still ARMED) so you
+  //    notice the boss is beating you rather than silently re-losing forever.
+  // Only STOP or a team switch turns the mode off. Re-runs after each attack and
+  // each new fight because `battle` is a dependency.
   useEffect(() => {
-    if (!auto || battle.status !== 'active') return undefined;
-    const t = setTimeout(() => handleAttack(), ROUND_MS);
-    return () => clearTimeout(t);
+    if (!auto) return undefined;
+    if (battle.status === 'active') {
+      const t = setTimeout(() => handleAttack(), ROUND_MS);
+      return () => clearTimeout(t);
+    }
+    if (battle.status === 'won') {
+      const t = setTimeout(() => reset(), ROUND_MS);
+      return () => clearTimeout(t);
+    }
+    return undefined;
   }, [auto, battle]);
 
   // FIGHT: attack with whatever gear is currently equipped.
