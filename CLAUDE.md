@@ -115,11 +115,22 @@ Core loop:
 - **Combat animations:** two-phase per round (player attack → boss retaliate),
   pace slowed to `ROUND_MS` 1200ms.
 
+## Resolved decisions (2026-07-31, later)
+- **Balance-tuning pass:** DONE. Boris chose a **grindy/punishing** target. The
+  old ladder was found (by simulation) to be *unwinnable* at the top — the
+  player is hard-capped (HP 99, max hit ~53) but boss HP/maxHit had scaled to
+  1000/45. Boss stats are now **compressed to fit under the caps** (maxHit
+  6→22, HP 45→760) and `DEF_FACTOR` lowered 0.5→0.35. Simulated win rates for a
+  gear-appropriate team: 100/100/100/100/89/77/68/60/49/**39%** (KBD), and 0%
+  from Lesser Demon on for an under-geared team, so gearing is mandatory to
+  climb. All knobs centralised in `BOSS_LADDER`/`DEF_FACTOR` (`combat.js`) +
+  `GEAR_SLOTS`/`BOSS_LOOT`. Sim-tuned but **not yet verified by real play.**
+
 ## Open questions (ask Boris / don't assume)
-- **Balance-tuning pass (the priority):** gear adds power/defence/accuracy but
-  boss stats are unchanged, so fights are easier than intended. Tune boss stats,
-  `DEF_FACTOR`, the `GEAR_SLOTS` stat formulas, and `BOSS_LOOT` drop rates
-  together — all first-guess and centralized.
+- **Balance by feel / team scaling:** the tune assumes a ~level-99 hero; weaker
+  teams (low HP/combat levels) face a harder curve. Confirm the grind feels
+  right in-app, and decide whether boss stats should scale to a team's combat
+  level. Drop rates (`BOSS_LOOT`) left as-is — retune if the farm drags.
 - **HP-timing polish:** HP bars update instantly at round start, before the boss
   lunge animates; syncing needs the engine to expose intermediate hit states.
 - **First skill** to surface in the battle screen (Team 1's maxed combat skills

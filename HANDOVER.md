@@ -11,6 +11,32 @@ _Last updated: 2026-07-31._
 
 This supersedes any "not applied / not deployed / no armour" notes further down.
 
+### Balance-tuning pass — ✅ DONE (2026-07-31, "grindy" target)
+- **The old ladder was unwinnable, not "too easy."** A simulation of the real
+  combat math (20k fights/rung, level-99 hero, best-farmed gear) showed the top
+  three bosses at **19% / 0.7% / 0%** win even with the *full best gear set in
+  the game* — because the player is hard-capped (HP 99, max hit ~53) while boss
+  HP scaled to 1000 and boss maxHit to 45. No gear or leveling could close that.
+- **Fix:** boss `maxHp`/`maxHit`/`accuracy` are **compressed to fit under the
+  player caps** (maxHit ladder now 6→22, not 6→45; HP 45→760, not 55→1000), and
+  `DEF_FACTOR` lowered **0.5 → 0.35** (armour helps, never trivialises). Gear
+  formulas in `weapons.js` were left as-is — the ladder was tuned *around* them.
+- **Resulting curve** (simulated, team wearing the gear they'd have FARMED
+  entering each rung — Boris chose "grindy/punishing"):
+  Goblin→Hobgoblin **100%**, Lesser Demon **89%**, Fire Giant **77%**, Green
+  Dragon **68%**, Frost Troll **60%**, Abyssal Demon **49%**, **KBD 39%**
+  (the capstone wall). Strictly monotonic. An **under-geared** (starter-only)
+  team wins the first three, stalls at the Hobgoblin (~54%) and hits **0% from
+  the Lesser Demon on** — so gearing up is now *mandatory* to climb.
+- Tuning knobs, all centralised: `BOSS_LADDER` stats + `DEF_FACTOR` in
+  `combat.js`, `GEAR_SLOTS`/weapon powers in `weapons.js`, `BOSS_LOOT` drop
+  rates in `combat.js`. The PowerShell sim used to tune this is in the session
+  scratchpad (not committed) — reproduce it if you re-tune.
+- **Drop rates (`BOSS_LOOT`) left unchanged** — the low per-piece rates
+  (1/26–1/90) already suit the grindy target; retune if the farm feels too long.
+- **⚠️ Not yet verified on the live Netlify deploy** at time of writing — push
+  and hard-reload to confirm the numbers feel right in-app.
+
 - **The app is DEPLOYED and LIVE on Netlify**, auto-redeploying on every push to
   `main`. Cloud save is **on**.
 - **Supabase env is set in `netlify.toml`** (`[build.environment]`), NOT the
@@ -46,9 +72,10 @@ This supersedes any "not applied / not deployed / no armour" notes further down.
   armour ids too — **no schema change**. Drop tables generated from `BOSS_LOOT`
   in `combat.js`.
 - **Combat uses the gear:** max hit += Σpower, hit chance += Σaccuracy (capped
-  0.99), boss damage −= floor(Σdefence × `DEF_FACTOR` [0.5]). **Boss stats were
-  left unchanged** — gear only makes fights easier, never unwinnable — so a
-  **balance pass is the main open task** (see next steps).
+  0.99), boss damage −= floor(Σdefence × `DEF_FACTOR` [now **0.35**]). Boss
+  stats have since been **balance-tuned** to fit the player caps (see the
+  Balance-tuning pass section at the top) — the earlier "gear only makes fights
+  easier, never unwinnable" claim was wrong; the top rungs had been *unwinnable*.
 - **One loot roll per kill** (fixed 2026-07-31): a single cumulative-probability
   draw yields at most one item; each piece keeps its own odds.
 
@@ -280,11 +307,12 @@ deploy) — see next steps.
   "High Society Scape" wordmark fallback.
 
 ## Suggested next steps (pick one)
-1. **Balance-tuning pass (the big one)** — gear now adds power/defence/accuracy
-   but **boss stats were left unchanged**, so fights are easier than intended.
-   Tune together: boss hp/maxHit/accuracy (`BOSS_LADDER`), `DEF_FACTOR`, the
-   per-slot stat formulas (`GEAR_SLOTS` in `weapons.js`), and drop rates
-   (`BOSS_LOOT` in `combat.js`). All first-guess and centralized for easy tuning.
+1. **Verify the balance pass in-app + fine-tune by feel** — the numbers are
+   sim-tuned (see top) but unplayed on the live deploy. Push, hard-reload, and
+   sanity-check the difficulty *feels* grindy-not-frustrating; nudge
+   `BOSS_LADDER`/`DEF_FACTOR`/`BOSS_LOOT` if a rung feels off. Weaker teams
+   (low HP/combat levels) will find it harder than the level-99 sim — decide if
+   that's acceptable or if boss stats should scale to the team's combat level.
 2. **HP-timing polish** — make the HP bars drop when each blow *lands* (synced to
    the animation) instead of instantly at round start. Needs the combat engine to
    expose intermediate states (player-hit then boss-hit) rather than applying both
@@ -296,9 +324,11 @@ deploy) — see next steps.
    equipped armour isn't drawn. Optional visual polish (original 2D art only).
 
 ## Open questions to raise with Boris
-- **Balance:** with gear stats live but boss stats unchanged, how hard should the
-  ladder feel? This drives the tuning pass (boss stats, `DEF_FACTOR`, gear stat
-  formulas, drop rates) — all first-guess right now.
+- **Balance feel:** RESOLVED as a target — Boris chose **grindy/punishing**
+  (top bosses ~40–60% win even geared) and the ladder is tuned to it. Still
+  **unverified by real play** on the deploy; confirm it feels right, and decide
+  whether boss stats should scale to a team's combat level (the tune assumes a
+  ~level-99 hero; weaker teams face a harder curve).
 - **Gear naming/flavour:** armour/accessory names are auto-generated per style
   tier (e.g. "Studded Ring", "Enchanted Amulet") — placeholders. Want bespoke
   names/icons, or leave generated?

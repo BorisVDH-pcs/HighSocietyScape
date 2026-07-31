@@ -15,10 +15,11 @@ import {
   setupStats,
 } from './weapons.js';
 
-// How much each point of defence shaves off a boss hit. FIRST-GUESS — the whole
-// gear/boss balance is an open tuning pass, and this is the single knob for how
-// much armour matters.
-const DEF_FACTOR = 0.5;
+// How much each point of defence shaves off a boss hit. Balance-tuned
+// (2026-07-31, "grindy" target) alongside the boss stats below and the gear
+// formulas in weapons.js — this is the single knob for how much armour matters.
+// Lowered from 0.5 so armour helps but never trivialises a fight.
+const DEF_FACTOR = 0.35;
 
 // The BOSS LADDER — an ordered progression from a trivial Goblin up to the King
 // Black Dragon. Each rung scales hp / maxHit / accuracy (its `level` is flavour,
@@ -26,17 +27,29 @@ const DEF_FACTOR = 0.5;
 // Beating a boss advances the team to the next rung; losing retries the same
 // one. A brand-new team starts at the first rung (the Goblin). `map: {x, y}` is
 // each boss's position on the draggable world map (see components/BossMap.jsx).
+//
+// Stats are BALANCE-TUNED (2026-07-31), not first-guess. The player is hard-
+// capped (HP 99, max hit ~53 fully geared), so maxHit/maxHp are deliberately
+// compressed to fit UNDER those caps — a boss maxHit in the 40s is simply
+// unwinnable for a 99-HP hero, which is why the old ladder's top rungs (maxHit
+// up to 45, HP up to 1000) could not be beaten with any gear. Simulated (20k
+// fights/rung, melee, level-99 hero) win rates for a team wearing the best gear
+// they'd have FARMED entering each rung, target "grindy": 100 / 100 / 100 / 100
+// / 89 / 77 / 68 / 60 / 49 / 39%. An under-geared (starter) team hits a wall at
+// the Hobgoblin (~54%) and 0% from the Lesser Demon on — so gearing up is
+// mandatory to climb. Tune together with DEF_FACTOR (above) and the GEAR_SLOTS
+// stat formulas + BOSS_LOOT drop rates.
 export const BOSS_LADDER = [
-  { id: 'goblin',           name: 'Goblin',           level: 2,   maxHp: 55,   maxHit: 4,  accuracy: 0.45, blurb: 'A snivelling green nuisance. Every hero starts somewhere.', map: { x: 90,   y: 240 } },
-  { id: 'giant_rat',        name: 'Giant Rat',        level: 7,   maxHp: 85,   maxHit: 6,  accuracy: 0.52, blurb: 'A mangy, dog-sized rodent with a taste for adventurers.',   map: { x: 270,  y: 130 } },
-  { id: 'skeleton',         name: 'Skeleton',         level: 25,  maxHp: 140,  maxHit: 9,  accuracy: 0.6,  blurb: 'A rattling pile of bones that refuses to stay buried.',      map: { x: 450,  y: 250 } },
-  { id: 'hobgoblin',        name: 'Hobgoblin',        level: 42,  maxHp: 210,  maxHit: 13, accuracy: 0.66, blurb: 'A hulking cousin of the goblin — bigger, meaner, club in hand.', map: { x: 640,  y: 130 } },
-  { id: 'lesser_demon',     name: 'Lesser Demon',     level: 82,  maxHp: 320,  maxHit: 18, accuracy: 0.72, blurb: 'A towering horned fiend wreathed in flame.',                  map: { x: 820,  y: 250 } },
-  { id: 'fire_giant',       name: 'Fire Giant',       level: 86,  maxHp: 400,  maxHit: 22, accuracy: 0.74, blurb: 'A mountain of molten muscle. The ground scorches where it treads.', map: { x: 1000, y: 130 } },
-  { id: 'green_dragon',     name: 'Green Dragon',     level: 120, maxHp: 520,  maxHit: 28, accuracy: 0.76, blurb: 'A winged serpent that answers challengers with a gout of flame.', map: { x: 1180, y: 250 } },
-  { id: 'frost_troll',      name: 'Frost Troll',      level: 140, maxHp: 640,  maxHit: 33, accuracy: 0.78, blurb: 'A hulking brute of living ice from the frozen north.',        map: { x: 1360, y: 130 } },
-  { id: 'abyssal_demon',    name: 'Abyssal Demon',    level: 165, maxHp: 780,  maxHit: 38, accuracy: 0.8,  blurb: 'A teleporting horror wielding a whip of living shadow.',      map: { x: 1540, y: 250 } },
-  { id: 'king_black_dragon',name: 'King Black Dragon',level: 276, maxHp: 1000, maxHit: 45, accuracy: 0.82, blurb: 'The three-headed tyrant of the ladder. Beat it and you rule the scape.', map: { x: 1720, y: 150 } },
+  { id: 'goblin',           name: 'Goblin',           level: 2,   maxHp: 45,   maxHit: 6,  accuracy: 0.55, blurb: 'A snivelling green nuisance. Every hero starts somewhere.', map: { x: 90,   y: 240 } },
+  { id: 'giant_rat',        name: 'Giant Rat',        level: 7,   maxHp: 85,   maxHit: 8,  accuracy: 0.60, blurb: 'A mangy, dog-sized rodent with a taste for adventurers.',   map: { x: 270,  y: 130 } },
+  { id: 'skeleton',         name: 'Skeleton',         level: 25,  maxHp: 125,  maxHit: 10, accuracy: 0.63, blurb: 'A rattling pile of bones that refuses to stay buried.',      map: { x: 450,  y: 250 } },
+  { id: 'hobgoblin',        name: 'Hobgoblin',        level: 42,  maxHp: 180,  maxHit: 13, accuracy: 0.67, blurb: 'A hulking cousin of the goblin — bigger, meaner, club in hand.', map: { x: 640,  y: 130 } },
+  { id: 'lesser_demon',     name: 'Lesser Demon',     level: 82,  maxHp: 350,  maxHit: 17, accuracy: 0.71, blurb: 'A towering horned fiend wreathed in flame.',                  map: { x: 820,  y: 250 } },
+  { id: 'fire_giant',       name: 'Fire Giant',       level: 86,  maxHp: 355,  maxHit: 18, accuracy: 0.72, blurb: 'A mountain of molten muscle. The ground scorches where it treads.', map: { x: 1000, y: 130 } },
+  { id: 'green_dragon',     name: 'Green Dragon',     level: 120, maxHp: 545,  maxHit: 20, accuracy: 0.74, blurb: 'A winged serpent that answers challengers with a gout of flame.', map: { x: 1180, y: 250 } },
+  { id: 'frost_troll',      name: 'Frost Troll',      level: 140, maxHp: 570,  maxHit: 20, accuracy: 0.75, blurb: 'A hulking brute of living ice from the frozen north.',        map: { x: 1360, y: 130 } },
+  { id: 'abyssal_demon',    name: 'Abyssal Demon',    level: 165, maxHp: 550,  maxHit: 21, accuracy: 0.77, blurb: 'A teleporting horror wielding a whip of living shadow.',      map: { x: 1540, y: 250 } },
+  { id: 'king_black_dragon',name: 'King Black Dragon',level: 276, maxHp: 760,  maxHit: 22, accuracy: 0.79, blurb: 'The three-headed tyrant of the ladder. Beat it and you rule the scape.', map: { x: 1720, y: 150 } },
 ];
 
 // Each boss drops the (style, tier) gear set shown here. `rate` is the per-kill
