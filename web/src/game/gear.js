@@ -5,11 +5,10 @@
 // to null / no-op and the app keeps its in-session gear.
 
 import { isSupabaseConfigured, sbSelect, sbUpsert } from './supabase.js';
-import { STARTER_WEAPON_IDS, DEFAULT_WEAPON, weaponById } from './weapons.js';
+import { STARTER_GEAR_IDS, DEFAULT_WEAPON, itemById } from './weapons.js';
 
-// weaponById falls back to DEFAULT_WEAPON for unknown ids; this is the strict
-// "is this id a real weapon?" check.
-const isKnownWeapon = (id) => weaponById(id).id === id;
+// Strict "is this id a real item?" check (weapon OR armour/accessory).
+const isKnownItem = (id) => itemById(id) !== null;
 
 /**
  * Load one team's persisted gear. Returns { ownedIds, weaponId } or null when
@@ -26,13 +25,15 @@ export async function loadGear(seasonId, teamName) {
     const row = rows?.[0];
     if (!row) return null;
 
-    // Drop any ids the client no longer knows about, dedupe, keep starters.
-    const owned = [...new Set((row.owned_ids ?? []).filter(isKnownWeapon))];
-    const ownedIds = owned.length ? owned : STARTER_WEAPON_IDS;
+    // Drop any ids the client no longer knows about, dedupe, always keep the
+    // starter set so every slot has at least a tier-1 piece.
+    const known = (row.owned_ids ?? []).filter(isKnownItem);
+    const ownedIds = [...new Set([...STARTER_GEAR_IDS, ...known])];
 
     // Equipped must be a known, owned weapon; otherwise fall back to default.
     const eq = row.equipped_weapon_id;
-    const weaponId = eq && isKnownWeapon(eq) && ownedIds.includes(eq) ? eq : DEFAULT_WEAPON.id;
+    const weaponId =
+      eq && itemById(eq)?.slot === 'weapon' && ownedIds.includes(eq) ? eq : DEFAULT_WEAPON.id;
 
     return { ownedIds, weaponId };
   } catch (err) {

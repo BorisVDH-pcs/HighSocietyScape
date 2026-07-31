@@ -11,9 +11,11 @@ import {
 } from './game/combat.js';
 import {
   DEFAULT_WEAPON,
-  STARTER_WEAPON_IDS,
+  STARTER_GEAR_IDS,
   weaponById,
   bestOwnedWeapon,
+  buildSetup,
+  setupStats,
 } from './game/weapons.js';
 import { loadGear, saveGear } from './game/gear.js';
 import { loadBattle, saveBattle } from './game/battle.js';
@@ -52,16 +54,18 @@ export default function App() {
   const loadedTeams = useRef(new Set()); // teams whose DB state we've fetched
 
   const gearFor = (name) =>
-    gearByTeam[name] ?? { ownedIds: STARTER_WEAPON_IDS, weaponId: DEFAULT_WEAPON.id };
+    gearByTeam[name] ?? { ownedIds: STARTER_GEAR_IDS, weaponId: DEFAULT_WEAPON.id };
 
   const gear = gearFor(teamName);
   const ownedIds = gear.ownedIds;
   const weapon = weaponById(gear.weaponId);
-  const ownedWeapons = ownedIds.map(weaponById);
+  const activeStyle = weapon.style;
+  // The full auto-equipped setup (best owned piece per slot) for the active style.
+  const setup = buildSetup(ownedIds, activeStyle);
 
   // The current team's battle: its cached/persisted state, or a fresh fight
-  // (built from the live character + the equipped weapon) until one exists.
-  const battle = battleByTeam[teamName] ?? initBattle(character, GOBLIN, weapon);
+  // (built from the live character + the equipped setup) until one exists.
+  const battle = battleByTeam[teamName] ?? initBattle(character, GOBLIN, setup);
 
   // Merge a patch into one team's gear (never touching the others) and persist
   // it. saveGear is a graceful no-op when Supabase isn't configured.
@@ -115,9 +119,11 @@ export default function App() {
       const saved = await loadBattle(SEASON.id, teamName);
       if (cancelled) return;
       if (saved) {
-        const savedWeapon = weaponById(g?.weaponId ?? saved.weaponId);
+        const rebuildIds = g?.ownedIds ?? STARTER_GEAR_IDS;
+        const rebuildStyle = weaponById(g?.weaponId ?? saved.weaponId).style;
+        const rebuildSetup = buildSetup(rebuildIds, rebuildStyle);
         setBattleByTeam((m) =>
-          m[teamName] ? m : { ...m, [teamName]: rehydrateBattle(char, saved, savedWeapon) }
+          m[teamName] ? m : { ...m, [teamName]: rehydrateBattle(char, saved, rebuildSetup) }
         );
       }
 
@@ -167,29 +173,35 @@ export default function App() {
     // bosses beyond the highest unlocked). No-op once already unlocked.
     if (next.status === 'won') unlockUpTo(teamName, bossIndex(next.boss.id) + 1);
 
-    // Absorb any drops into THIS team's owned-gear inventory (deduped), then
-    // auto-equip the highest-tier weapon it now owns — so a Steel Sword drop
-    // is wielded immediately without opening GEAR. Other teams are unaffected.
+    // Absorb any drops (weapons AND armour/accessories) into THIS team's owned
+    // gear, deduped. Armour auto-applies to the setup on the next fight; keep the
+    // current style but auto-equip its best weapon if a drop upgraded it. Other
+    // teams are unaffected. The combat log already lists each individual drop.
     if (next.status === 'won' && next.loot?.length) {
       const merged = [...new Set([...ownedIds, ...next.loot])];
-      const best = bestOwnedWeapon(merged);
-      const upgrade = (best.tier ?? 0) > (weapon.tier ?? 0);
-      updateGear(teamName, { ownedIds: merged, ...(upgrade ? { weaponId: best.id } : {}) });
-      if (upgrade) {
-        next.player.weapon = best; // reflect the auto-equip in the state we set
-        next.log = [
-          ...next.log,
-          { t: 'loot', text: `${next.player.name} auto-equips the ${best.name} — stronger than the ${weapon.name}!` },
-        ];
-      }
+      const bestW = bestOwnedWeapon(merged, weapon.style);
+      const upgrade = (bestW.tier ?? 0) > (weapon.tier ?? 0);
+      updateGear(teamName, { ownedIds: merged, ...(upgrade ? { weaponId: bestW.id } : {}) });
     }
     updateBattle(teamName, next);
   }
 
-  // GEAR: change loadout (sets the sprite + the style FIGHT uses). No attack.
-  function handleEquip(w) {
+  // GEAR: switch active combat style. Auto-equips that style's best weapon and
+  // rebuilds the live battle's setup + bonuses (best owned piece per slot). This
+  // also swaps the hero sprite (which follows the weapon's style). No attack.
+  function handleStyle(style) {
+    const w = bestOwnedWeapon(ownedIds, style);
+    const nextSetup = buildSetup(ownedIds, style);
     updateGear(teamName, { weaponId: w.id });
-    updateBattle(teamName, { ...battle, player: { ...battle.player, weapon: w } });
+    updateBattle(teamName, {
+      ...battle,
+      player: {
+        ...battle.player,
+        weapon: nextSetup.weapon,
+        setup: nextSetup,
+        bonus: setupStats(nextSetup),
+      },
+    });
   }
 
   // Re-fight the CURRENT boss from full HP (used by the post-battle button on
@@ -215,8 +227,10 @@ export default function App() {
   // Deliberately does NOT touch `auto` — if AUTO mode is on it carries into the
   // new fight (FIGHT AGAIN keeps farming); STOP or a team switch turns it off.
   function startFight(name, boss) {
-    const w = weaponById(gearFor(name).weaponId);
-    updateBattle(name, initBattle(characterFor(name), boss, w));
+    const g = gearFor(name);
+    const style = weaponById(g.weaponId).style;
+    const s = buildSetup(g.ownedIds, style);
+    updateBattle(name, initBattle(characterFor(name), boss, s));
     setFlash(null);
   }
 
@@ -274,11 +288,11 @@ export default function App() {
       <BattleScreen
         battle={battle}
         flash={flash}
-        owned={ownedWeapons}
+        ownedIds={ownedIds}
         auto={auto}
         maxUnlocked={unlockedFor(teamName)}
         onAttack={handleAttack}
-        onEquip={handleEquip}
+        onSelectStyle={handleStyle}
         onReset={() => reset()}
         onSelectBoss={(id) => selectBoss(teamName, id)}
         onToggleAuto={() => setAuto((a) => !a)}
