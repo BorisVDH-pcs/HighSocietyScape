@@ -36,19 +36,28 @@ export default function BossMap({ bosses, currentId, maxUnlocked, onSelect, onCl
   }, [bosses, currentId, clamp]);
 
   const onPointerDown = (e) => {
-    drag.current = { sx: e.clientX, sy: e.clientY, px: pan.x, py: pan.y };
+    // NOTE: do NOT setPointerCapture here. Capturing on pointerdown redirects the
+    // pointerup to this container, which suppresses the `click` on boss-node
+    // buttons — making nodes unselectable (tap does nothing). We capture only
+    // once the gesture is a real drag (see onPointerMove).
+    drag.current = { sx: e.clientX, sy: e.clientY, px: pan.x, py: pan.y, captured: false };
     movedRef.current = 0;
-    e.currentTarget.setPointerCapture?.(e.pointerId);
   };
   const onPointerMove = (e) => {
     if (!drag.current) return;
     const dx = e.clientX - drag.current.sx;
     const dy = e.clientY - drag.current.sy;
     movedRef.current = Math.abs(dx) + Math.abs(dy);
+    // Promote to a captured drag only past the slop threshold, so a tap never
+    // captures and its click reaches the node button.
+    if (!drag.current.captured && movedRef.current > DRAG_SLOP) {
+      e.currentTarget.setPointerCapture?.(e.pointerId);
+      drag.current.captured = true;
+    }
     setPan(clamp({ x: drag.current.px + dx, y: drag.current.py + dy }));
   };
   const endDrag = (e) => {
-    e.currentTarget.releasePointerCapture?.(e.pointerId);
+    if (drag.current?.captured) e.currentTarget.releasePointerCapture?.(e.pointerId);
     drag.current = null;
   };
 
