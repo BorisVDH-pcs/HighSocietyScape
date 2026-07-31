@@ -11,6 +11,31 @@ _Last updated: 2026-07-31._
 
 This supersedes any "not applied / not deployed / no armour" notes further down.
 
+### Latest session changes (2026-07-31, later) — ✅ DONE & pushed
+- **Hosting moved Netlify → GitHub Pages.** The repo is PUBLIC, so Pages/Actions
+  builds are free (Netlify's 300 build-min/month free tier was draining from
+  frequent commits). Deploy is `.github/workflows/deploy-pages.yml` (build `web/`
+  → publish `web/dist`), auto-running on push to `main`. **Live URL:
+  https://borisvdh-pcs.github.io/HighSocietyScape/**. `netlify.toml` was deleted
+  and the Netlify site disconnected. Pages **Source must stay = "GitHub Actions"**
+  (repo Settings → Pages). Vite `base` is now `'/HighSocietyScape/'` (project-site
+  subpath) — any absolute `/asset` ref in code MUST use `import.meta.env.BASE_URL`
+  or it 404s under that prefix (see the logo in `App.jsx`). The `VITE_SUPABASE_*`
+  public anon pair now lives in that workflow's `env` (was `netlify.toml`).
+- **Auto-fight now keeps farming after a win.** While AUTO is on, a win
+  auto-restarts the SAME boss after a short beat (no more clicking FIGHT AGAIN
+  each kill); a LOSS still stops on the defeat screen so you notice. Logic is the
+  auto effect in `App.jsx` (`battle.status === 'won'` → `reset()`).
+- **Drop panel shows kills + collected, obtained items go green.** The ⓘ drop
+  overlay now has an overview line — `☠ N kills` (this team's kills of the
+  current boss) and `X/Y collected` — and every already-owned drop renders green
+  with a ✓. Kills are a new per-team/per-boss stat in the **`team_kills`** table
+  (jsonb map, mirrors `team_progress`), bumped on each win; obtained state derives
+  from the existing owned-gear ids. Files: `web/src/game/kills.js`,
+  `killsByTeam`/`recordKill` in `App.jsx`, the `.drops-sub`/`.drop-name.owned`
+  block in `BattleScreen.jsx` + `styles.css`, migration `0005_team_kills.sql`
+  (**APPLIED** to the live DB).
+
 ### Balance-tuning pass — ✅ DONE (2026-07-31, "grindy" target)
 - **The old ladder was unwinnable, not "too easy."** A simulation of the real
   combat math (20k fights/rung, level-99 hero, best-farmed gear) showed the top
@@ -34,25 +59,27 @@ This supersedes any "not applied / not deployed / no armour" notes further down.
   scratchpad (not committed) — reproduce it if you re-tune.
 - **Drop rates (`BOSS_LOOT`) left unchanged** — the low per-piece rates
   (1/26–1/90) already suit the grindy target; retune if the farm feels too long.
-- **⚠️ Not yet verified on the live Netlify deploy** at time of writing — push
+- **⚠️ Not yet verified on the live deploy** at time of writing — push
   and hard-reload to confirm the numbers feel right in-app.
 
-- **The app is DEPLOYED and LIVE on Netlify**, auto-redeploying on every push to
-  `main`. Cloud save is **on**.
-- **Supabase env is set in `netlify.toml`** (`[build.environment]`), NOT the
-  Netlify dashboard — the free plan has no dashboard env-var access. Both values
-  are the PUBLIC anon pair (safe in-repo; RLS protects the data). To retarget a
-  project, edit the two `VITE_SUPABASE_*` values there. A local `web/.env` also
-  exists on Boris's machine for local dev.
+- **The app is DEPLOYED and LIVE on GitHub Pages** (moved off Netlify — see
+  "Latest session changes" above), auto-redeploying on every push to `main` via
+  `.github/workflows/deploy-pages.yml`. **URL:
+  https://borisvdh-pcs.github.io/HighSocietyScape/**. Cloud save is **on**.
+- **Supabase env is set in the `deploy-pages.yml` workflow `env`** (was
+  `netlify.toml`, now deleted). Both values are the PUBLIC anon pair (safe
+  in-repo; RLS protects the data). To retarget a project, edit the two
+  `VITE_SUPABASE_*` values there. A local `web/.env` also exists on Boris's
+  machine for local dev.
 - **All migrations are APPLIED** to the live DB: `0001_init`, `0002_team_gear`,
-  `0003_team_battle`, `0004_team_progress`. (An earlier stray `0002_game_state.sql`
-  from a parallel effort was dropped — those `team_inventory`/`team_loadout`/etc.
-  tables no longer exist and are not used.)
+  `0003_team_battle`, `0004_team_progress`, `0005_team_kills`. (An earlier stray
+  `0002_game_state.sql` from a parallel effort was dropped — those
+  `team_inventory`/`team_loadout`/etc. tables no longer exist and are not used.)
 - **⚠️ Boris's laptop CANNOT run Node** (install blocked). The web app therefore
   **cannot be built or tested locally** here — every change is verified by pushing
-  and checking the **Netlify deploy** (hard-reload / "Empty Cache and Hard Reload"
-  to bust the cache; a plain reload often serves the stale build). The Netlify
-  URL isn't recorded here — ask Boris for it if you need to inspect the live site.
+  and checking the **GitHub Pages deploy** (hard-reload / "Empty Cache and Hard
+  Reload" to bust the cache; a plain reload often serves the stale build) at the
+  URL above.
 - **PowerShell gotcha:** `Invoke-WebRequest`/`Invoke-RestMethod` returns a
   spurious **401** when sending the `sb_secret_` key as a Bearer token. Use
   `curl.exe` (or Node fetch) for Supabase calls — those authenticate fine.
@@ -67,8 +94,9 @@ This supersedes any "not applied / not deployed / no armour" notes further down.
   helper, the `.drops-overlay` block) + styles in `web/src/styles.css`
   (`.dropinfo-btn`, `.drops-overlay`, `.drop-row`, …). Purely additive UI —
   combat/drop logic untouched.
-- **⚠️ Pushed but not yet verified on the live Netlify deploy** — hard-reload
-  and confirm the button + panel render correctly (esp. on mobile width).
+- **Extended this session** (see "Latest session changes" above): the overlay now
+  also shows a `☠ N kills` + `X/Y collected` overview line and renders
+  already-obtained drops green with a ✓ (`team_kills` table, migration 0005).
 
 ### Gear system — now SIX slots per style (2026-07-31)
 - GEAR is no longer weapon-only. Every piece is an item with a `slot`
@@ -206,10 +234,12 @@ deploy) — see next steps.
   is absent. **⚠️ Needs migration `0004_team_progress.sql` applied** for
   cross-reload persistence.
 - **AUTO-FIGHT** is a persistent MODE (`auto` state + effect in `App.jsx`):
-  throws one attack every ~300ms until someone hits 0 HP, then stays ARMED — so
-  FIGHT AGAIN keeps auto-fighting for hands-off farming. Only STOP or a team
-  switch turns it off. The toggle shows on both the active menu and the end
-  screen so it's always controllable.
+  throws one attack every `ROUND_MS` (1200ms) until someone hits 0 HP. On a
+  **win it auto-restarts the same boss** (updated this session — see "Latest
+  session changes") so it farms hands-off with no clicking; on a **loss it stops**
+  on the defeat screen (still ARMED). Only STOP or a team switch turns it off. The
+  toggle shows on both the active menu and the end screen so it's always
+  controllable.
 - **MAP replaced RUN** in the command box; the end screen offers FIGHT AGAIN +
   MAP. `nextBoss` still exists in `combat.js` but is no longer used for
   auto-advance.
