@@ -280,3 +280,52 @@ body {
   .brandlogo { height: 46px; }
   .wordmark { font-size: 12px; }
 }
+
+/* ---- drop-rate info button + panel ---- */
+.dropinfo-btn {
+  margin-left: auto;
+  font-family: inherit;
+  font-size: 9px;
+  line-height: 1;
+  color: var(--ink);
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 3px;
+  padding: 2px 4px;
+  cursor: pointer;
+}
+.dropinfo-btn.on { background: var(--gold-deep); color: var(--frame); }
+
+.drops-overlay {
+  position: absolute;
+  inset: 4px;
+  z-index: 5;
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 4px;
+  padding: 8px 9px;
+  display: flex;
+  flex-direction: column;
+  color: var(--ink);
+  box-shadow: 0 6px 20px -8px #000;
+}
+.drops-head {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 8px; letter-spacing: .5px;
+  padding-bottom: 6px; margin-bottom: 4px;
+  border-bottom: 2px solid var(--ink);
+}
+.drops-x {
+  font-family: inherit; font-size: 8px; line-height: 1;
+  color: var(--ink); background: var(--paper);
+  border: 2px solid var(--ink); border-radius: 3px;
+  padding: 2px 5px; cursor: pointer;
+}
+.drops-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 5px; }
+.drop-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  font-size: 7px; line-height: 1.4;
+}
+.drop-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.drop-rate { color: var(--amber); white-space: nowrap; }
+.drops-foot { font-size: 6.5px; margin-top: 6px; color: var(--dark); text-align: right; }

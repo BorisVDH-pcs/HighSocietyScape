@@ -21,6 +21,14 @@ const SLOT_LABELS = {
   ring: 'Ring',
 };
 
+// Format a per-kill drop chance as "1/N (P%)" for the drop-rate panel.
+function formatRate(chance) {
+  if (!chance || chance <= 0) return '—';
+  const denom = Math.max(1, Math.round(1 / chance));
+  const pct = chance * 100;
+  return `1/${denom} · ${pct < 1 ? pct.toFixed(2) : pct.toFixed(1)}%`;
+}
+
 // Gen-1 style HP bar: "HP" label + bar, with current/max numbers.
 function PokeHP({ hp, max }) {
   const pct = Math.max(0, Math.min(100, (hp / max) * 100));
@@ -56,6 +64,7 @@ export default function BattleScreen({
   const over = status !== 'active';
   const [menu, setMenu] = useState('main'); // 'main' | 'gear' | 'setup' | 'map'
   const [note, setNote] = useState(null);
+  const [showDrops, setShowDrops] = useState(false); // drop-rate panel toggle
   const [setupStyle, setSetupStyle] = useState(null);
   const equippedStyle = player.weapon.style;
 
@@ -207,9 +216,53 @@ export default function BattleScreen({
             <div className="info-name">
               {boss.name.toUpperCase()}
               <span className="lvl">:L{boss.level}</span>
+              <button
+                className={`dropinfo-btn ${showDrops ? 'on' : ''}`}
+                onClick={() => setShowDrops((s) => !s)}
+                title="Drop rates"
+                aria-label="Show this boss's drop rates"
+              >
+                ⓘ
+              </button>
             </div>
             <PokeHP hp={boss.hp} max={boss.maxHp} />
           </div>
+
+          {/* drop-rate panel — toggled by the ⓘ button */}
+          {showDrops && (
+            <div className="drops-overlay" role="dialog" aria-label="Drop rates">
+              <div className="drops-head">
+                <span>{boss.name.toUpperCase()} — DROPS</span>
+                <button
+                  className="drops-x"
+                  onClick={() => setShowDrops(false)}
+                  aria-label="Close drop rates"
+                >
+                  ✕
+                </button>
+              </div>
+              <div className="drops-list">
+                {(boss.drops ?? []).length === 0 ? (
+                  <div className="drop-row">
+                    <span className="drop-name">No drops — this boss gives nothing.</span>
+                  </div>
+                ) : (
+                  boss.drops.map((d) => {
+                    const it = itemById(d.itemId);
+                    return (
+                      <div key={d.itemId} className="drop-row">
+                        <span className="drop-name">
+                          {it?.icon ?? '❔'} {it?.name ?? d.itemId}
+                        </span>
+                        <span className="drop-rate">{formatRate(d.chance)}</span>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+              <div className="drops-foot">Chance per kill.</div>
+            </div>
+          )}
 
           {/* in-flight projectile: arrow (ranged) / spell (magic) */}
           {anim.proj && (
