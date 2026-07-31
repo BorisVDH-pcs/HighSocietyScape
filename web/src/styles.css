@@ -6,6 +6,7 @@
   --amber: #a9750d;
   --ink: #100c02;       /* text on the parchment battle screen */
   --dark: #6b5410;
+  --owned: #1f7a2e;     /* green for already-obtained drops (reads on parchment) */
   --paper: #f6e7b4;     /* warm parchment for the Game Boy screen */
   --frame: #0a0803;
   --panel: #16120a;
@@ -321,11 +322,18 @@ body {
   border: 2px solid var(--ink); border-radius: 3px;
   padding: 2px 5px; cursor: pointer;
 }
+.drops-sub {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 7px; letter-spacing: .3px; color: var(--dark);
+  margin: -2px 0 6px;
+}
 .drops-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 5px; }
 .drop-row {
   display: flex; align-items: center; justify-content: space-between; gap: 8px;
   font-size: 7px; line-height: 1.4;
 }
 .drop-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* obtained drops read green (with a ✓) so it's obvious what the team still needs */
+.drop-name.owned { color: var(--owned); font-weight: 700; }
 .drop-rate { color: var(--amber); white-space: nowrap; }
 .drops-foot { font-size: 6.5px; margin-top: 6px; color: var(--dark); text-align: right; }

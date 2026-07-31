@@ -20,6 +20,7 @@ import {
 import { loadGear, saveGear } from './game/gear.js';
 import { loadBattle, saveBattle } from './game/battle.js';
 import { loadProgress, saveProgress } from './game/progress.js';
+import { loadKills, saveKills } from './game/kills.js';
 import { isSupabaseConfigured } from './game/supabase.js';
 import BattleScreen from './components/BattleScreen.jsx';
 
@@ -52,6 +53,10 @@ export default function App() {
   // fight (0 = only the Goblin). Beating rung i unlocks i+1. Persisted to the
   // team_progress table; defaults to 0 when unloaded / unconfigured.
   const [progressByTeam, setProgressByTeam] = useState({});
+  // Boss KILL COUNTS per team: a { bossId: count } map per team, shown in the
+  // drop panel. Bumped on every win; persisted to the team_kills table. Defaults
+  // to an empty map when unloaded / unconfigured (session-only).
+  const [killsByTeam, setKillsByTeam] = useState({});
   // The last round's events, fed to BattleScreen to drive attack animations.
   // `seq` (a monotonic id) guarantees each attack re-triggers the animation even
   // when the derived fields repeat.
@@ -94,6 +99,18 @@ export default function App() {
   const LAST_BOSS = BOSS_LADDER.length - 1;
   const unlockedFor = (name) => progressByTeam[name] ?? 0;
 
+  // A team's kill-count map, and the count for one boss.
+  const killsMapFor = (name) => killsByTeam[name] ?? {};
+  const killsOf = (name, bossId) => killsMapFor(name)[bossId] ?? 0;
+
+  // Record one kill of `bossId` for a team and persist the whole map. Reads the
+  // current render state (like updateGear/updateBattle) so each win bumps once.
+  function recordKill(name, bossId) {
+    const nextMap = { ...killsMapFor(name), [bossId]: killsOf(name, bossId) + 1 };
+    setKillsByTeam((m) => ({ ...m, [name]: nextMap }));
+    saveKills(SEASON.id, name, nextMap);
+  }
+
   // Raise a team's unlocked-ladder index (never lowers it) and persist it.
   function unlockUpTo(name, index) {
     const target = Math.min(LAST_BOSS, index);
@@ -123,6 +140,11 @@ export default function App() {
 
       const savedProgress = await loadProgress(SEASON.id, teamName);
       if (cancelled) return;
+
+      const savedKills = await loadKills(SEASON.id, teamName);
+      if (cancelled) return;
+      if (savedKills)
+        setKillsByTeam((m) => (m[teamName] ? m : { ...m, [teamName]: savedKills }));
 
       const saved = await loadBattle(SEASON.id, teamName);
       if (cancelled) return;
@@ -192,9 +214,13 @@ export default function App() {
       bossLanded: next.player.hp < battle.player.hp,
     });
 
-    // On a win, unlock the next rung of the ladder for this team (MAP gates
-    // bosses beyond the highest unlocked). No-op once already unlocked.
-    if (next.status === 'won') unlockUpTo(teamName, bossIndex(next.boss.id) + 1);
+    // On a win, count the kill and unlock the next rung of the ladder for this
+    // team (MAP gates bosses beyond the highest unlocked). unlockUpTo is a no-op
+    // once already unlocked.
+    if (next.status === 'won') {
+      recordKill(teamName, next.boss.id);
+      unlockUpTo(teamName, bossIndex(next.boss.id) + 1);
+    }
 
     // Absorb any drops (weapons AND armour/accessories) into THIS team's owned
     // gear, deduped. Armour auto-applies to the setup on the next fight; keep the
@@ -314,6 +340,7 @@ export default function App() {
         ownedIds={ownedIds}
         auto={auto}
         maxUnlocked={unlockedFor(teamName)}
+        bossKills={killsOf(teamName, battle.boss.id)}
         onAttack={handleAttack}
         onSelectStyle={handleStyle}
         onReset={() => reset()}

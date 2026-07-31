@@ -54,6 +54,7 @@ export default function BattleScreen({
   ownedIds = [],
   auto,
   maxUnlocked = 0,
+  bossKills = 0,
   onAttack,
   onSelectStyle,
   onReset,
@@ -241,6 +242,24 @@ export default function BattleScreen({
                   ✕
                 </button>
               </div>
+              {/* overview: total kills of this boss + how many of its drops the
+                  team has already collected */}
+              {(() => {
+                const drops = boss.drops ?? [];
+                const collected = drops.filter((d) => ownedIds.includes(d.itemId)).length;
+                return (
+                  <div className="drops-sub">
+                    <span>
+                      ☠ {bossKills} {bossKills === 1 ? 'kill' : 'kills'}
+                    </span>
+                    {drops.length > 0 && (
+                      <span>
+                        {collected}/{drops.length} collected
+                      </span>
+                    )}
+                  </div>
+                );
+              })()}
               <div className="drops-list">
                 {(boss.drops ?? []).length === 0 ? (
                   <div className="drop-row">
@@ -249,10 +268,12 @@ export default function BattleScreen({
                 ) : (
                   boss.drops.map((d) => {
                     const it = itemById(d.itemId);
+                    const owned = ownedIds.includes(d.itemId);
                     return (
                       <div key={d.itemId} className="drop-row">
-                        <span className="drop-name">
+                        <span className={`drop-name ${owned ? 'owned' : ''}`}>
                           {it?.icon ?? '❔'} {it?.name ?? d.itemId}
+                          {owned && ' ✓'}
                         </span>
                         <span className="drop-rate">{formatRate(d.chance)}</span>
                       </div>
@@ -260,7 +281,7 @@ export default function BattleScreen({
                   })
                 )}
               </div>
-              <div className="drops-foot">Chance per kill.</div>
+              <div className="drops-foot">Chance per kill · ✓ already obtained.</div>
             </div>
           )}
 
