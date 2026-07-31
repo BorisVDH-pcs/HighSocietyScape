@@ -24,7 +24,9 @@ import { loadBattle, saveBattle } from './game/battle.js';
 import { loadProgress, saveProgress } from './game/progress.js';
 import { loadKills, saveKills } from './game/kills.js';
 import { isSupabaseConfigured } from './game/supabase.js';
+import { loadLeaderboard } from './game/leaderboard.js';
 import BattleScreen from './components/BattleScreen.jsx';
+import Leaderboard from './components/Leaderboard.jsx';
 
 // One auto-fight attack per this many ms — long enough for a round's attack
 // animations (player swing → boss retaliation) to play out. Also the visual
@@ -67,6 +69,10 @@ export default function App() {
   const [logoOk, setLogoOk] = useState(true);
   const [auto, setAuto] = useState(false); // AUTO-fight: keep attacking until 0 HP
   const loadedTeams = useRef(new Set()); // teams whose DB state we've fetched
+  // Cross-team leaderboard overlay: `board` is the ranked rows (null = loading /
+  // closed). Loaded fresh each time it's opened so kills/progress are current.
+  const [showBoard, setShowBoard] = useState(false);
+  const [board, setBoard] = useState(null);
 
   const gearFor = (name) =>
     gearByTeam[name] ?? { ownedIds: STARTER_GEAR_IDS, weaponId: DEFAULT_WEAPON.id };
@@ -313,6 +319,15 @@ export default function App() {
     setAuto(false);
   }
 
+  // Open the cross-team leaderboard, (re)loading fresh standings each time so
+  // kills/progress reflect the latest DB state. Never rejects (best-effort live
+  // data over a snapshot baseline).
+  function openBoard() {
+    setBoard(null);
+    setShowBoard(true);
+    loadLeaderboard().then((rows) => setBoard(rows));
+  }
+
   const maxed = character.maxedSkills.length;
 
   return (
@@ -332,17 +347,26 @@ export default function App() {
             </h1>
           )}
         </div>
-        <label className="teampick">
-          Team
-          <select value={teamName} onChange={(e) => pickTeam(e.target.value)}>
-            {TEAMS.map((t) => (
-              <option key={t} value={t}>
-                {t}
-              </option>
-            ))}
-          </select>
-        </label>
+        <div className="topbar-right">
+          <button className="rankbtn" onClick={openBoard} title="Season rankings">
+            🏆 Rankings
+          </button>
+          <label className="teampick">
+            Team
+            <select value={teamName} onChange={(e) => pickTeam(e.target.value)}>
+              {TEAMS.map((t) => (
+                <option key={t} value={t}>
+                  {t}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
       </header>
+
+      {showBoard && (
+        <Leaderboard rows={board} currentTeam={teamName} onClose={() => setShowBoard(false)} />
+      )}
 
       <section className="statstrip">
         <Stat label="Combat" value={character.combatLevel} />
