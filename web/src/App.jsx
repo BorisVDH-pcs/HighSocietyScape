@@ -274,7 +274,7 @@ export default function App() {
         <div className="brand">
           {logoOk ? (
             <img
-              src="/logo.png"
+              src={`${import.meta.env.BASE_URL}logo.png`}
               alt="High Society Scape"
               className="brandlogo"
               onError={() => setLogoOk(false)}

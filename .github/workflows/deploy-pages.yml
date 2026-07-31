@@ -1,0 +1,70 @@
+# Build the Vite + React app in web/ and deploy it to GitHub Pages.
+#
+# Mirrors the old Netlify build (npm ci + build from the repo root so web/ can
+# import ../lib, ../xp_table.json, ../data), then publishes web/dist. Runs on
+# every push to main and can be triggered by hand from the Actions tab.
+#
+# The two VITE_SUPABASE_* values are the PUBLIC anon/publishable pair — safe to
+# inline here exactly as they were in netlify.toml (row-level security protects
+# the data; they already ship in the built JS). To point at a different project,
+# edit them below. Leave them blank to ship an offline build (gear/progress live
+# in the session only).
+#
+# ONE-TIME SETUP: repo Settings -> Pages -> Build and deployment -> Source:
+# "GitHub Actions". Then this workflow owns the deploy.
+
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Allow this workflow to publish a Pages deployment.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One live deploy at a time; let an in-flight run finish rather than cancelling
+# (a cancelled deploy can leave Pages half-updated).
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      VITE_SUPABASE_URL: 'https://gfgcerrmaxkskzldiuuu.supabase.co'
+      VITE_SUPABASE_ANON_KEY: 'sb_publishable_HGLRhQViEoWcdfupaZWkhw_MauXIki4'
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm --prefix web ci
+
+      - name: Build
+        run: npm --prefix web run build
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: web/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
