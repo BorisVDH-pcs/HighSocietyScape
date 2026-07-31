@@ -96,13 +96,20 @@ export function nextBoss(bossId) {
   return BOSS_LADDER[i + 1];
 }
 
-/** Roll a boss's drop table on kill. Returns the item ids that dropped. */
+/**
+ * Roll a boss's drop table on kill: ONE roll per kill, yielding at most one
+ * item. A single random draw walks the table's cumulative chances — it lands in
+ * one piece's band (that piece drops) or past them all (nothing). Each piece
+ * keeps its own per-kill probability; total drop chance is the sum. Returns an
+ * array of 0 or 1 item ids (array kept for the caller's loot loop).
+ */
 function rollDrops(boss) {
-  const dropped = [];
+  let r = Math.random();
   for (const d of boss.drops ?? []) {
-    if (Math.random() < d.chance) dropped.push(d.itemId);
+    if (r < d.chance) return [d.itemId];
+    r -= d.chance;
   }
-  return dropped;
+  return [];
 }
 
 /** Derive the player's combat profile from a character view model. */
