@@ -3,6 +3,8 @@ import { loadTeamCharacter, loadTeamCharacterLive, TEAMS, SEASON } from './game/
 import {
   initBattle,
   attack,
+  useFood,
+  usePotion,
   rehydrateBattle,
   bossById,
   bossIndex,
@@ -235,6 +237,25 @@ export default function App() {
     updateBattle(teamName, next);
   }
 
+  // BAG: eat food / drink a combat brew. Each spends a turn (the boss retaliates,
+  // possibly ending the fight), so a loss is possible from a BAG action — no win
+  // is (items don't damage the boss), so no kill/loot handling is needed here.
+  // Clear the attack animation (setAction(null)) so no stale swing plays; HP
+  // updates immediately, consistent with the rest of the screen.
+  function handleFood() {
+    const next = useFood(battle);
+    if (next === battle) return; // no food left / fight over — no-op
+    setAction(null);
+    updateBattle(teamName, next);
+  }
+
+  function handlePotion() {
+    const next = usePotion(battle);
+    if (next === battle) return;
+    setAction(null);
+    updateBattle(teamName, next);
+  }
+
   // GEAR: switch active combat style. Auto-equips that style's best weapon and
   // rebuilds the live battle's setup + bonuses (best owned piece per slot). This
   // also swaps the hero sprite (which follows the weapon's style). No attack.
@@ -342,6 +363,8 @@ export default function App() {
         maxUnlocked={unlockedFor(teamName)}
         bossKills={killsOf(teamName, battle.boss.id)}
         onAttack={handleAttack}
+        onUseFood={handleFood}
+        onUsePotion={handlePotion}
         onSelectStyle={handleStyle}
         onReset={() => reset()}
         onSelectBoss={(id) => selectBoss(teamName, id)}

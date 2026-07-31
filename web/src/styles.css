@@ -235,6 +235,8 @@ body {
 .mbtn.back { color: var(--dark); margin-top: 2px; }
 .mbtn.locked { color: var(--dark); opacity: .5; cursor: not-allowed; }
 .mbtn.locked::before { content: ''; }
+.mbtn:disabled { color: var(--dark); opacity: .45; cursor: not-allowed; }
+.mbtn:disabled::before { content: ''; }
 
 /* ---- GEAR set-up panel (all six equipped slots for a style) ---- */
 .setup { display: flex; flex-direction: column; gap: 4px; }

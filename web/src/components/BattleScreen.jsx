@@ -56,6 +56,8 @@ export default function BattleScreen({
   maxUnlocked = 0,
   bossKills = 0,
   onAttack,
+  onUseFood,
+  onUsePotion,
   onSelectStyle,
   onReset,
   onSelectBoss,
@@ -63,7 +65,7 @@ export default function BattleScreen({
 }) {
   const { player, boss, status } = battle;
   const over = status !== 'active';
-  const [menu, setMenu] = useState('main'); // 'main' | 'gear' | 'setup' | 'map'
+  const [menu, setMenu] = useState('main'); // 'main' | 'gear' | 'setup' | 'bag' | 'map'
   const [note, setNote] = useState(null);
   const [showDrops, setShowDrops] = useState(false); // drop-rate panel toggle
   const [setupStyle, setSetupStyle] = useState(null);
@@ -129,7 +131,8 @@ export default function BattleScreen({
       setNote(null);
       setMenu('gear');
     } else if (which === 'item') {
-      setNote('BAG is empty — potions & food are coming soon.');
+      setNote(null);
+      setMenu('bag');
     } else if (which === 'map') {
       setNote(null);
       setMenu('map');
@@ -180,6 +183,9 @@ export default function BattleScreen({
     lines = ['Choose a combat style.'];
   } else if (menu === 'setup') {
     lines = [`${viewStyle.toUpperCase()} set-up.`];
+  } else if (menu === 'bag') {
+    // Show the last combat result (a BAG action costs a turn) or a prompt.
+    lines = battle.round > 0 ? battle.log.slice(-2).map((e) => e.text) : ['Use an item.'];
   } else if (menu === 'map') {
     lines = ['Where to? Choose a boss.'];
   } else if (auto) {
@@ -360,6 +366,32 @@ export default function BattleScreen({
                   <span>🎯 +{Math.round((stats.accuracy ?? 0) * 100)}%</span>
                 </div>
                 <button className="mbtn back" onClick={() => setMenu('gear')}>
+                  ← BACK
+                </button>
+              </div>
+            ) : menu === 'bag' && !over ? (
+              <div className="moves">
+                <button
+                  className="mbtn move"
+                  onClick={onUseFood}
+                  disabled={(player.food ?? 0) <= 0}
+                >
+                  🍖 EAT FOOD
+                  <span className="mtag">
+                    x{player.food ?? 0} · +{player.foodHeal ?? 0} HP
+                  </span>
+                </button>
+                <button
+                  className="mbtn move"
+                  onClick={onUsePotion}
+                  disabled={(player.potion ?? 0) <= 0}
+                >
+                  🧪 COMBAT BREW
+                  <span className="mtag">
+                    {(player.buff?.power ?? 0) > 0 ? `active +${player.buff.power}` : `x${player.potion ?? 0} · +${player.potionPower ?? 0} pow`}
+                  </span>
+                </button>
+                <button className="mbtn back" onClick={() => setMenu('main')}>
                   ← BACK
                 </button>
               </div>

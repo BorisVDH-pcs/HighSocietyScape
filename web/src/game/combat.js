@@ -21,6 +21,20 @@ import {
 // Lowered from 0.5 so armour helps but never trivialises a fight.
 const DEF_FACTOR = 0.35;
 
+// ---- Consumables (the BAG) ------------------------------------------------
+// Food + potions are earned from the team's REAL WOM skills, on-theme with the
+// whole game (real training -> in-game power) and needing no currency/economy:
+//   • Cooking  -> how many FOOD you may eat per fight (each heals FOOD_HEAL_PCT
+//     of max HP). Eating costs your turn — the boss still retaliates.
+//   • Herblore -> the +power a COMBAT BREW grants for the rest of the fight.
+// The allowance is per-fight (recomputed in initBattle from the character), so
+// there's nothing to buy or restock. All knobs live here — tune freely.
+const FOOD_HEAL_PCT = 0.25; // each food restores this fraction of max HP
+const FOOD_MAX = 5; // hard cap on food uses per fight, however high Cooking is
+const foodCountFor = (cookingLvl) =>
+  Math.min(FOOD_MAX, Math.max(1, Math.floor((cookingLvl ?? 1) / 20))); // 1–5
+const potionPowerFor = (herbloreLvl) => Math.max(1, Math.floor((herbloreLvl ?? 1) / 12)); // +1..+8
+
 // The BOSS LADDER — an ordered progression from a trivial Goblin up to the King
 // Black Dragon. Each rung scales hp / maxHit / accuracy (its `level` is flavour,
 // shown as :L# in the UI). Drop tables are generated below from BOSS_LOOT.
@@ -158,6 +172,9 @@ export function initBattle(character, boss = GOBLIN, setup = null) {
   const s = setup && setup.weapon ? setup : { weapon: DEFAULT_WEAPON };
   const weapon = s.weapon ?? DEFAULT_WEAPON;
   const bonus = setupStats(s);
+  // Per-fight consumable allowance, from the team's real Cooking/Herblore.
+  const foodMax = foodCountFor(character.skills?.cooking?.level);
+  const potionMax = 1;
   return {
     round: 0,
     status: 'active', // 'active' | 'won' | 'lost'
@@ -171,6 +188,14 @@ export function initBattle(character, boss = GOBLIN, setup = null) {
       weapon,
       setup: s,
       bonus,
+      // BAG state for this fight (see the consumables block up top).
+      food: foodMax,
+      foodMax,
+      foodHeal: Math.max(3, Math.round(p.hp * FOOD_HEAL_PCT)),
+      potion: potionMax,
+      potionMax,
+      potionPower: potionPowerFor(character.skills?.herblore?.level),
+      buff: { power: 0 }, // combat-brew bonus active this fight
     },
     log: [
       {
@@ -206,9 +231,38 @@ const rollDamage = (maxHit) => Math.floor(Math.random() * (maxHit + 1));
 const lands = (accuracy) => Math.random() < accuracy;
 
 /**
+ * The boss's half of a round: it retaliates (unless it just died), its hit
+ * reduced by the player's defence, and the player's death is checked. Mutates
+ * `s` and appends to `entries`. Shared by attack() and the BAG actions
+ * (useFood/usePotion) — anything that costs the player a turn ends with the boss
+ * swinging back.
+ */
+function bossRetaliate(s, entries) {
+  const bonus = s.player.bonus ?? { defence: 0 };
+  if (lands(s.boss.accuracy)) {
+    const raw = rollDamage(s.boss.maxHit);
+    const dmg = Math.max(0, raw - Math.floor((bonus.defence ?? 0) * DEF_FACTOR));
+    s.player.hp = Math.max(0, s.player.hp - dmg);
+    entries.push({
+      t: 'boss',
+      text: dmg
+        ? `The ${s.boss.name} hits ${s.player.name} for ${dmg}.`
+        : `The ${s.boss.name}'s blow glances off ${s.player.name}'s armour — 0 damage.`,
+    });
+  } else {
+    entries.push({ t: 'miss', text: `The ${s.boss.name} misses.` });
+  }
+
+  if (s.player.hp <= 0) {
+    s.status = 'lost';
+    entries.push({ t: 'lose', text: `${s.player.name} has fallen...` });
+  }
+}
+
+/**
  * Advance one full round: the player attacks with the active style (boosted by
- * gear power/accuracy), then — if still standing — the boss retaliates, its hit
- * reduced by the player's defence. Returns a new state.
+ * gear power/accuracy AND any active combat-brew buff), then — if still
+ * standing — the boss retaliates. Returns a new state.
  */
 export function attack(state) {
   if (state.status !== 'active') return state;
@@ -216,6 +270,7 @@ export function attack(state) {
   const s = structuredClone(state);
   const style = s.player.styles[s.player.weapon.style];
   const bonus = s.player.bonus ?? { power: 0, defence: 0, accuracy: 0 };
+  const buffPower = s.player.buff?.power ?? 0;
   const noun = style.label.toLowerCase();
   s.round += 1;
   const entries = [];
@@ -223,7 +278,7 @@ export function attack(state) {
   // --- Player turn ---
   const hitChance = Math.min(0.99, style.accuracy + (bonus.accuracy ?? 0));
   if (lands(hitChance)) {
-    const dmg = rollDamage(style.maxHit + (bonus.power ?? 0));
+    const dmg = rollDamage(style.maxHit + (bonus.power ?? 0) + buffPower);
     s.boss.hp = Math.max(0, s.boss.hp - dmg);
     entries.push({
       t: 'player',
@@ -248,25 +303,60 @@ export function attack(state) {
   }
 
   // --- Boss turn ---
-  if (lands(s.boss.accuracy)) {
-    const raw = rollDamage(s.boss.maxHit);
-    const dmg = Math.max(0, raw - Math.floor((bonus.defence ?? 0) * DEF_FACTOR));
-    s.player.hp = Math.max(0, s.player.hp - dmg);
-    entries.push({
-      t: 'boss',
-      text: dmg
-        ? `The ${s.boss.name} hits ${s.player.name} for ${dmg}.`
-        : `The ${s.boss.name}'s blow glances off ${s.player.name}'s armour — 0 damage.`,
-    });
-  } else {
-    entries.push({ t: 'miss', text: `The ${s.boss.name} misses.` });
-  }
+  bossRetaliate(s, entries);
 
-  if (s.player.hp <= 0) {
-    s.status = 'lost';
-    entries.push({ t: 'lose', text: `${s.player.name} has fallen...` });
-  }
+  s.log = [...s.log, ...entries];
+  return s;
+}
 
+/**
+ * BAG action — eat one food: restore foodHeal HP (capped at max), spend one
+ * food, and take a turn (the boss retaliates). No-op if the fight is over or no
+ * food remains. Returns a new state.
+ */
+export function useFood(state) {
+  if (state.status !== 'active' || (state.player.food ?? 0) <= 0) return state;
+
+  const s = structuredClone(state);
+  s.round += 1;
+  const entries = [];
+  s.player.food -= 1;
+  const before = s.player.hp;
+  s.player.hp = Math.min(s.player.maxHp, s.player.hp + (s.player.foodHeal ?? 0));
+  const healed = s.player.hp - before;
+  entries.push({
+    t: 'heal',
+    text: healed > 0
+      ? `${s.player.name} eats and restores ${healed} HP.`
+      : `${s.player.name} eats, but HP is already full.`,
+  });
+
+  bossRetaliate(s, entries);
+  s.log = [...s.log, ...entries];
+  return s;
+}
+
+/**
+ * BAG action — drink one combat brew: add potionPower to the fight's power buff
+ * for the rest of this battle, spend the brew, and take a turn (the boss
+ * retaliates). No-op if the fight is over or no brew remains. Returns a new
+ * state.
+ */
+export function usePotion(state) {
+  if (state.status !== 'active' || (state.player.potion ?? 0) <= 0) return state;
+
+  const s = structuredClone(state);
+  s.round += 1;
+  const entries = [];
+  s.player.potion -= 1;
+  const add = s.player.potionPower ?? 0;
+  s.player.buff = { power: (s.player.buff?.power ?? 0) + add };
+  entries.push({
+    t: 'buff',
+    text: `${s.player.name} drinks a combat brew — +${add} power for the rest of the fight.`,
+  });
+
+  bossRetaliate(s, entries);
   s.log = [...s.log, ...entries];
   return s;
 }
