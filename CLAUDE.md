@@ -38,12 +38,17 @@ Core loop:
     - **WOM-derived tables** (`seasons`, `teams`, `team_members`, `team_skills`,
       `team_bosses`) are **read-only to the frontend** — written only by the
       service-role sync script. Migration `0001_init.sql`.
-    - **`team_gear`** (migration `0002`) stores each team's app-side inventory
-      (owned weapons + equipped weapon, keyed by `season_id` + `team_name`).
-      Unlike the WOM tables it is **written by the frontend with the anon key**
-      (no auth yet → anon INSERT/UPDATE are open; documented tradeoff). The
-      browser reads/writes it via `web/src/game/{supabase,gear}.js`, degrading
-      to session-only gear when unconfigured or the table is absent.
+    - **App-authored tables**, all APPLIED and written by the frontend with the
+      anon key (no auth yet → anon INSERT/UPDATE are open; documented tradeoff),
+      degrading to session-only when Supabase/the table is absent:
+      `team_gear` (0002, owned item ids + equipped weapon — now covers all six
+      gear slots, not just weapons), `team_battle` (0003, resume mid-fight),
+      `team_progress` (0004, boss-ladder unlock index). Keyed by `season_id` +
+      `team_name`. Read/written via `web/src/game/{supabase,gear,battle,progress}.js`.
+    - **Deployment (2026-07-31):** the web app is LIVE on **Netlify**, auto-
+      redeploying on push to `main`. The `VITE_SUPABASE_*` anon pair is set in
+      `netlify.toml` `[build.environment]` (free plan has no dashboard env vars);
+      it's the public pair, safe in-repo since RLS protects the data.
 - **Data source:** Wise Old Man API, driven by a **WOM competition of type
   `team`** — NOT a group. One competition = one season/event; each team inside
   it (`participation.teamName`) maps to one shared character. This was chosen
@@ -99,16 +104,29 @@ Core loop:
 - **Pipeline:** run end-to-end against the live Supabase DB — tables populated
   (4 teams / 71 members / 96 skill rows / 142 boss rows), read-back verified.
 
+## Resolved decisions (2026-07-31)
+- **Frontend framework:** Vite + React — built and deployed (was "TBD").
+- **Gear system:** SIX slots per style (weapon, armour, boots, cape, amulet,
+  ring), each with `power`/`defence`/`accuracy`. Best owned piece per slot is
+  auto-equipped (no manual inventory); GEAR shows a per-style SET-UP panel. Gear
+  **drops from bosses** (Boris's choice) at low rates, one roll per kill. Combat
+  now uses all three stats. Registry in `web/src/game/weapons.js`, drops in
+  `BOSS_LOOT` (`combat.js`). Stat values + rates are first-guess.
+- **Combat animations:** two-phase per round (player attack → boss retaliate),
+  pace slowed to `ROUND_MS` 1200ms.
+
 ## Open questions (ask Boris / don't assume)
-- **Frontend framework** — recommending Vite + React (see below); confirm before
-  committing to it.
+- **Balance-tuning pass (the priority):** gear adds power/defence/accuracy but
+  boss stats are unchanged, so fights are easier than intended. Tune boss stats,
+  `DEF_FACTOR`, the `GEAR_SLOTS` stat formulas, and `BOSS_LOOT` drop rates
+  together — all first-guess and centralized.
+- **HP-timing polish:** HP bars update instantly at round start, before the boss
+  lunge animates; syncing needs the engine to expose intermediate hit states.
 - **First skill** to surface in the battle screen (Team 1's maxed combat skills
   are Strength / Hitpoints / Ranged).
-- Drop table design at scale: the 5-boss ladder now drops weapons up to tier 3
-  (per-boss `drops` in `web/src/game/combat.js`, weapons in `weapons.js`), but
-  coverage is uneven (ranged stops at t2), there's **no armour/defence** yet
-  (combat only uses weapon `power`), and rates/tiers are first-guess. Full gear
-  and drop-table balancing is still to be designed.
+- **Gear naming/accessories:** armour/accessory names are auto-generated per
+  style tier (placeholders); accessories are style-specific. Bespoke names, or
+  universal accessories — confirm.
 
 ## Working style notes
 - Boris prefers concrete next steps over long theoretical discussion.

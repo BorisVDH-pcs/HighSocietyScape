@@ -3,7 +3,71 @@
 Read **`CLAUDE.md`** first for the concept/architecture, then **`README.md`**
 for setup and run commands. This file is the live status + what to do next.
 
-_Last updated: 2026-07-30._
+_Last updated: 2026-07-31._
+
+---
+
+## ⭐ 2026-07-31 update — current state (read this first)
+
+This supersedes any "not applied / not deployed / no armour" notes further down.
+
+- **The app is DEPLOYED and LIVE on Netlify**, auto-redeploying on every push to
+  `main`. Cloud save is **on**.
+- **Supabase env is set in `netlify.toml`** (`[build.environment]`), NOT the
+  Netlify dashboard — the free plan has no dashboard env-var access. Both values
+  are the PUBLIC anon pair (safe in-repo; RLS protects the data). To retarget a
+  project, edit the two `VITE_SUPABASE_*` values there. A local `web/.env` also
+  exists on Boris's machine for local dev.
+- **All migrations are APPLIED** to the live DB: `0001_init`, `0002_team_gear`,
+  `0003_team_battle`, `0004_team_progress`. (An earlier stray `0002_game_state.sql`
+  from a parallel effort was dropped — those `team_inventory`/`team_loadout`/etc.
+  tables no longer exist and are not used.)
+- **⚠️ Boris's laptop CANNOT run Node** (install blocked). The web app therefore
+  **cannot be built or tested locally** here — every change is verified by pushing
+  and checking the **Netlify deploy** (hard-reload / "Empty Cache and Hard Reload"
+  to bust the cache; a plain reload often serves the stale build). The Netlify
+  URL isn't recorded here — ask Boris for it if you need to inspect the live site.
+- **PowerShell gotcha:** `Invoke-WebRequest`/`Invoke-RestMethod` returns a
+  spurious **401** when sending the `sb_secret_` key as a Bearer token. Use
+  `curl.exe` (or Node fetch) for Supabase calls — those authenticate fine.
+
+### Gear system — now SIX slots per style (2026-07-31)
+- GEAR is no longer weapon-only. Every piece is an item with a `slot`
+  (**weapon, armour, boots, cape, amulet, ring**), a `style`, a `tier`, and stat
+  bonuses: `power` (max hit), `defence` (mitigates boss damage), `accuracy` (hit
+  chance). Registry + helpers (`buildSetup`, `setupStats`, `bestOwnedBySlot`,
+  `itemById`, generated gear) live in `web/src/game/weapons.js`.
+- **GEAR → Melee/Ranged/Mage** activates that style AND opens its **SET-UP panel**
+  listing all six equipped slots + aggregate stats (`BattleScreen.jsx`). Best
+  owned piece per slot is auto-equipped; no manual inventory. Starter tier-1 set
+  (all slots, all styles) is always owned.
+- **Gear drops from bosses** (confirmed choice): each boss drops its (style,tier)
+  set at low rates (~1/26–1/90 per piece, weapon ~20% rarer). `owned_ids` stores
+  armour ids too — **no schema change**. Drop tables generated from `BOSS_LOOT`
+  in `combat.js`.
+- **Combat uses the gear:** max hit += Σpower, hit chance += Σaccuracy (capped
+  0.99), boss damage −= floor(Σdefence × `DEF_FACTOR` [0.5]). **Boss stats were
+  left unchanged** — gear only makes fights easier, never unwinnable — so a
+  **balance pass is the main open task** (see next steps).
+- **One loot roll per kill** (fixed 2026-07-31): a single cumulative-probability
+  draw yields at most one item; each piece keeps its own odds.
+
+### Attack animations + pace (2026-07-31)
+- Each round plays a two-phase animation: player swings (melee lunge) / shoots
+  (arrow projectile) / casts (spell projectile) and the boss recoils, then the
+  boss lunges into the hero and it recoils. Driven by an `action` descriptor
+  (monotonic `seq`) from `App.jsx` → timeline effect in `BattleScreen.jsx`; CSS
+  keyframes in `styles.css`. Auto-fight cadence slowed 300ms → `ROUND_MS` (1200ms).
+- **Known rough edge (for the polish/balance pass):** HP bars update instantly at
+  round start while the boss lunge animates ~0.9s later, so HP can visibly drop
+  slightly *before* the boss's blow lands. Syncing HP to each blow needs the
+  engine to expose intermediate states — deferred, not yet done.
+
+### Bug fixed this session
+- **Boss-map nodes were unselectable on desktop (mouse):** `BossMap` called
+  `setPointerCapture` on pointerdown, which redirected pointerup off the boss
+  buttons and killed their click. Now capture is deferred until a real drag
+  (past the slop threshold), so taps click normally. (Touch was unaffected.)
 
 ---
 
@@ -216,31 +280,32 @@ deploy) — see next steps.
   "High Society Scape" wordmark fallback.
 
 ## Suggested next steps (pick one)
-1. **More gear + drop tables** — the 10-boss ladder drops melee/ranged/magic
-   weapons up to tier 5, but there's still **no armour/defence** — combat only
-   uses weapon `power`. Expand `weapons.js` (add armour with a defence stat the
-   combat engine reads; the enemy `maxHit` currently lands unmitigated).
-   Auto-equip already picks the highest `tier` per style.
-2. **Balance pass** — boss hp/accuracy/maxHit and drop rates in `BOSS_LADDER`
-   are first-guess numbers. For maxed demo teams (Team 1 is combat 111) even the
-   later bosses may die fast; tune the curve once real play shows how it feels.
-3. **Deploy** — configs are committed (`netlify.toml` / `vercel.json`): import
-   the repo on Netlify or Vercel, add the two `VITE_SUPABASE_*` env vars, done.
-   Build runs from the repo root (not `web/`) so the shared `../lib` imports
-   resolve → publishes `web/dist`. See README "Deploy it live". Not deployed yet.
-   (Also add the Action secrets — see "Live character stats" — to keep the
-   deployed app's stats fresh.)
+1. **Balance-tuning pass (the big one)** — gear now adds power/defence/accuracy
+   but **boss stats were left unchanged**, so fights are easier than intended.
+   Tune together: boss hp/maxHit/accuracy (`BOSS_LADDER`), `DEF_FACTOR`, the
+   per-slot stat formulas (`GEAR_SLOTS` in `weapons.js`), and drop rates
+   (`BOSS_LOOT` in `combat.js`). All first-guess and centralized for easy tuning.
+2. **HP-timing polish** — make the HP bars drop when each blow *lands* (synced to
+   the animation) instead of instantly at round start. Needs the combat engine to
+   expose intermediate states (player-hit then boss-hit) rather than applying both
+   in one `attack()` return.
+3. **BAG menu** — the `BAG` command is a placeholder ("coming soon"). Add an
+   inventory for potions/food (healing items) — a genuinely new subsystem
+   (consumables + a heal action in combat), distinct from the auto-equipped gear.
+4. **Armour on the sprite** — the hero sprite still changes by weapon style only;
+   equipped armour isn't drawn. Optional visual polish (original 2D art only).
 
 ## Open questions to raise with Boris
-- Drop-table / gear design at scale: the 10-boss ladder drops weapons up to
-  tier 5, but there's still no armour/defence. What armour tiers / defence model
-  do we want, and are the weapon tiers/rates about right?
-- Boss-ladder balance: `BOSS_LADDER` hp/accuracy/maxHit and drop rates are
-  first-guess numbers; maxed demo teams clear even the Demon fast. Tune later.
-- Character stats are live from Supabase and auto-refresh every 30 min via the
-  Action (resolved). Interval can be tuned in `.github/workflows/refresh-wom.yml`.
-- Auth: gear + battle writes use the public anon key (anyone can overwrite). Add
-  auth before this goes wide?
+- **Balance:** with gear stats live but boss stats unchanged, how hard should the
+  ladder feel? This drives the tuning pass (boss stats, `DEF_FACTOR`, gear stat
+  formulas, drop rates) — all first-guess right now.
+- **Gear naming/flavour:** armour/accessory names are auto-generated per style
+  tier (e.g. "Studded Ring", "Enchanted Amulet") — placeholders. Want bespoke
+  names/icons, or leave generated?
+- **Accessories per style:** amulet/ring/cape are currently style-specific (each
+  style has its own). Keep that, or make some accessories universal?
+- Auth: gear + battle + progress writes use the public anon key (anyone can
+  overwrite). Add auth before this goes wide?
 
 ## Working conventions
 - Repo has active collaborators — `git fetch` and rebase before pushing.
